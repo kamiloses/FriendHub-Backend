@@ -10,22 +10,21 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class RabbitConfig {
 
-public static String Queue_To_User_Service="requestToUserService";
-public static String Exchange_To_User_Service="exchangeToUserService";
+    public static final String Queue_To_User_Service = "requestToUserService";
+    public static final String Exchange_To_User_Service = "exchangeToUserService";
     public static final String ROUTING_KEY_ = "userService";
 
 
-@Bean
+    @Bean
     public Queue queue_To_User_Service() {
-    return new Queue(Queue_To_User_Service);
-}
+        return new Queue(Queue_To_User_Service);
+    }
 
 
     @Bean
     public DirectExchange exchange_userCredentials() {
         return new DirectExchange(Exchange_To_User_Service);
     }
-
 
 
     @Bean//todo upewnij sie że nazwa jest dobra

@@ -1,11 +1,11 @@
-package com.kamiloses.postservice.rabbitMq;
+package com.kamiloses.postservice.dto;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.index.Indexed;
+import lombok.NoArgsConstructor;
 
 import java.util.Set;
-@Data
+@Data @AllArgsConstructor @NoArgsConstructor
 public class UserDetailsDto {
 
 

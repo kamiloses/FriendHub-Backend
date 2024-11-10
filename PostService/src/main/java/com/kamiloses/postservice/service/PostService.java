@@ -16,10 +16,10 @@ private final RabbitPostSender rabbitPostSender;
         this.rabbitPostSender = rabbitPostSender;
     }
 
-    public Flux<PostEntity> findPostsRelatedWithUser(String userId){
-       rabbitPostSender.askForUserDetails();
-
-}
+//    public Flux<PostEntity> findPostsRelatedWithUser(String userId){
+//       rabbitPostSender.askForUserDetails();
+//
+//return }
     //todo potem zamień na postDto
 
 
