@@ -1,4 +1,4 @@
-package com.kamiloses.postservice;
+package com.kamiloses.userservice;
 
 import com.kamiloses.rabbitmq.RabbitConfig;
 import org.springframework.boot.SpringApplication;
@@ -7,10 +7,10 @@ import org.springframework.context.annotation.Import;
 
 @SpringBootApplication
 @Import(RabbitConfig.class)
-public class PostServiceApplication {
+public class UserServiceApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(PostServiceApplication.class, args);
+        SpringApplication.run(UserServiceApplication.class, args);
     }
 
 }

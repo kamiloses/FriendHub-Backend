@@ -1,6 +1,7 @@
 package com.kamiloses.postservice.service;
 
 import com.kamiloses.postservice.entity.PostEntity;
+import com.kamiloses.postservice.rabbitMq.RabbitPostSender;
 import com.kamiloses.postservice.repository.PostRepository;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
@@ -9,14 +10,15 @@ import reactor.core.publisher.Flux;
 public class PostService {
 
 private PostRepository postRepository;
-
-    public PostService(PostRepository postRepository) {
+private final RabbitPostSender rabbitPostSender;
+    public PostService(PostRepository postRepository, RabbitPostSender rabbitPostSender) {
         this.postRepository = postRepository;
+        this.rabbitPostSender = rabbitPostSender;
     }
 
-    public Flux<PostEntity> findPostByUserId(String userId){
+    public Flux<PostEntity> findPostsRelatedWithUser(String userId){
+       rabbitPostSender.askForUserDetails();
 
-    return postRepository.findByUserId("1");
 }
     //todo potem zamień na postDto
 

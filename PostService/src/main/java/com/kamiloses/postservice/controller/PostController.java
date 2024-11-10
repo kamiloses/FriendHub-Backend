@@ -18,7 +18,7 @@ public class PostController {
 
 
     @GetMapping //todo upewnij sie czy nie powinno tu być postModel zamiast dto
-    public List getPosts() {
+    public List getPostsByUserId() {
         PostEntity post1 = new PostEntity("1", "1", "Hello, this is my first post!", LocalDateTime.of(2024, 11, 8, 10, 0, 0), 15, 2,3, false);
         PostEntity post2 = new PostEntity(
                 "2", "1", "This is a post about Spring Boot and MongoDB!", LocalDateTime.of(2024, 11, 8, 12, 30, 0), 30, 5,3, false
