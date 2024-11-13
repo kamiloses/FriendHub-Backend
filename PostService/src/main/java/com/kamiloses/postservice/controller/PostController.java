@@ -1,9 +1,10 @@
 package com.kamiloses.postservice.controller;
 
 import com.kamiloses.postservice.dto.PostDto;
-import com.kamiloses.postservice.dto.UserDetailsDto;
 import com.kamiloses.postservice.entity.PostEntity;
-import com.kamiloses.postservice.rabbitMq.RabbitPostSender;
+import com.kamiloses.rabbitmq.service.CredentialsService;
+import com.kamiloses.rabbitmq.service.UserDetailsDto;
+import org.springframework.context.annotation.Import;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -16,11 +17,13 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/posts")
 @CrossOrigin(origins = "http://localhost:4200")
+@Import(CredentialsService.class)
 public class PostController {
- private RabbitPostSender rabbitPostSender;
 
-    public PostController(RabbitPostSender rabbitPostSender) {
-        this.rabbitPostSender = rabbitPostSender;
+     private CredentialsService credentialsService;
+
+    public PostController(CredentialsService credentialsService) {
+        this.credentialsService = credentialsService;
     }
 
     @GetMapping //todo upewnij sie czy nie powinno tu być postModel zamiast dto
@@ -32,8 +35,8 @@ public class PostController {
 
         PostEntity post3 = new PostEntity("3", "2", "Having fun learning new technologies! #coding #java", LocalDateTime.of(2024, 11, 8, 15, 0, 0), 50, 10,3, false
         );
-        UserDetailsDto userDetailsDto = rabbitPostSender.askForUserDetails();
-          post1.setContent(userDetailsDto.getFirstName());
+        UserDetailsDto userDetailsDto = credentialsService.askForUserDetails();
+        post1.setContent(userDetailsDto.getFirstName());
 
           return List.of(post1,post2,post3);
     }

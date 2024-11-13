@@ -2,8 +2,6 @@ package com.kamiloses.postservice.rabbitMq;
 
 import com.kamiloses.postservice.service.PostService;
 import com.kamiloses.rabbitmq.RabbitConfig;
-import com.kamiloses.userservice.dto.UserDetailsDto;
-import com.kamiloses.userservice.rabbit.RabbitUserListener;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -52,7 +50,7 @@ public class RabbitPostSenderTest {
 
     @Test
     void test_convert_Send_And_Receive_Communication() {
-        doReturn(UserDetailsDto.builder().firstName("test").build()).when(rabbitTemplate.receive());
+    //    doReturn(UserDetailsDto.builder().firstName("test").build()).when(rabbitTemplate.receive());
 
         String response = (String) rabbitTemplate.convertSendAndReceive(RabbitConfig.Exchange_To_User_Service, RabbitConfig.ROUTING_KEY_, "x");
 //todo popraw test
