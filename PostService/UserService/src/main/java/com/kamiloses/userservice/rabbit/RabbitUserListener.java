@@ -17,7 +17,7 @@ public class RabbitUserListener {
     @RabbitListener(queues = RabbitConfig.Queue_To_User_Service)
      public String receiveMessage(String message) throws JsonProcessingException {
         System.err.println("Otrzymałem");
-        UserDetailsDto userDetailsDto = new UserDetailsDto("test1","test1","test","test1","test1","test","test", Set.of(),Set.of(),Set.of());
+        UserDetailsDto userDetailsDto = new UserDetailsDto("1","test1","test1","test","test1","test1","test","test", Set.of(),Set.of(),Set.of());
         ObjectMapper objectMapper = new ObjectMapper();
       return objectMapper.writeValueAsString(userDetailsDto);
     }

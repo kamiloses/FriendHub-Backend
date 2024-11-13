@@ -12,7 +12,7 @@ public class PostDto {
     //todo NArazie tak samo dto wygląda jak postEntity. potem zmienie
     private String id;
 
-    private String userId;
+    private UserDetailsDto user;
 
     private String content;
 

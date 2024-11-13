@@ -9,6 +9,7 @@ import java.util.Set;
 public class UserDetailsDto {
 
 
+    private String id;
     private String username;
 
     private String password;
