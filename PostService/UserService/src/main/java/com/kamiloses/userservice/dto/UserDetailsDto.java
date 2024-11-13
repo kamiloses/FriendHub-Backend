@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 
 import java.util.Set;
 
-@Data @AllArgsConstructor @NoArgsConstructor @Builder
+@Data @AllArgsConstructor @NoArgsConstructor
 public class UserDetailsDto {
 
 
