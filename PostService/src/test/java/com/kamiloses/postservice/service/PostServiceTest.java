@@ -1,31 +1,29 @@
 package com.kamiloses.postservice.service;
 
 import com.kamiloses.postservice.dto.PostDto;
+import com.kamiloses.postservice.dto.UserDetailsDto;
 import com.kamiloses.postservice.entity.PostEntity;
+import com.kamiloses.postservice.rabbit.RabbitPostProducer;
 import com.kamiloses.postservice.repository.PostRepository;
-import com.kamiloses.rabbitmq.service.CredentialsService;
-import com.kamiloses.rabbitmq.service.UserDetailsDto;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Spy;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doReturn;
 import static reactor.core.publisher.Mono.when;
 
 @SpringBootTest
-@Import({CredentialsService.class})
+@Import({RabbitPostProducer.class})
 class PostServiceTest {
 
     @Mock
-    private CredentialsService credentialsService;
+    private RabbitPostProducer rabbitPostProducer;
 
     @Mock
     private PostRepository postRepository;
@@ -54,8 +52,8 @@ class PostServiceTest {
 
     @Test
     void test_create_post() {
-        doReturn(userDetails).when(credentialsService).askForUserDetails();
-       doReturn(Mono.just(postEntity)).when(postRepository).save(any(PostEntity.class));
+        doReturn(userDetails).when(rabbitPostProducer).askForUserDetails("");
+        doReturn(Mono.just(postEntity)).when(postRepository).save(any(PostEntity.class));
 
         Mono<PostEntity> result = postService.createPost(postDto);
 

@@ -16,9 +16,8 @@ public class UserDetailsDto {
 
     private String password;
 
-    private String email;
-
     private String firstName;
+
     private String lastName;
 
     private String bio;

@@ -16,7 +16,6 @@ import java.util.List;
 @Document
 @Builder
 public class PostEntity {
-
     @Id
     private String id;
 

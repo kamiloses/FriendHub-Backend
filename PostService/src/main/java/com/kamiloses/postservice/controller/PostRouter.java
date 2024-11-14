@@ -10,11 +10,11 @@ import org.springframework.web.reactive.function.server.ServerResponse;
 @Controller
 public class PostRouter {
 
-@Bean
-    public RouterFunction<ServerResponse> routerFunction(PostHandler postHandler){
-
-    return RouterFunctions.route().POST("/api/posts",postHandler::createPost).build();
-
-}
+//@Bean
+//    public RouterFunction<ServerResponse> routerFunction(PostHandler postHandler){
+//
+//    return RouterFunctions.route().POST("/api/posts",postHandler::createPost).build();
+//
+//}
 
 }

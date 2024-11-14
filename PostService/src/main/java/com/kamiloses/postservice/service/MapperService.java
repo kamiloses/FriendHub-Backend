@@ -1,7 +1,6 @@
 package com.kamiloses.postservice.service;
 
-import com.kamiloses.postservice.dto.PostDto;
-import com.kamiloses.postservice.entity.PostEntity;
+import com.kamiloses.postservice.dto.UserDetailsDto;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -16,6 +15,8 @@ public class MapperService {
 //
 //        })
 //
+
+
 
 
 
