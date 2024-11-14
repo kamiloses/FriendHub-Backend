@@ -6,7 +6,7 @@ import reactor.core.publisher.Flux;
 
 public interface CommentRepository extends ReactiveMongoRepository<CommentEntity, String> {
 
-    Flux<CommentEntity> findCommentEntitiesByParentCommentId(String parentCommentId);
+    Flux<CommentEntity> findCommentEntitiesByPostId(String parentCommentId);
 
 
 

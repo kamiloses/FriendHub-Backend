@@ -21,7 +21,7 @@ private final RabbitCommentProducer rabbitCommentProducer;
 //todo popraw
     public Flux<CommentDto> findCommentsRelatedWithPost(String postId){
         UserDetailsDto userDetails = rabbitCommentProducer.askForUserDetails(postId);
-return         commentRepository.findCommentEntitiesByParentCommentId(postId).map(commentEntity ->
+return         commentRepository.findCommentEntitiesByPostId(postId).map(commentEntity ->
             {
 
                 CommentDto commentDto = new CommentDto();
