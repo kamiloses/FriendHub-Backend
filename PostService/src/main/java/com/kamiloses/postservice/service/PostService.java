@@ -55,9 +55,23 @@ public class PostService {
 
         );
 
-
-
     }
+public Mono<PostDto> getPostById(String id){
+    UserDetailsDto userDetailsDto = rabbitPostProducer.askForUserDetails("username");
+     return    postRepository.findById(id).map(
+                     postEntity -> {
+                         PostDto postDto = new PostDto();
+                         postDto.setId(postEntity.getId());
+                         postDto.setUser(userDetailsDto);
+                         postDto.setContent(postEntity.getContent());
+                         postDto.setCreatedAt(postEntity.getCreatedAt());
+                         return postDto;
+
+                     });
+
+
+}
+
 
 
 }

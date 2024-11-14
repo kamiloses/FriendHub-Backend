@@ -8,13 +8,15 @@ import com.kamiloses.postservice.rabbit.RabbitPostProducer;
 import org.springframework.context.annotation.Import;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
 @RequestMapping("/api/posts")
-@CrossOrigin(origins = "http://localhost:4200")
+@CrossOrigin(origins = "http://localhost:4200", allowedHeaders = "*", methods = {RequestMethod.GET, RequestMethod.POST})
+
 @Import(RabbitPostProducer.class)
 public class PostController {
 
@@ -51,6 +53,11 @@ public class PostController {
        public void savePosts(@RequestBody PostDto postDto){
          postService.createPost(postDto).subscribe();
 
+    }
+
+    @GetMapping("/{id}")
+    public Mono<PostDto> getPostById(@PathVariable String id) {
+    return postService.getPostById(id);
     }
 
 

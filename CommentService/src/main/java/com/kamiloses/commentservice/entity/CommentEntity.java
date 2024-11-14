@@ -20,6 +20,7 @@ public class CommentEntity {
     private Date createdAt;
     private String userId;
     private String postId;
+
     private String parentCommentId;
     private Integer numberOfComments;
     private Integer numberOfLikes;
