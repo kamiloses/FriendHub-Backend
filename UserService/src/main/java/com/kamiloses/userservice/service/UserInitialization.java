@@ -1,6 +1,6 @@
 package com.kamiloses.userservice.service;
 
-import com.kamiloses.userservice.UserEntity;
+import com.kamiloses.userservice.entity.UserEntity;
 import com.kamiloses.userservice.repository.UserRepository;
 import jakarta.annotation.PostConstruct;
 import org.springframework.stereotype.Component;

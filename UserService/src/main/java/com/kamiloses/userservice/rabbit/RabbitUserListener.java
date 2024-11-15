@@ -3,13 +3,11 @@ package com.kamiloses.userservice.rabbit;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kamiloses.rabbitmq.RabbitConfig;
-import com.kamiloses.userservice.UserEntity;
+import com.kamiloses.userservice.entity.UserEntity;
 import com.kamiloses.userservice.dto.UserDetailsDto;
 import com.kamiloses.userservice.repository.UserRepository;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.stereotype.Component;
-
-import java.util.Set;
 
 @Component
 public class RabbitUserListener {
