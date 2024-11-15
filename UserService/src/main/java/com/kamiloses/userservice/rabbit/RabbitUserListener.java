@@ -12,30 +12,28 @@ import org.springframework.stereotype.Component;
 @Component
 public class RabbitUserListener {
 
-   private final UserRepository userRepository;
+    private final UserRepository userRepository;
 
     public RabbitUserListener(UserRepository userRepository) {
         this.userRepository = userRepository;
     }
 
     @RabbitListener(queues = RabbitConfig.Queue_To_User_Service)
-     public String receive_And_Resend_UserDetails(String username) throws JsonProcessingException {
+    public String receive_And_Resend_UserDetails(String username) throws JsonProcessingException {
         UserEntity userEntity = userRepository.findByUsername("kamiloses").block();
         System.out.println(userEntity);
         UserDetailsDto userDetailsDto = new UserDetailsDto();
-            userDetailsDto.setId(userEntity.getId());
-            userDetailsDto.setUsername(userEntity.getUsername());
-            userDetailsDto.setFirstName(userEntity.getFirstName());
-            userDetailsDto.setLastName(userEntity.getLastName());
-
-
+        userDetailsDto.setId(userEntity.getId());
+        userDetailsDto.setUsername(userEntity.getUsername());
+        userDetailsDto.setPassword(userEntity.getPassword());
+        userDetailsDto.setFirstName(userEntity.getFirstName());
+        userDetailsDto.setLastName(userEntity.getLastName());
 
 
         ObjectMapper objectMapper = new ObjectMapper();
         return objectMapper.writeValueAsString(userDetailsDto);
     }
-
-
-
+//todo utwórz potem nowego listenera gdzie będą przesyłane tylko
+// najważniejsze dane w tym hasło bo ten aktualny przesyła zbyt dużo wrażliwych danycxh
 
 }

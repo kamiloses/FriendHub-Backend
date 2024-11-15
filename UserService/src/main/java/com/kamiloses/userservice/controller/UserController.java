@@ -1,14 +1,12 @@
 package com.kamiloses.userservice.controller;
 
 import com.kamiloses.userservice.service.UserService;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Mono;
 
 @RestController
 @RequestMapping("/api/user")
+@CrossOrigin(origins = "http://localhost:4200", allowedHeaders = "*", methods = {RequestMethod.GET, RequestMethod.POST})
 public class UserController {
 
 private UserService userService;
@@ -17,7 +15,7 @@ private UserService userService;
         this.userService = userService;
     }
 
-    @GetMapping("/login")
+    @PostMapping("/login")
 public Mono<Boolean> areCredentialsValid(@RequestParam String username, @RequestParam String password) {
 
 
