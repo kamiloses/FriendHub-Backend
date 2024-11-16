@@ -18,8 +18,8 @@ public class SecurityConfig {
     @Bean
     public SecurityWebFilterChain springSecurityFilterChain(ServerHttpSecurity http) {
         http.csrf(ServerHttpSecurity.CsrfSpec::disable);
-        return http.authorizeExchange(exchange->exchange.pathMatchers("/api/**").authenticated()
-                        .anyExchange().denyAll())
+        return http.authorizeExchange(exchange->exchange.pathMatchers("/api/**").permitAll()
+                        .anyExchange().permitAll())
                         .httpBasic(Customizer.withDefaults())
                        .build();
 

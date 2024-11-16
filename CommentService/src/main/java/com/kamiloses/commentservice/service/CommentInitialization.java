@@ -3,10 +3,11 @@ package com.kamiloses.commentservice.service;
 import com.kamiloses.commentservice.entity.CommentEntity;
 import com.kamiloses.commentservice.repository.CommentRepository;
 import jakarta.annotation.PostConstruct;
+import org.springframework.stereotype.Component;
 
 import java.util.Date;
 import java.util.List;
-
+@Component
 public class CommentInitialization {
 
     private final CommentRepository commentRepository;
@@ -25,7 +26,6 @@ public class CommentInitialization {
 //        CommentEntity commentEntity5 = new CommentEntity("6", "abc", new Date(), "user3", "67357f8a4229ec65dea898dd", "3", 0, 1, 0);
 //
 //
-//    commentRepository.saveAll(List.of(commentEntity, commentEntity1, commentEntity2, commentEntity3, commentEntity4));}
-//
-//}
+//    commentRepository.saveAll(List.of(commentEntity, commentEntity1, commentEntity2, commentEntity3, commentEntity4,commentEntity5)).collectList().block();}
+
 }
