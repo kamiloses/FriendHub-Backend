@@ -2,6 +2,7 @@ package com.kamiloses.commentservice.service;
 
 import com.kamiloses.commentservice.dto.CommentDto;
 import com.kamiloses.commentservice.dto.UserDetailsDto;
+import com.kamiloses.commentservice.entity.CommentEntity;
 import com.kamiloses.commentservice.rabbit.RabbitCommentProducer;
 import com.kamiloses.commentservice.repository.CommentRepository;
 import org.springframework.stereotype.Service;
@@ -45,9 +46,14 @@ return         commentRepository.findCommentEntitiesByPostId(postId).map(comment
 }
 
 
+    public void publishPost(CommentDto commentDto) {
+        CommentEntity commentEntity = new CommentEntity();
+        commentEntity.setContent(commentDto.getContent());
+        commentEntity.setCreatedAt(commentDto.getCreatedAt());
+        commentEntity.setUserId(commentDto.getUserDetails().getId());
+        commentEntity.setPostId(commentDto.getPostId());
+        commentEntity.setParentCommentId(commentDto.getParentCommentId());
+        commentRepository.save(commentEntity).block();
 
-
-
-
-
+    }
 }
