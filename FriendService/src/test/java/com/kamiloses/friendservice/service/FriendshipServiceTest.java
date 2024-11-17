@@ -8,6 +8,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import reactor.core.publisher.Flux;
 
@@ -22,10 +23,7 @@ import static reactor.core.publisher.Mono.when;
 class FriendshipServiceTest {
 
 
-    @Mock
-    private FriendshipRepository friendshipRepository;
-
-    @InjectMocks
+     @Autowired
     private FriendshipService friendshipService;
 
     private List<FriendshipEntity> friendshipEntities = new ArrayList<>();
@@ -41,12 +39,12 @@ class FriendshipServiceTest {
 
     @Test
     void should_check_getYourFriendsIds_method() {
-     //   when(friendshipRepository.getFriendshipEntitiesByUserIdOrFriendId(Mockito.anyString(), Mockito.anyString()))
-     //           .thenReturn(Flux.fromIterable(friendshipEntities)).block();
         List<String> yourFriendsIds = friendshipService.getYourFriendsIds(Flux.fromIterable(friendshipEntities), "1");
 
 
         Assertions.assertEquals(List.of("2","2","3"),yourFriendsIds);
+
+
 
     }
 

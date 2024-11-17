@@ -21,17 +21,37 @@ public class RabbitFriendshipProducer {
     }
 
 
-    public List<UserDetailsDto> askForUserAndFriendDetails(String userId,String friendId) {
-        String userAndFriendDetailsAsString = (String) rabbitTemplate.convertSendAndReceive(RabbitConfig.Exchange_To_User_Service, RabbitConfig.ROUTING_KEY_,userId+" "+friendId);
-        try {
-            ObjectMapper objectMapper = new ObjectMapper();
-            return objectMapper.readValue(userAndFriendDetailsAsString, new TypeReference<List<UserDetailsDto>>() {});
+    public List<UserDetailsDto> askForFriendsDetails(List<String> friendsId) {
 
 
-        } catch (JsonProcessingException e) {
-            throw new RuntimeException(e);
-        }
+        String friendsIdAsString = convertListOfFriendsIdToString(friendsId);
+        String listOfFriendsDetails = (String) rabbitTemplate.convertSendAndReceive(RabbitConfig.Exchange_To_User_Service, RabbitConfig.ROUTING_KEY_, friendsIdAsString);
+
+        return convertStringOfUserDetailsToList(listOfFriendsDetails);
 
 
     }
+
+
+    private String convertListOfFriendsIdToString(List<String> friendsId){
+        ObjectMapper objectMapper = new ObjectMapper();
+        try {
+    return  objectMapper.writeValueAsString(friendsId);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
+    }
+     private List<UserDetailsDto> convertStringOfUserDetailsToList(String friendsId){
+         ObjectMapper objectMapper = new ObjectMapper();
+         try {
+        return      objectMapper.readValue(friendsId,  new TypeReference<List<UserDetailsDto>>() {}) ;
+         } catch (JsonProcessingException e) {
+             throw new RuntimeException(e);
+         }
+
+
+     }
+
+
+
 }
