@@ -15,7 +15,6 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class FriendShipDto {
-    @Id
     private String id;
 
     private UserDetailsDto user;

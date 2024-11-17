@@ -44,22 +44,20 @@ public class RabbitUserListener {
     @RabbitListener(queues = RabbitConfig.Queue_For_Friends_Details)
     public String receive_And_Resend_FriendsDetails(String listOfUsersId){
         List<String> usersId = convertToListOfString(listOfUsersId);
-        List<UserDetailsDto> friendsDetailsList = userRepository.findUserEntitiesByIdIn(usersId).stream().map(userEntity ->
+        Flux<UserDetailsDto> fluxUserDetailsDto = userRepository.findUserEntitiesByIdIn(usersId).map(userEntity ->
         {
             UserDetailsDto userDetailsDto = new UserDetailsDto();
             userDetailsDto.setId(userEntity.getId());
             userDetailsDto.setUsername(userEntity.getUsername());
             userDetailsDto.setPassword(userEntity.getPassword());
-            userDetailsDto.setEmail(userEntity.getEmail());
             userDetailsDto.setFirstName(userEntity.getFirstName());
             userDetailsDto.setLastName(userEntity.getLastName());
             userDetailsDto.setBio(userEntity.getBio());
             userDetailsDto.setProfileImageUrl(userEntity.getProfileImageUrl());
             return userDetailsDto;
-        }).toList();
-
-        return convertListOfUserDetailsToString(friendsDetailsList);}
-
+        });
+        List<UserDetailsDto> userDetailsList = fluxUserDetailsDto.collectList().block();
+         return convertListOfUserDetailsToString(userDetailsList);}
 
 
     private List<String>convertToListOfString(String listOfFriendsId){
@@ -76,6 +74,7 @@ public class RabbitUserListener {
      private String convertListOfUserDetailsToString(List<UserDetailsDto> userDetails){
          ObjectMapper objectMapper = new ObjectMapper();
          try {
+             System.err.println(userDetails);
           return    objectMapper.writeValueAsString(userDetails);
          } catch (JsonProcessingException e) {
              throw new RuntimeException(e);

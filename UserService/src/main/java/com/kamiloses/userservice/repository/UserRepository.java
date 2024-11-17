@@ -13,6 +13,6 @@ Mono<UserEntity> findByUsername(String username);
 
 Mono<Boolean> existsByUsernameAndPassword(String username,String password);
 
-List<UserEntity> findUserEntitiesByIdIn(List<String> userIds);
+Flux<UserEntity> findUserEntitiesByIdIn(List<String> userIds);
 
 }

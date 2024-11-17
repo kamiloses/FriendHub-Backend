@@ -26,7 +26,7 @@ public class RabbitFriendshipProducer {
 
         String friendsIdAsString = convertListOfFriendsIdToString(friendsId);
         String listOfFriendsDetails = (String) rabbitTemplate.convertSendAndReceive(RabbitConfig.Exchange_To_User_Service, RabbitConfig.Routing_Key_Friends_Details, friendsIdAsString);
-
+        System.err.println(listOfFriendsDetails);
         return convertStringOfUserDetailsToList(listOfFriendsDetails);
 
 
