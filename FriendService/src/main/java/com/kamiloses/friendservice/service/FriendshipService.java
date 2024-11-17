@@ -13,12 +13,10 @@ import java.util.List;
 public class FriendshipService {
 
     private final FriendshipRepository friendshipRepository;
-    private final Mapper mapper;
     private final RabbitFriendshipProducer rabbitFriendshipProducer;
 
-    public FriendshipService(FriendshipRepository friendshipRepository, Mapper mapper, RabbitFriendshipProducer rabbitFriendshipProducer) {
+    public FriendshipService(FriendshipRepository friendshipRepository, RabbitFriendshipProducer rabbitFriendshipProducer) {
         this.friendshipRepository = friendshipRepository;
-        this.mapper = mapper;
         this.rabbitFriendshipProducer = rabbitFriendshipProducer;
     }
 
@@ -41,5 +39,5 @@ public class FriendshipService {
                 return friendshipEntity.getUserId();
             }
         }).collectList().block();
-    }  //this method must be written synchronously because rabbit must get all data at one time
+    }  //this method must be written synchronously because rabbit must get all data at one time(I just mean in that way)
 }

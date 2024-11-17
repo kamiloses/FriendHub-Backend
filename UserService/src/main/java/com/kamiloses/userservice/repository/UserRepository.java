@@ -5,9 +5,14 @@ import org.springframework.data.mongodb.repository.ReactiveMongoRepository;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import java.util.List;
+
 public interface UserRepository extends ReactiveMongoRepository<UserEntity,String> {
 
 Mono<UserEntity> findByUsername(String username);
 
 Mono<Boolean> existsByUsernameAndPassword(String username,String password);
+
+List<UserEntity> findUserEntitiesByIdIn(List<String> userIds);
+
 }

@@ -10,14 +10,15 @@ import java.util.Set;
 @Data @AllArgsConstructor @NoArgsConstructor @Builder
 public class UserDetailsDto {
 
-    private String id;
 
+    private String id;
     private String username;
 
     private String password;
 
-    private String firstName;
+    private String email;
 
+    private String firstName;
     private String lastName;
 
     private String bio;
@@ -30,6 +31,8 @@ public class UserDetailsDto {
     private Set<String> followersIds;
 
     private Set<String> followingIds;
+
+
 
 
 
