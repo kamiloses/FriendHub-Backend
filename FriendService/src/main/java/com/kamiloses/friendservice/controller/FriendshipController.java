@@ -23,7 +23,7 @@ private final FriendshipService friendshipService;
 public Flux<UserDetailsDto> getAllFriendsRelatedWithUser(@RequestParam(name = "username") String loggedUser){
 
 
-    return friendshipService.getAllUserFriends("1");
+    return friendshipService.getAllUserFriends(loggedUser);
 }
 
 

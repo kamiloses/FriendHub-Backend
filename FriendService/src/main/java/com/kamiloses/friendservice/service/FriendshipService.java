@@ -23,13 +23,13 @@ public class FriendshipService {
 
     public Flux<UserDetailsDto> getAllUserFriends(String loggedUserId) {
         Flux<FriendshipEntity> friendshipEntitiesByUserIdOrFriendId = friendshipRepository.getFriendshipEntitiesByUserIdOrFriendId("1", "1");
-
-        return getYourFriendsId(friendshipEntitiesByUserIdOrFriendId, loggedUserId)
+        UserDetailsDto userDetailsDto = rabbitFriendshipProducer.askForUserDetails(loggedUserId);
+        return getYourFriendsId(friendshipEntitiesByUserIdOrFriendId,userDetailsDto.getId())
                 .flatMapMany(yourFriendsId -> Flux.fromIterable(rabbitFriendshipProducer.askForFriendsDetails(yourFriendsId)));
     }
 
 
-
+ //todo naprawić tą metoed poniżej bo ona jest blędna
 
     public Mono<List<String>> getYourFriendsId(Flux<FriendshipEntity> friendshipEntities, String loggedUserId) {
         return friendshipEntities

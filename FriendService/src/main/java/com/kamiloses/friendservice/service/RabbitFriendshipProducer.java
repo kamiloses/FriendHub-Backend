@@ -21,6 +21,24 @@ public class RabbitFriendshipProducer {
     }
 
 
+
+
+    public UserDetailsDto askForUserDetails(String username) {
+        String userDetailsAsString = (String) rabbitTemplate.convertSendAndReceive(RabbitConfig.Exchange_To_User_Service, RabbitConfig.ROUTING_KEY_, username);
+        System.err.println(userDetailsAsString);
+        try {
+            ObjectMapper objectMapper = new ObjectMapper();
+            return objectMapper.readValue(userDetailsAsString, UserDetailsDto.class);
+
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
+
+
+    }
+
+
+
     public List<UserDetailsDto> askForFriendsDetails(List<String> friendsId) {
 
 

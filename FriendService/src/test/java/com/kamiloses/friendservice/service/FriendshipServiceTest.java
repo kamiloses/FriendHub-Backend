@@ -39,14 +39,25 @@ class FriendshipServiceTest {
 
     @Test
     void should_check_getYourFriendsIds_method() {
-        List<String> yourFriendsIds = friendshipService.getYourFriendsId(Flux.fromIterable(friendshipEntities), "1");
+        List<String> yourFriendsId = friendshipService.getYourFriendsId(Flux.fromIterable(friendshipEntities), "1").block();
 
 
-        Assertions.assertEquals(List.of("2","2","3"),yourFriendsIds);
+        Assertions.assertEquals(List.of("2","2","3"),yourFriendsId);
 
 
 
     }
+    @Test
+    void should_check_getYourFriendsIds_method_Return_NUll() {
+        List<String> yourFriendsId = friendshipService.getYourFriendsId(Flux.fromIterable(friendshipEntities), "10").block();
+
+
+        Assertions.assertEquals(List.of(),yourFriendsId);
+
+
+
+    }
+
 
 
 }
