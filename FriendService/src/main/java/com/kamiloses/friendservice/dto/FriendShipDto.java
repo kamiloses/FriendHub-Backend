@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
 
 import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.List;
 
 @Data
@@ -20,7 +21,7 @@ public class FriendShipDto {
     private UserDetailsDto user;
     private UserDetailsDto friend;
 
-    private LocalDateTime createdAt;
+    private Date createdAt;
     private Status status;
 
     private List<String> messagesId;

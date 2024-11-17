@@ -8,11 +8,13 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.List;
 
 @Document
 @Data
 @NoArgsConstructor
+@AllArgsConstructor
 public class FriendshipEntity {
 
     @Id
@@ -21,7 +23,7 @@ public class FriendshipEntity {
     private String userId;
     private String friendId;
 
-    private LocalDateTime createdAt;
+    private Date createdAt;
     private Status status;
 
     private List<String> messagesId;

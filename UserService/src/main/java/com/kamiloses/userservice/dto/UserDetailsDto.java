@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 
 import java.util.Set;
 
-@Data @AllArgsConstructor @NoArgsConstructor
+@Data @AllArgsConstructor @NoArgsConstructor @Builder
 public class UserDetailsDto {
 
     private String id;
