@@ -32,7 +32,9 @@ public class FriendshipService {
  //todo naprawić tą metoed poniżej bo ona jest blędna
 
     public Mono<List<String>> getYourFriendsId(Flux<FriendshipEntity> friendshipEntities, String loggedUserId) {
-        return friendshipEntities
+        return friendshipEntities.filter(friendshipEntity ->
+                        friendshipEntity.getFriendId().equals(loggedUserId) ||
+                                friendshipEntity.getUserId().equals(loggedUserId))
                 .map(friendshipEntity -> {
                     if (!friendshipEntity.getFriendId().equals(loggedUserId)) {
                         return friendshipEntity.getFriendId();

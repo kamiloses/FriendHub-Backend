@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
 import reactor.core.publisher.Flux;
 
 @RestController
-@RequestMapping("/api/friendList")
+@RequestMapping("/api/friends")
 public class FriendshipController {
 
 private final FriendshipService friendshipService;
