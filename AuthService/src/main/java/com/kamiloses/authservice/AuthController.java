@@ -7,10 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
@@ -27,6 +24,15 @@ private JWTUtil jwtUtil;
         this.jwtUtil = jwtUtil;
     }
 
+    @GetMapping("/test")
+    public Mono<String> a(){
+
+        return Mono.just("test");
+    }
+
+
+
+
     @PostMapping("/loginJwt")
     public Mono<ResponseEntity<AuthResponse>> login(@RequestBody LoginDetails loginDetails) {
         return WebClient.builder().baseUrl("http://localhost:8081")
@@ -37,13 +43,12 @@ private JWTUtil jwtUtil;
                 .flatMap(userDetails -> {
                     if (passwordEncoder.matches(loginDetails.getPassword(),userDetails.getPassword())) {
                         String token = jwtUtil.generateToken(loginDetails.getUsername());
-                        System.err.println("hej");
                         return Mono.just(ResponseEntity.ok(new AuthResponse(token)));
                     } else {
 
                         return Mono.error(new BadCredentialsException("Invalid username or password"));
                     }
-                })
+                })//todo usuń to niżej (chyba)
                 .switchIfEmpty(Mono.error(new BadCredentialsException("Invalid username or password")));
     }
 

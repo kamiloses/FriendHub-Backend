@@ -2,6 +2,7 @@ package com.kamiloses.authservice.security.jwt;
 
 
 import org.springframework.security.authentication.ReactiveAuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -35,9 +36,11 @@ public class JWTAuthenticationManager implements ReactiveAuthenticationManager {
                 .bodyToMono(LoginDetails.class)
                 .flatMap(loginDetails -> {
                     if (jwtUtil.validateToken(token,loginDetails.getUsername())) {
-                        return Mono.just(authentication);
+                        Authentication auth = new UsernamePasswordAuthenticationToken(username, token, authentication.getAuthorities());
+                        SecurityContextHolder.getContext().setAuthentication(auth);
+                        return Mono.just(auth);
                     } else {
-
+                        System.err.println("ŻLe");
                         return Mono.error(new AuthenticationException("Invalid JWT token") {
                         });
                     }
@@ -45,16 +48,17 @@ public class JWTAuthenticationManager implements ReactiveAuthenticationManager {
     }
 
     public ServerAuthenticationConverter authenticationConverter() {
-        return new ServerAuthenticationConverter() {
-            @Override
-            public Mono<Authentication> convert(ServerWebExchange exchange) {
-                String token = exchange.getRequest().getHeaders().getFirst("Authorization");
-                if (token != null && token.startsWith("Bearer ")) {
-                    token = token.substring(7);
-                    return Mono.just(SecurityContextHolder.getContext().getAuthentication());
-                }
-                return Mono.empty();
+        return exchange -> {
+            String token = exchange.getRequest().getHeaders().getFirst("Authorization");
+            System.err.println("Received token: " + token);
+
+            if (token != null && token.startsWith("Bearer ")) {
+                token = token.substring(7);
+                return Mono.just(new UsernamePasswordAuthenticationToken(token, token));
             }
+
+            System.out.println("Authorization header is missing or invalid");
+            return Mono.empty();
         };
     }
 }

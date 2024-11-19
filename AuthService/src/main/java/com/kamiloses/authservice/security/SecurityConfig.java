@@ -5,11 +5,13 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.reactive.EnableWebFluxSecurity;
+import org.springframework.security.config.web.server.SecurityWebFiltersOrder;
 import org.springframework.security.config.web.server.ServerHttpSecurity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.server.SecurityWebFilterChain;
+import org.springframework.security.web.server.authentication.AuthenticationWebFilter;
 
 @Configuration
 @EnableWebFluxSecurity
@@ -24,35 +26,22 @@ public class SecurityConfig {
 
     @Bean
     public SecurityWebFilterChain springSecurityFilterChain(ServerHttpSecurity http) {
-        http.csrf(ServerHttpSecurity.CsrfSpec::disable);
+        AuthenticationWebFilter authenticationWebFilter = new AuthenticationWebFilter(authenticationManager);
+        authenticationWebFilter.setServerAuthenticationConverter(authenticationManager.authenticationConverter());
 
-        return http
+        return http.csrf(ServerHttpSecurity.CsrfSpec::disable)
                 .authorizeExchange(exchange -> exchange
-                        .pathMatchers("/api/user/signup", "/api/loginJwt","/api/user/*").permitAll()
-                        .anyExchange().authenticated())
-                .httpBasic(Customizer.withDefaults())
-                .authenticationManager(authenticationManager)
+                        .pathMatchers("/api/user/signup", "/api/loginJwt").permitAll()
+                        .anyExchange().authenticated()).authenticationManager(authenticationManager)
+                .addFilterAt(authenticationWebFilter, SecurityWebFiltersOrder.AUTHENTICATION)
                 .build();
 
 
     }
-
-
-//    @Bean
-//    public SecurityWebFilterChain securityWebFilterChain(ServerHttpSecurity http) throws Exception {
-//        http.authorizeExchange(request->request.anyExchange().permitAll()).csrf(ServerHttpSecurity.CsrfSpec::disable);
-//
-//        return http.build();
-//    }
-     @Bean
+    @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
-//    @Bean
-//    public PasswordEncoder noOpPasswordEncoder() {
-//       return NoOpPasswordEncoder.getInstance();
-//
-//    }
 
 }
