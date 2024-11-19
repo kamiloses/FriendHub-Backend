@@ -5,22 +5,27 @@ import com.kamiloses.authservice.security.jwt.AuthResponse;
 import com.kamiloses.authservice.security.jwt.JWTUtil;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
 @RestController
+@RequestMapping("/api")
 public class AuthController {
 
 
 private JWTUtil jwtUtil;
+    private final PasswordEncoder passwordEncoder;
 
-    public AuthController(JWTUtil jwtUtil) {
+    public AuthController(PasswordEncoder passwordEncoder, JWTUtil jwtUtil) {
+        this.passwordEncoder = passwordEncoder;
         this.jwtUtil = jwtUtil;
     }
-
 
     @PostMapping("/loginJwt")
     public Mono<ResponseEntity<AuthResponse>> login(@RequestBody LoginDetails loginDetails) {
@@ -30,10 +35,12 @@ private JWTUtil jwtUtil;
                 .retrieve()
                 .bodyToMono(LoginDetails.class)
                 .flatMap(userDetails -> {
-                    if (userDetails.getPassword().equals(loginDetails.getPassword())) {
+                    if (passwordEncoder.matches(loginDetails.getPassword(),userDetails.getPassword())) {
                         String token = jwtUtil.generateToken(loginDetails.getUsername());
+                        System.err.println("hej");
                         return Mono.just(ResponseEntity.ok(new AuthResponse(token)));
                     } else {
+
                         return Mono.error(new BadCredentialsException("Invalid username or password"));
                     }
                 })

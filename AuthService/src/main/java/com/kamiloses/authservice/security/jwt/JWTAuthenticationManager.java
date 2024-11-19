@@ -25,9 +25,7 @@ public class JWTAuthenticationManager implements ReactiveAuthenticationManager {
     @Override
     public Mono<Authentication> authenticate(Authentication authentication) throws AuthenticationException {
         String token = authentication.getCredentials().toString();
-
         String username = jwtUtil.extractUsername(token);
-
         return WebClient.builder()
                 .baseUrl("http://localhost:8081")
                 .build()

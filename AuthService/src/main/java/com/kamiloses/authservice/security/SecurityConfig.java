@@ -28,8 +28,7 @@ public class SecurityConfig {
 
         return http
                 .authorizeExchange(exchange -> exchange
-                        .pathMatchers("/api/user/signup", "/api/user/login").permitAll()
-                        .pathMatchers("/api/user/**").authenticated()
+                        .pathMatchers("/api/user/signup", "/api/loginJwt","/api/user/*").permitAll()
                         .anyExchange().authenticated())
                 .httpBasic(Customizer.withDefaults())
                 .authenticationManager(authenticationManager)
@@ -45,10 +44,15 @@ public class SecurityConfig {
 //
 //        return http.build();
 //    }
-
-    @Bean
-    PasswordEncoder passwordEncoder() {
+     @Bean
+    public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
+
+//    @Bean
+//    public PasswordEncoder noOpPasswordEncoder() {
+//       return NoOpPasswordEncoder.getInstance();
+//
+//    }
 
 }
