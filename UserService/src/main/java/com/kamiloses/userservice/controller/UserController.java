@@ -1,6 +1,8 @@
 package com.kamiloses.userservice.controller;
 
+import com.kamiloses.userservice.dto.RegistrationDto;
 import com.kamiloses.userservice.service.UserService;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Mono;
 
@@ -20,6 +22,18 @@ public Mono<Boolean> areCredentialsValid(@RequestParam String username, @Request
 
 
 return userService.existsByUsernameAndPassword(username,password);}
+
+
+
+
+    @PostMapping("/signup")
+    public Mono<ResponseEntity<String>> signup(@RequestBody RegistrationDto user) {
+        return userService.save(user)
+                .map(savedUser -> ResponseEntity.ok("User signed up successfully"));
+    }
+
+
+
 
 
 }

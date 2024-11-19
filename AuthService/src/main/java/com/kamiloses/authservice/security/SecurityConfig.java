@@ -13,7 +13,11 @@ import org.springframework.security.web.server.SecurityWebFilterChain;
 @EnableWebFluxSecurity
 public class SecurityConfig {
 
+    private final JWTAuthenticationManager authenticationManager;
 
+    public SecurityConfig(JWTAuthenticationManager authenticationManager) {
+        this.authenticationManager = authenticationManager;
+    }
 
     @Bean
     public SecurityWebFilterChain springSecurityFilterChain(ServerHttpSecurity http) {
