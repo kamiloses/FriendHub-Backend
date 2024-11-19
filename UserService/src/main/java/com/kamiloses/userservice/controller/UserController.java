@@ -22,7 +22,10 @@ public Mono<Boolean> areCredentialsValid(@RequestParam String username, @Request
 
 
 return userService.existsByUsernameAndPassword(username,password);}
-
+   @GetMapping("/test")
+   public Mono<String> test() {
+        return Mono.just("test");
+   }
 
 
 
@@ -33,7 +36,11 @@ return userService.existsByUsernameAndPassword(username,password);}
     }
 
 
-
+    @GetMapping("/{username}")
+    public Mono<String> getUserByUsername(@PathVariable String username) {
+        return userService.findByUsername(username)
+                .switchIfEmpty(Mono.error(new RuntimeException("User not found")));
+    }
 
 
 }

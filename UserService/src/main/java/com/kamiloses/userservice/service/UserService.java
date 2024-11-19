@@ -46,6 +46,8 @@ private UserEntity registrationDtoToUserEntity(RegistrationDto user,String encod
 
 }
 
-
-
+          //todo zmień nazwe potem tego registration albo utwórz nowe dto
+    public Mono<String> findByUsername(String username) {
+        return userRepository.findByUsername(username).map(userEntity -> String.valueOf(userEntity.getUsername()));
+    }
 }
