@@ -34,9 +34,9 @@ public class JWTAuthenticationManager implements ReactiveAuthenticationManager {
                 .get()
                 .uri("/api/user/{username}", username)
                 .retrieve()
-                .bodyToMono(String.class)
-                .flatMap(usernameFromRequest -> {
-                    if (jwtUtil.validateToken(token,usernameFromRequest)) {
+                .bodyToMono(LoginDetails.class)
+                .flatMap(loginDetails -> {
+                    if (jwtUtil.validateToken(token,loginDetails.getUsername())) {
                         return Mono.just(authentication);
                     } else {
 

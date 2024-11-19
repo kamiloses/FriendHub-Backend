@@ -1,6 +1,7 @@
 package com.kamiloses.userservice.service;
 
 import com.kamiloses.rabbitmq.RabbitConfig;
+import com.kamiloses.userservice.dto.LoginDetails;
 import com.kamiloses.userservice.dto.RegistrationDto;
 import com.kamiloses.userservice.entity.UserEntity;
 import com.kamiloses.userservice.repository.UserRepository;
@@ -47,7 +48,7 @@ private UserEntity registrationDtoToUserEntity(RegistrationDto user,String encod
 }
 
           //todo zmień nazwe potem tego registration albo utwórz nowe dto
-    public Mono<String> findByUsername(String username) {
-        return userRepository.findByUsername(username).map(userEntity -> String.valueOf(userEntity.getUsername()));
+    public Mono<LoginDetails> findByUsername(String username) {
+        return userRepository.findByUsername(username).map(userEntity -> new LoginDetails(userEntity.getUsername(),userEntity.getPassword()));
     }
 }

@@ -3,7 +3,7 @@ package com.kamiloses.authservice.security.jwt;
 import lombok.Data;
 
 @Data
-public class AuthRequest {
+public class LoginDetails {
 
     private String username;
     private String password;

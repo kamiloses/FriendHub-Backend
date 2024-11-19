@@ -28,10 +28,9 @@ public class SecurityConfig {
 
         return http
                 .authorizeExchange(exchange -> exchange
-                        .pathMatchers("/api/user/signup", "/api/user/test").permitAll()
+                        .pathMatchers("/api/user/signup", "/api/user/login").permitAll()
                         .pathMatchers("/api/user/**").authenticated()
-                        .anyExchange().authenticated()
-                )
+                        .anyExchange().authenticated())
                 .httpBasic(Customizer.withDefaults())
                 .authenticationManager(authenticationManager)
                 .build();

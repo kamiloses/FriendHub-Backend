@@ -1,5 +1,6 @@
 package com.kamiloses.userservice.controller;
 
+import com.kamiloses.userservice.dto.LoginDetails;
 import com.kamiloses.userservice.dto.RegistrationDto;
 import com.kamiloses.userservice.service.UserService;
 import org.springframework.http.ResponseEntity;
@@ -22,10 +23,12 @@ public Mono<Boolean> areCredentialsValid(@RequestParam String username, @Request
 
 
 return userService.existsByUsernameAndPassword(username,password);}
-   @GetMapping("/test")
-   public Mono<String> test() {
-        return Mono.just("test");
-   }
+
+
+
+
+
+
 
 
 
@@ -37,7 +40,7 @@ return userService.existsByUsernameAndPassword(username,password);}
 
 
     @GetMapping("/{username}")
-    public Mono<String> getUserByUsername(@PathVariable String username) {
+    public Mono<LoginDetails> getUsernameAndPasswordOfUser(@PathVariable String username) {
         return userService.findByUsername(username)
                 .switchIfEmpty(Mono.error(new RuntimeException("User not found")));
     }
