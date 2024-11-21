@@ -17,6 +17,7 @@ import java.util.List;
 public class RabbitUserListener {
 
     private final UserRepository userRepository;
+    private Integer count=0;
 
     public RabbitUserListener(UserRepository userRepository) {
         this.userRepository = userRepository;
@@ -25,7 +26,6 @@ public class RabbitUserListener {
     @RabbitListener(queues = RabbitConfig.Queue_To_User_Service)
     public String receive_And_Resend_UserDetails(String username) throws JsonProcessingException {
         UserEntity userEntity = userRepository.findByUsername(username).block();
-        System.err.println(userEntity);
         UserDetailsDto userDetailsDto = new UserDetailsDto();
         userDetailsDto.setId(userEntity.getId());
         userDetailsDto.setUsername(userEntity.getUsername());
@@ -43,8 +43,8 @@ public class RabbitUserListener {
 
     @RabbitListener(queues = RabbitConfig.Queue_For_Friends_Details)
     public String receive_And_Resend_FriendsDetails(String listOfUsersId){
-        List<String> usersId = convertToListOfString(listOfUsersId);
-        Flux<UserDetailsDto> fluxUserDetailsDto = userRepository.findUserEntitiesByIdIn(usersId).map(userEntity ->
+        List<FriendShipDto> usersIdAndChatId = convertToListOfString(listOfUsersId);
+        Flux<UserDetailsDto> fluxUserDetailsDto = userRepository.findUserEntitiesByIdIn(usersIdAndChatId.stream().map(FriendShipDto::getUserIdOrFriendId).toList()).map(userEntity ->
         {
             UserDetailsDto userDetailsDto = new UserDetailsDto();
             userDetailsDto.setId(userEntity.getId());
@@ -53,17 +53,21 @@ public class RabbitUserListener {
             userDetailsDto.setFirstName(userEntity.getFirstName());
             userDetailsDto.setLastName(userEntity.getLastName());
             userDetailsDto.setBio(userEntity.getBio());
+            userDetailsDto.setChatId(usersIdAndChatId.stream().map(FriendShipDto::getChatId).toList().get(count));
+            count++;
+            // userDetailsDto.setChatId(usersIdAndChatId.get(0).getChatId());
             userDetailsDto.setProfileImageUrl(userEntity.getProfileImageUrl());
             return userDetailsDto;
         });
         List<UserDetailsDto> userDetailsList = fluxUserDetailsDto.collectList().block();
+         count=0;
          return convertListOfUserDetailsToString(userDetailsList);}
 
 
-    private List<String>convertToListOfString(String listOfFriendsId){
+    private List<FriendShipDto>convertToListOfString(String listOfFriendsId){
         ObjectMapper objectMapper = new ObjectMapper();
         try {
-           return objectMapper.readValue(listOfFriendsId, new TypeReference<List<String>>() {
+           return objectMapper.readValue(listOfFriendsId, new TypeReference<List<FriendShipDto>>() {
             });
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);

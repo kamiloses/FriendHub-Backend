@@ -3,6 +3,7 @@ package com.kamiloses.friendservice.service;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.kamiloses.friendservice.dto.FriendShipDto;
 import com.kamiloses.friendservice.dto.UserDetailsDto;
 import com.kamiloses.rabbitmq.RabbitConfig;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
@@ -39,7 +40,7 @@ public class RabbitFriendshipProducer {
 
 
 
-    public List<UserDetailsDto> askForFriendsDetails(List<String> friendsId) {
+    public List<UserDetailsDto> askForFriendsDetails(List<FriendShipDto> friendsId) {
 
 
         String friendsIdAsString = convertListOfFriendsIdToString(friendsId);
@@ -51,7 +52,7 @@ public class RabbitFriendshipProducer {
     }
 
 
-    private String convertListOfFriendsIdToString(List<String> friendsId){
+    private String convertListOfFriendsIdToString(List<FriendShipDto> friendsId){
         ObjectMapper objectMapper = new ObjectMapper();
         try {
     return  objectMapper.writeValueAsString(friendsId);

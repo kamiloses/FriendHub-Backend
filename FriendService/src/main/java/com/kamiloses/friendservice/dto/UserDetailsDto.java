@@ -16,6 +16,7 @@ public class UserDetailsDto {
 
 
     private String id;
+    private String chatId;
     private String username;
 
     private String password;

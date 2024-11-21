@@ -6,12 +6,14 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.Set;
+import java.util.stream.Stream;
 
 @Data @AllArgsConstructor @NoArgsConstructor @Builder
 public class UserDetailsDto {
 
 
     private String id;
+    private String chatId;
     private String username;
 
     private String password;
@@ -24,7 +26,6 @@ public class UserDetailsDto {
 
     private String profileImageUrl;
 
-
     private Set<String> tweetsIds;
 
     private Set<String> followersIds;
@@ -32,7 +33,5 @@ public class UserDetailsDto {
     private Set<String> followingIds;
 
 
+    }
 
-
-
-}

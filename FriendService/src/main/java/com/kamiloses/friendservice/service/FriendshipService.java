@@ -31,15 +31,15 @@ public class FriendshipService {
 
  //todo naprawić tą metoed poniżej bo ona jest blędna
 
-    public Mono<List<String>> getYourFriendsId(Flux<FriendshipEntity> friendshipEntities, String loggedUserId) {
+    public Mono<List<FriendShipDto>> getYourFriendsId(Flux<FriendshipEntity> friendshipEntities, String loggedUserId) {
         return friendshipEntities.filter(friendshipEntity ->
                         friendshipEntity.getFriendId().equals(loggedUserId) ||
                                 friendshipEntity.getUserId().equals(loggedUserId))
                 .map(friendshipEntity -> {
                     if (!friendshipEntity.getFriendId().equals(loggedUserId)) {
-                        return friendshipEntity.getFriendId();
+                        return new FriendShipDto(friendshipEntity.getFriendId(),friendshipEntity.getId());
                     } else {
-                        return friendshipEntity.getUserId();
+                        return new FriendShipDto(friendshipEntity.getFriendId(),friendshipEntity.getId());
                     }
                 })
                 .collectList(); // Collect list asynchronously without blocking

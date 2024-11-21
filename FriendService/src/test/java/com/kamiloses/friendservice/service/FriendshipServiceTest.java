@@ -1,5 +1,6 @@
 package com.kamiloses.friendservice.service;
 
+import com.kamiloses.friendservice.dto.FriendShipDto;
 import com.kamiloses.friendservice.entity.FriendshipEntity;
 import com.kamiloses.friendservice.repository.FriendshipRepository;
 import org.junit.jupiter.api.Assertions;
@@ -39,7 +40,7 @@ class FriendshipServiceTest {
 
     @Test
     void should_check_getYourFriendsIds_method() {
-        List<String> yourFriendsId = friendshipService.getYourFriendsId(Flux.fromIterable(friendshipEntities), "1").block();
+        List<FriendShipDto> yourFriendsId = friendshipService.getYourFriendsId(Flux.fromIterable(friendshipEntities), "1").block();
 
 
         Assertions.assertEquals(List.of("2","2","3"),yourFriendsId);
@@ -49,7 +50,7 @@ class FriendshipServiceTest {
     }
     @Test
     void should_check_getYourFriendsIds_method_Return_NUll() {
-        List<String> yourFriendsId = friendshipService.getYourFriendsId(Flux.fromIterable(friendshipEntities), "10").block();
+        List<FriendShipDto> yourFriendsId = friendshipService.getYourFriendsId(Flux.fromIterable(friendshipEntities), "10").block();
 
 
         Assertions.assertEquals(List.of(),yourFriendsId);

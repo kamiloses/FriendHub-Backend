@@ -1,8 +1,9 @@
-package com.kamiloses.friendservice.dto;
+package com.kamiloses.userservice.rabbit;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
 @AllArgsConstructor
 @Data
 @NoArgsConstructor
