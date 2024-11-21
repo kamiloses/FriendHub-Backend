@@ -46,7 +46,7 @@ public class PostController {
 
     @GetMapping
     public Flux<PostDto> getPostsRelatedWithUser() {
-        return postService.getPostsRelatedWithUser("marcin");
+        return postService.getPostsRelatedWithUser("test");
 
 
     }
