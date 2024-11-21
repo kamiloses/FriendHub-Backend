@@ -1,6 +1,7 @@
 package com.kamiloses.commentservice.service;
 
 import com.kamiloses.commentservice.dto.CommentDto;
+import com.kamiloses.commentservice.dto.PublishCommentDto;
 import com.kamiloses.commentservice.dto.UserDetailsDto;
 import com.kamiloses.commentservice.entity.CommentEntity;
 import com.kamiloses.commentservice.rabbit.RabbitCommentProducer;
@@ -46,7 +47,7 @@ return         commentRepository.findCommentEntitiesByPostId(postId).map(comment
 }
 
 
-    public void publishPost(CommentDto commentDto) {
+    public void publishPost(PublishCommentDto commentDto) {
         CommentEntity commentEntity = new CommentEntity();
         commentEntity.setContent(commentDto.getContent());
         commentEntity.setCreatedAt(commentDto.getCreatedAt());

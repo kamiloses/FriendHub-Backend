@@ -1,6 +1,5 @@
 package com.kamiloses.postservice.controller;
 
-import com.kamiloses.postservice.handler.PostHandler;
 import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.reactive.function.server.RouterFunction;

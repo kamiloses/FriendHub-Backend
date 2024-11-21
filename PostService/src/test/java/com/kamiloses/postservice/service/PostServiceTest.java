@@ -55,7 +55,7 @@ class PostServiceTest {
         doReturn(userDetails).when(rabbitPostProducer).askForUserDetails("");
         doReturn(Mono.just(postEntity)).when(postRepository).save(any(PostEntity.class));
 
-        Mono<PostEntity> result = postService.createPost(postDto);
+        Mono<PostEntity> result = postService.createPost(postDto,userDetails.getUsername());
 
         StepVerifier.create(result).expectNextMatches(
                 savedPost -> savedPost.getUserId().equals(userDetails.getId())

@@ -13,6 +13,7 @@ import reactor.core.publisher.Mono;
 
 @RestController
 @RequestMapping("/api")
+@CrossOrigin(origins = "http://localhost:4200", allowedHeaders = "*", methods = {RequestMethod.GET, RequestMethod.POST})
 public class AuthController {
 
 
@@ -23,17 +24,7 @@ private JWTUtil jwtUtil;
         this.passwordEncoder = passwordEncoder;
         this.jwtUtil = jwtUtil;
     }
-
-    @GetMapping("/test")
-    public Mono<String> a(){
-
-        return Mono.just("test");
-    }
-
-
-
-
-    @PostMapping("/loginJwt")
+    @PostMapping("/login")
     public Mono<ResponseEntity<AuthResponse>> login(@RequestBody LoginDetails loginDetails) {
         return WebClient.builder().baseUrl("http://localhost:8081")
                 .build().get()

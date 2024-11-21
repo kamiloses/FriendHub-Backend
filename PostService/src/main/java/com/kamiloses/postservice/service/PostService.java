@@ -1,5 +1,6 @@
 package com.kamiloses.postservice.service;
 
+import com.kamiloses.postservice.dto.CreatePostDto;
 import com.kamiloses.postservice.dto.PostDto;
 import com.kamiloses.postservice.dto.UserDetailsDto;
 import com.kamiloses.postservice.entity.PostEntity;
@@ -11,6 +12,7 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.time.LocalDateTime;
+import java.util.Date;
 
 @Service
 @Import(RabbitPostProducer.class)
@@ -30,13 +32,14 @@ public class PostService {
 
 
 
-    public Mono<PostEntity> createPost(PostDto postDto) {
-        UserDetailsDto userDetails = rabbitPostProducer.askForUserDetails("Joe");
-        PostEntity postEntity = new PostEntity();
-        postEntity.setUserId(userDetails.getId());
-        postEntity.setContent(postDto.getContent());
-        postEntity.setCreatedAt(LocalDateTime.now());
-        return postRepository.save(postEntity);
+    public Mono<PostEntity> createPost(CreatePostDto post,String username) {
+        UserDetailsDto userDetails = rabbitPostProducer.askForUserDetails(username);
+        PostEntity createdPost = PostEntity.builder()
+                .userId(userDetails.getId())
+                .content(post.getContent())
+                .createdAt(LocalDateTime.now())
+                .build();
+        return postRepository.save(createdPost);
     }
 
 
@@ -67,10 +70,8 @@ public Mono<PostDto> getPostById(String id){
                          postDto.setCreatedAt(postEntity.getCreatedAt());
                          return postDto;
 
-                     });
+                     });}
 
-
-}
 
 
 

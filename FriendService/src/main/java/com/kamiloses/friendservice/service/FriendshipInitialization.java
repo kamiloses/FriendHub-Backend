@@ -18,10 +18,8 @@ public class FriendshipInitialization {
 
     @PostConstruct
     public void init() {
-        FriendshipEntity friendshipEntity1 = new FriendshipEntity("1","1","2",null,null,null);
-        FriendshipEntity friendshipEntity2 = new FriendshipEntity("2","2","1",null,null,null);
-        FriendshipEntity friendshipEntity3 = new FriendshipEntity("3","1","3",null,null,null);
-         friendshipRepository.saveAll(List.of(friendshipEntity1,friendshipEntity2,friendshipEntity3)).collectList().block();
+        FriendshipEntity friendshipEntity1 = new FriendshipEntity("1","673e829b7cbf3a6de6551280","673e82ab7cbf3a6de6551281",null,null,null);
+         friendshipRepository.saveAll(List.of(friendshipEntity1)).collectList().block();
 
     }
 

@@ -22,8 +22,8 @@ public class FriendshipService {
     }
 
     public Flux<UserDetailsDto> getAllUserFriends(String loggedUserId) {
-        Flux<FriendshipEntity> friendshipEntitiesByUserIdOrFriendId = friendshipRepository.getFriendshipEntitiesByUserIdOrFriendId("1", "1");
         UserDetailsDto userDetailsDto = rabbitFriendshipProducer.askForUserDetails(loggedUserId);
+        Flux<FriendshipEntity> friendshipEntitiesByUserIdOrFriendId = friendshipRepository.getFriendshipEntitiesByUserIdOrFriendId(userDetailsDto.getId(), userDetailsDto.getId());
         return getYourFriendsId(friendshipEntitiesByUserIdOrFriendId,userDetailsDto.getId())
                 .flatMapMany(yourFriendsId -> Flux.fromIterable(rabbitFriendshipProducer.askForFriendsDetails(yourFriendsId)));
     }

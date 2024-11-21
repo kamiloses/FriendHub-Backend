@@ -31,13 +31,13 @@ public class SecurityConfig {
 
         return http.csrf(ServerHttpSecurity.CsrfSpec::disable)
                 .authorizeExchange(exchange -> exchange
-                        .pathMatchers("/api/user/signup", "/api/loginJwt").permitAll()
+                        .pathMatchers("/api/user/signup", "/api/login").permitAll()
                         .anyExchange().authenticated()).authenticationManager(authenticationManager)
                 .addFilterAt(authenticationWebFilter, SecurityWebFiltersOrder.AUTHENTICATION)
                 .build();
 
 
-    }
+    }//todo zostaw potym tylko rejestracje i login na permitAll
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();

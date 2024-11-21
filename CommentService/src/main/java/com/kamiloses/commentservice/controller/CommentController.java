@@ -23,13 +23,15 @@ public Flux<CommentDto> findCommentsRelatedWithPost(@PathVariable(name = "id") S
     return commentService.findCommentsRelatedWithPost(postId);
 }
 
-    @PostMapping
-    public void publishComments(@RequestBody CommentDto commentDto ) {
-      commentService.publishPost(commentDto);
+//    @PostMapping
+//    public void publishComments(@RequestBody CommentDto commentDto ) {
+//      commentService.publishComment(commentDto);
+//
 
 
 
-}
+
+
 
 
 

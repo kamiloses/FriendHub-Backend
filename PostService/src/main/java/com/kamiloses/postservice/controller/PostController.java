@@ -1,5 +1,6 @@
 package com.kamiloses.postservice.controller;
 
+import com.kamiloses.postservice.dto.CreatePostDto;
 import com.kamiloses.postservice.dto.PostDto;
 import com.kamiloses.postservice.dto.UserDetailsDto;
 import com.kamiloses.postservice.entity.PostEntity;
@@ -49,9 +50,9 @@ public class PostController {
 
 
     }
-    @PostMapping
-       public void savePosts(@RequestBody PostDto postDto){
-         postService.createPost(postDto).subscribe();
+    @PostMapping("/{username}")
+       public void createPost(@RequestBody CreatePostDto postDto,@PathVariable String username){
+         postService.createPost(postDto,username).subscribe();
 
     }
 
@@ -59,6 +60,9 @@ public class PostController {
     public Mono<PostDto> getPostById(@PathVariable String id) {
     return postService.getPostById(id);
     }
+
+
+
 
 
 }
