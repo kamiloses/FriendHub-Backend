@@ -20,10 +20,12 @@ private MessageRepository messageRepository;
     @PostConstruct
     public void init() {
      if (messageRepository.findAll().collectList().block().size()==0){
-         MessageEntity messageEntity1 = new MessageEntity("1","1","kamil","Jan","hej",new Date(),false);
-         MessageEntity messageEntity2 = new MessageEntity("2","1","Jan","kamil","cześć",new Date(),false);
+         MessageEntity messageEntity1 = new MessageEntity("1","1","kamiloses","kamiloses2","hej",new Date(),false);
+         MessageEntity messageEntity2 = new MessageEntity("2","2","kamiloses2","kamiloses","cześć",new Date(),false);
+         MessageEntity messageEntity3 = new MessageEntity("3","3","kamiloses3","kamiloses","cześć",new Date(),false);
+         MessageEntity messageEntity4 = new MessageEntity("4","1","kamiloses2","kamiloses","cześć",new Date(),false);
 
-          messageRepository.saveAll(List.of(messageEntity1,messageEntity2)).collectList().subscribe();
+          messageRepository.saveAll(List.of(messageEntity1,messageEntity2,messageEntity3,messageEntity4)).collectList().subscribe();
      }
 
 

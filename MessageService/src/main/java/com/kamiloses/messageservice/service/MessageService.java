@@ -4,6 +4,7 @@ import com.kamiloses.messageservice.dto.MessageDto;
 import com.kamiloses.messageservice.dto.UserDetailsDto;
 import com.kamiloses.messageservice.repository.MessageRepository;
 import org.springframework.stereotype.Service;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.util.List;
@@ -32,6 +33,25 @@ public class MessageService {
         }).collectList();
 
     }
+
+
+    public Flux<MessageDto> showMessagesRelatedWithUser(String username) {
+        return messageRepository.findBySenderUsernameOrRecipientUsername(username, username)
+                .map(messageEntity -> {
+                    UserDetailsDto sender = rabbitMessageProducer.askForUserDetails(messageEntity.getSenderUsername());
+                    UserDetailsDto recipient = rabbitMessageProducer.askForUserDetails(messageEntity.getRecipientUsername());
+                    MessageDto messageDto = new MessageDto();
+                    messageDto.setChatId(messageEntity.getChatId());
+                    messageDto.setSender(sender);
+                    messageDto.setRecipient(recipient);
+                    messageDto.setContent(messageEntity.getContent());
+                    messageDto.setTimestamp(messageEntity.getTimestamp());
+                    return messageDto;
+
+
+                });}
+
+
 
 
 }
