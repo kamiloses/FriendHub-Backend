@@ -39,7 +39,7 @@ private JWTUtil jwtUtil;
 
                         return Mono.error(new BadCredentialsException("Invalid username or password"));
                     }
-                })//todo usuń to niżej (chyba)
+                })
                 .switchIfEmpty(Mono.error(new BadCredentialsException("Invalid username or password")));
     }
 

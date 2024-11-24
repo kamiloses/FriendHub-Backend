@@ -20,7 +20,6 @@ public class RabbitAuthProducer {
 
     public UserDetailsDto askForUserDetails(String username) {
         String userDetailsAsString = (String) rabbitTemplate.convertSendAndReceive(RabbitConfig.Exchange_To_User_Service, RabbitConfig.ROUTING_KEY_, username);
-        System.err.println(userDetailsAsString);
         try {
             ObjectMapper objectMapper = new ObjectMapper();
             return objectMapper.readValue(userDetailsAsString, UserDetailsDto.class);

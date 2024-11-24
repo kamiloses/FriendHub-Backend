@@ -18,7 +18,7 @@ public class UserDetailsDto {
     private String password;
 
     private String role = "ROLE_USER";
-//todo uśuń potem od tąd i chyba jeszcze id
+
     private String firstName;
     private String lastName;
 

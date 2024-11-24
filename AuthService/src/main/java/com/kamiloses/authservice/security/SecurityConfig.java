@@ -37,7 +37,7 @@ public class SecurityConfig {
                 .build();
 
 
-    }//todo zostaw potym tylko rejestracje i login na permitAll
+    }
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();

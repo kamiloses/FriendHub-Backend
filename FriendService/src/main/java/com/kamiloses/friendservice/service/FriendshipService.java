@@ -42,6 +42,6 @@ public class FriendshipService {
                         return new FriendShipDto(friendshipEntity.getFriendId(),friendshipEntity.getId());
                     }
                 })
-                .collectList(); // Collect list asynchronously without blocking
+                .collectList();
     }
-    }  //this method must be written synchronously because rabbit must get all data at one time(I just mean in that way)
+    }

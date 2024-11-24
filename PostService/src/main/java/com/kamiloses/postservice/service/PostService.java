@@ -20,19 +20,14 @@ public class PostService {
 
     private final PostRepository postRepository;
     private final RabbitPostProducer rabbitPostProducer;
-    private final MapperService mapperService;
 
 
-    public PostService(PostRepository postRepository, RabbitPostProducer rabbitPostProducer, MapperService mapperService) {
+    public PostService(PostRepository postRepository, RabbitPostProducer rabbitPostProducer) {
         this.postRepository = postRepository;
         this.rabbitPostProducer = rabbitPostProducer;
-        this.mapperService = mapperService;
     }
 
-
-
-
-    public Mono<PostEntity> createPost(CreatePostDto post,String username) {
+    public Mono<PostEntity> createPost(CreatePostDto post, String username) {
         UserDetailsDto userDetails = rabbitPostProducer.askForUserDetails(username);
         PostEntity createdPost = PostEntity.builder()
                 .userId(userDetails.getId())
@@ -75,6 +70,27 @@ public Mono<PostDto> getPostById(String id){
 
 
 
+
+
+
+
+
+    public Flux<PostDto> getPosts() {
+        return postRepository.findAll().map(postEntity -> {
+            UserDetailsDto userDetailsDto = new UserDetailsDto();
+             userDetailsDto.setId(postEntity.getUserId());
+             userDetailsDto.setFirstName("Kamil");
+             userDetailsDto.setLastName("Nowak");
+
+            PostDto postDto = new PostDto();
+            postDto.setId(postEntity.getId());
+            postDto.setUser(userDetailsDto);
+            postDto.setContent(postEntity.getContent());
+         postDto.setCreatedAt(postEntity.getCreatedAt());
+        return postDto;});
+
+
+    }
 }
 
 

@@ -18,7 +18,7 @@ public class FriendshipInitialization {
 
     @PostConstruct
     public void init() {
-        FriendshipEntity friendshipEntity1 = new FriendshipEntity("1","673e829b7cbf3a6de6551280","673e82ab7cbf3a6de6551281",null,null,null);
+        FriendshipEntity friendshipEntity1 = new FriendshipEntity("1","67428dabc29ece16da45e9f7","67428f82c29ece16da45e9f8",null,null,null);
          friendshipRepository.saveAll(List.of(friendshipEntity1)).collectList().block();
 
     }
