@@ -1,5 +1,10 @@
 package com.kamiloses.userservice.controller;
+import com.kamiloses.userservice.dto.RegistrationDto;
 import com.kamiloses.userservice.service.UserService;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
@@ -8,39 +13,39 @@ import org.springframework.boot.test.autoconfigure.web.reactive.AutoConfigureWeb
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.reactive.server.WebTestClient;
+import org.testcontainers.containers.RabbitMQContainer;
+
+import java.time.Duration;
 
 
 @SpringBootTest
 @ActiveProfiles("test")
 @AutoConfigureWebTestClient
 class UserControllerTest {
-@Autowired
+
+    @Autowired
  private WebTestClient webTestClient;
 
-    @Mock
-    private RabbitTemplate rabbitTemplate;
-    @InjectMocks
-    private UserService userService;}
-
-//INITIALLY WANTED to test the method via testontainers but i can't configure configuration for rabbitListenr
-// which is in different module
-
+    @BeforeEach
+    public void setUp() {
+        webTestClient = webTestClient.mutate()
+                .responseTimeout(Duration.ofMillis(30000))
+                .build();
+    }
 
 
-//    @Test
-//    void shouldCheckIfRegistrationProcessingWell() {
-//        UserDetailsDto userDetailsDto = new UserDetailsDto();
-//        RegistrationDto registrationDto = new RegistrationDto("Abcd", "123", "Jan", "Nowak");
-//        UserDetailsDto.builder().username(registrationDto.getUsername()).password(registrationDto.getPassword()).firstName(registrationDto.getFirstName()).lastName(registrationDto.getLastName()).build();
-//
-//        doReturn(userDetailsDto).when(rabbitTemplate).convertSendAndReceive(anyString(), anyString(), anyString());
-//
-//
-//
-//        webTestClient.post().uri("api/user/signup").body(registrationDto, RegistrationDto.class).exchange().expectStatus().isOk()
-//                .expectBody();
-//
-//    }
-//
-//
-//    }
+
+    @Test
+    void should_Check_If_Registration_Works() {
+        RegistrationDto registrationDto = new RegistrationDto("kamiloses", "123", "Jan", "Nowak");
+
+
+
+
+
+        webTestClient.post().uri("/api/user/signup").bodyValue(registrationDto).exchange().expectStatus().isOk()
+                .expectBody(String.class).isEqualTo("User signed up successfully");
+    }
+
+
+    }

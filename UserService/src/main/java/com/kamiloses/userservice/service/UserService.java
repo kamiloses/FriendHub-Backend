@@ -33,7 +33,8 @@ private final RabbitTemplate rabbitTemplate;
     public Mono<UserEntity> save(RegistrationDto user) {
         String encodedPassword = (String) rabbitTemplate.convertSendAndReceive(RabbitConfig.Exchange_Auth, RabbitConfig.ROUTING_KEY_Auth, user.getPassword());
         UserEntity userEntity = registrationDtoToUserEntity(user, encodedPassword);
-        return userRepository.save(userEntity);
+       return Mono.just(userEntity);
+        //        return userRepository.save(userEntity);
     }
 
 private UserEntity registrationDtoToUserEntity(RegistrationDto user,String encodedPassword){
