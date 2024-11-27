@@ -23,12 +23,6 @@ public class PostController {
         this.postService = postService;
     }
 
-//    @GetMapping
-//    public Flux<PostDto> getPostsRelatedWithUser() {
-//        return postService.getPostsRelatedWithUser("test");
-//
-//
-//    }
     @GetMapping
     public  Flux<PostDto>getAllPosts(){
         return postService.getPosts();
@@ -37,8 +31,8 @@ public class PostController {
 
 
     @PostMapping("/{username}")
-       public void createPost(@RequestBody CreatePostDto postDto,@PathVariable String username){
-         postService.createPost(postDto,username).subscribe();
+       public Mono<Void> createPost(@RequestBody CreatePostDto postDto,@PathVariable String username){
+      return    postService.createPost(postDto,username).then();
 
     }
 

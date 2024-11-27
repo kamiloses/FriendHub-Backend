@@ -15,7 +15,7 @@ public class UserEntity {
     @Id
     private String id;
 
-    @Indexed(unique = true)
+
     private String username;
 
     private String password;

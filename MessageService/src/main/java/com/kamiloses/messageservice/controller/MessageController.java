@@ -35,6 +35,8 @@ private final MessageService messageService;
 public Flux<MessageDto> showMessagesRelatedWithUser(@PathVariable(name = "username") String username){
         return messageService.showMessagesRelatedWithUser(username);
 }
+
+
 @PostMapping()
     public void sendMessage(@RequestBody MessageDto messageDto) {
     MessageEntity messageEntity = new MessageEntity();
@@ -46,6 +48,6 @@ public Flux<MessageDto> showMessagesRelatedWithUser(@PathVariable(name = "userna
 
 
 }
-//todo zamień potem void
+//todo zamień potem void i w serwis wrzuć
 
 }

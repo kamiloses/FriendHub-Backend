@@ -9,7 +9,7 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 public class RabbitConfig {
-      //todo zmień nazwy kolejek potem
+      //todo zmień nazwy kolejek potem, reszty exchange i routing key
     public static final String Queue_To_User_Service = "requestToUserService";
     public static final String Exchange_To_User_Service = "exchangeToUserService";
     public static final String ROUTING_KEY_ = "userService";

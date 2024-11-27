@@ -1,65 +1,80 @@
 package com.kamiloses.postservice.service;
 
-import com.kamiloses.postservice.dto.PostDto;
 import com.kamiloses.postservice.dto.UserDetailsDto;
 import com.kamiloses.postservice.entity.PostEntity;
 import com.kamiloses.postservice.rabbit.RabbitPostProducer;
 import com.kamiloses.postservice.repository.PostRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.context.annotation.Import;
-import reactor.core.publisher.Mono;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.context.ActiveProfiles;
 import reactor.test.StepVerifier;
 
-import static org.mockito.ArgumentMatchers.any;
+import java.util.List;
+
+import static org.junit.Assert.assertEquals;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doReturn;
-import static reactor.core.publisher.Mono.when;
 
 @SpringBootTest
-@Import({RabbitPostProducer.class})
+@ActiveProfiles("test")
 class PostServiceTest {
 
-    @Mock
+    @MockBean
     private RabbitPostProducer rabbitPostProducer;
 
-    @Mock
+    @Autowired
     private PostRepository postRepository;
 
-    @InjectMocks
-    private PostService postService;
+    @Autowired
+    PostService postService;
 
-    private PostDto postDto;
-    private UserDetailsDto userDetails;
-    private PostEntity postEntity;
+
+    private UserDetailsDto user1;
+    private UserDetailsDto user2;
+
+
 
     @BeforeEach
     void setUp() {
-        postDto = new PostDto();
-        postDto.setContent("Test content");
+        postRepository.deleteAll().block();
+        user1 = UserDetailsDto.builder().id("1").username("kamiloses1").build();
+        user2 = UserDetailsDto.builder().id("2").username("kamiloses2").build();
 
-        userDetails = new UserDetailsDto();
-        userDetails.setId("1");
-        userDetails.setUsername("Jan");
 
-        postEntity = new PostEntity();
-        postEntity.setId("1");
-        postEntity.setContent("Test content");
-        postEntity.setUserId("1");
-    }//todo zamień potem te mocki na normalne JUnit
+        PostEntity postEntity1 = new PostEntity();
+        postEntity1.setUserId(user1.getId());
+
+        PostEntity postEntity2 = new PostEntity();
+        postEntity2.setUserId(user1.getId());
+
+        PostEntity postEntity3 = new PostEntity();
+        postEntity3.setUserId(user2.getId());
+
+        postRepository.saveAll(List.of(postEntity1, postEntity2, postEntity3)).collectList().block();
+
+    }
 
     @Test
-    void test_create_post() {
-        doReturn(userDetails).when(rabbitPostProducer).askForUserDetails("");
-        doReturn(Mono.just(postEntity)).when(postRepository).save(any(PostEntity.class));
+    void should_check_if_getPostsRelatedWithUser_works() {
+             doReturn(user1).when(rabbitPostProducer).askForUserDetails(anyString());
 
-        Mono<PostEntity> result = postService.createPost(postDto,userDetails.getUsername());
+        assertEquals(2, postService.getPostsRelatedWithUser("").collectList().block().size());
 
-        StepVerifier.create(result).expectNextMatches(
-                savedPost -> savedPost.getUserId().equals(userDetails.getId())
-                        && savedPost.getContent().equals(postEntity.getContent())).verifyComplete();
+         Mockito.reset(rabbitPostProducer);
+
+
+        doReturn(user2).when(rabbitPostProducer).askForUserDetails(anyString());
+
+        assertEquals(1, postService.getPostsRelatedWithUser("").collectList().block().size());
+
+
+//        StepVerifier.create(postService.getPostsRelatedWithUser("").collectList())
+//                .expectNextMatches(post)
+
 
     }
 }
