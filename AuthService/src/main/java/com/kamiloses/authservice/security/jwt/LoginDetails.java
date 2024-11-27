@@ -1,8 +1,9 @@
 package com.kamiloses.authservice.security.jwt;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 
-@Data
+@Data @AllArgsConstructor
 public class LoginDetails {
 
     private String username;
