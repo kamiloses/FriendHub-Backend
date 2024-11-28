@@ -37,6 +37,9 @@ public Flux<MessageDto> showMessagesRelatedWithUser(@PathVariable(name = "userna
 }
 
 
+
+
+// nie działa jeszcze
 @PostMapping()
     public void sendMessage(@RequestBody MessageDto messageDto) {
     MessageEntity messageEntity = new MessageEntity();

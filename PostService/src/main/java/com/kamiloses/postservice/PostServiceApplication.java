@@ -8,7 +8,6 @@ import org.springframework.context.annotation.Import;
 
 @SpringBootApplication
 @Import(RabbitConfig.class)
-@EnableDiscoveryClient
 public class PostServiceApplication {
 
     public static void main(String[] args) {

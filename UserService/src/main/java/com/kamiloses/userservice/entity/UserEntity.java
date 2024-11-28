@@ -29,7 +29,7 @@ public class UserEntity {
 
     private String profileImageUrl;
 
-
+    //todo usuń potem te niżej
     private Set<String> tweetsIds;
 
     private Set<String> followersIds;

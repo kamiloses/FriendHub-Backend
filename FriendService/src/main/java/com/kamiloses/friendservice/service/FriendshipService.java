@@ -29,7 +29,7 @@ public class FriendshipService {
     }
 
 
- //todo naprawić tą metoed poniżej bo ona jest blędna
+
 
     public Mono<List<FriendShipDto>> getYourFriendsId(Flux<FriendshipEntity> friendshipEntities, String loggedUserId) {
         return friendshipEntities.filter(friendshipEntity ->

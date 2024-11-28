@@ -37,7 +37,7 @@ class FriendshipServiceTest {
         friendshipEntities.addAll(List.of(friendshipEntity1, friendshipEntity2, friendshipEntity3));
     }
 
-
+    //todo teraz przesyłam już obiekt wieć zmienić musze liste.
     @Test
     void should_check_getYourFriendsIds_method() {
         List<FriendShipDto> yourFriendsId = friendshipService.getYourFriendsId(Flux.fromIterable(friendshipEntities), "1").block();

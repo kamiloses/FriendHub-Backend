@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
 
 public class PostDto {
 
-    //todo NArazie tak samo dto wygląda jak postEntity. potem zmienie
+    //todo NArazie tak samo dto wygląda jak postEntity. potem zmienić
     private String id;
 
     private UserDetailsDto user;

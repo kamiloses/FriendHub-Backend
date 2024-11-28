@@ -18,10 +18,11 @@ private UserService userService;
         this.userService = userService;
     }
 
+
+  //todo usuń potem tą metode żeby została tylko ta w authService
+
     @PostMapping("/login")
 public Mono<Boolean> areCredentialsValid(@RequestParam String username, @RequestParam String password) {
-
-
 return userService.existsByUsernameAndPassword(username,password);}
 
 
@@ -35,6 +36,9 @@ return userService.existsByUsernameAndPassword(username,password);}
         return userService.save(user)
                 .map(savedUser -> ResponseEntity.ok("User signed up successfully"));
     }
+
+
+
 
 
     @GetMapping("/{username}")

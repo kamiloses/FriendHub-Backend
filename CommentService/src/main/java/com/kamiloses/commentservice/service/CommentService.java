@@ -26,7 +26,7 @@ private final RabbitCommentProducer rabbitCommentProducer;
         UserDetailsDto userDetails = rabbitCommentProducer.askForUserDetails(postId);
 return         commentRepository.findCommentEntitiesByPostId(postId).map(commentEntity ->
             {
-                UserDetailsDto user = new UserDetailsDto("1", "john_doe", "password123", "john.doe@example.com", "John", "Doe", "Software developer and tech enthusiast.", "https://example.com/profile.jpg", Set.of("tweet1", "tweet2", "tweet3"), Set.of("user2", "user3"), Set.of("user4", "user5"));
+                UserDetailsDto user = new UserDetailsDto("1", "john", "password123", "john@gmail.com", "John", "test", "Software developer and tech enthusiast.", "https://example.com/profile.jpg", Set.of("tweet1", "tweet2", "tweet3"), Set.of("user2", "user3"), Set.of("user4", "user5"));
 
                 CommentDto commentDto = new CommentDto();
                 commentDto.setId(commentEntity.getId());
