@@ -2,7 +2,6 @@ package com.kamiloses.userservice.controller;
 
 import com.kamiloses.userservice.dto.RegistrationDto;
 import com.kamiloses.userservice.repository.UserRepository;
-import com.kamiloses.userservice.service.UserService;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.reactive.AutoConfigureWebTestClient;
@@ -15,13 +14,17 @@ import java.time.Duration;
 @SpringBootTest
 //@ActiveProfiles("test")
 @AutoConfigureWebTestClient
-class UserControllerTest {
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+class RegistrationTest {
 
     @Autowired
     private WebTestClient webTestClient;
     @Autowired
     private UserRepository userRepository;
     private RegistrationDto registrationDto;
+
+
+
 
 
     @BeforeEach
@@ -37,6 +40,7 @@ class UserControllerTest {
 
 
     @Test
+    @Order(1)
     void should_return_successful_signup() {
 
         userRepository.deleteAll().block();
@@ -46,6 +50,24 @@ class UserControllerTest {
         Assertions.assertEquals(1, userRepository.findAll().count().block());
 
     }
+
+    @Test
+    @Order(1)
+    void should_return_UsernameDoesExist(){
+
+        webTestClient.post().uri("/api/user/signup").bodyValue(registrationDto).exchange().expectStatus().isOk()
+                .expectBody(String.class).isEqualTo("User signed up successfully");
+
+        Assertions.assertEquals(1, userRepository.findAll().count().block());
+
+    }
+
+
+
+
+
+
+
 
     //todo dodaj potem drugi przypadek w sytuacji gdy sie nie zarejestrujemy .
 
