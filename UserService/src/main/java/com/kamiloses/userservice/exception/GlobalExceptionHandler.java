@@ -14,7 +14,7 @@ import java.util.stream.Collectors;
 public class GlobalExceptionHandler {
 
     @ExceptionHandler(WebExchangeBindException.class)
-    public ResponseEntity<List<String>> handleException(WebExchangeBindException e) {
+    public ResponseEntity<List<String>> handleRegistrationException(WebExchangeBindException e) {
         System.err.println("aaa");
         var errors = e.getBindingResult()
                 .getAllErrors()
@@ -23,4 +23,17 @@ public class GlobalExceptionHandler {
                 .collect(Collectors.toList());
         return ResponseEntity.badRequest().body(errors);
     }
+
+    @ExceptionHandler(UsernameAlreadyExistsException.class)
+    public ResponseEntity<List<String>> handleUsernameAlreadyExistsException(WebExchangeBindException e) {
+        System.err.println("aaa");
+        var errors = e.getBindingResult()
+                .getAllErrors()
+                .stream()
+                .map(DefaultMessageSourceResolvable::getDefaultMessage)
+                .collect(Collectors.toList());
+        return ResponseEntity.badRequest().body(errors);
+    }
+
+
 }
