@@ -1,5 +1,6 @@
 package com.kamiloses.userservice.dto;
 
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -13,22 +14,18 @@ import jakarta.validation.constraints.Size;
 @NoArgsConstructor
 public class RegistrationDto {
 
-    @NotBlank(message = "Username cannot be blank.")
-    @Pattern(regexp = "^[a-zA-Z0-9_]+$", message = "Username is invalid")
-    @UniqueUsername
+    @Pattern(regexp = "^(?!\\s*$)[a-zA-Z0-9_]+$", message = "Username cannot be blank and must be valid.")
     private String username;
 
-    @NotBlank(message = "Password cannot be blank.")
-    @Pattern(regexp = "^.{6,}$", message = "Password is invalid")
+    @Pattern(regexp = "^(?!\\s*$).{6,}$", message = "Password cannot be blank and must be at least 6 characters long.")
     private String password;
 
-    @NotBlank(message = "First Name cannot be blank.")
-    @Pattern(regexp = "^[a-zA-Z]+$", message = "First Name is invalid")
+    @Pattern(regexp = "^(?!\\s*$)[a-zA-Z]+$", message = "First Name cannot be blank and must only contain letters.")
     private String firstName;
 
-    @NotBlank(message = "Last Name cannot be blank.")
-    @Pattern(regexp = "^[a-zA-Z]+$", message = "Last Name is invalid")
+    @Pattern(regexp = "^(?!\\s*$)[a-zA-Z]+$", message = "Last Name cannot be blank and must only contain letters.")
     private String lastName;
+
 }
 
 

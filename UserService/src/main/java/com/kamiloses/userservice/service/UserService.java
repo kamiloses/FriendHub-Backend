@@ -36,6 +36,7 @@ private final RabbitTemplate rabbitTemplate;
                 return userRepository.save(userEntity);
     }
 
+
 private UserEntity registrationDtoToUserEntity(RegistrationDto user,String encodedPassword){
 
     UserEntity userEntity = new UserEntity();

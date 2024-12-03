@@ -52,13 +52,13 @@ class RegistrationTest {
     }
 
     @Test
-    @Order(1)
+    @Order(2)
     void should_return_UsernameDoesExist(){
 
         webTestClient.post().uri("/api/user/signup").bodyValue(registrationDto).exchange().expectStatus().isOk()
                 .expectBody(String.class).isEqualTo("User signed up successfully");
 
-        Assertions.assertEquals(1, userRepository.findAll().count().block());
+        Assertions.assertEquals(2, userRepository.findAll().count().block());
 
     }
 

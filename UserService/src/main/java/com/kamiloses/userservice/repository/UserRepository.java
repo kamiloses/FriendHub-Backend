@@ -15,5 +15,5 @@ Mono<Boolean> existsByUsernameAndPassword(String username,String password);
 
 Flux<UserEntity> findUserEntitiesByIdIn(List<String> userIds);
 
-    Mono<Boolean> existsByUsername(String username);
+
 }
