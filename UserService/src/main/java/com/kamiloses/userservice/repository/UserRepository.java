@@ -9,7 +9,7 @@ import java.util.List;
 
 public interface UserRepository extends ReactiveMongoRepository<UserEntity,String> {
 
-Mono<UserEntity> findByUsername(String username);
+Mono<UserEntity> findByUsernameOrId(String username,String id);
 
 Mono<Boolean> existsByUsernameAndPassword(String username,String password);
 

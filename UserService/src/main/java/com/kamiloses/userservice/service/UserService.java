@@ -56,6 +56,6 @@ public class UserService {
 
     //todo zmień nazwe potem tego registration albo utwórz nowe dto
     public Mono<LoginDetails> findByUsername(String username) {
-        return userRepository.findByUsername(username).map(userEntity -> new LoginDetails(userEntity.getUsername(), userEntity.getPassword()));
+        return userRepository.findByUsernameOrId(username,username).map(userEntity -> new LoginDetails(userEntity.getUsername(), userEntity.getPassword()));
     }
 }

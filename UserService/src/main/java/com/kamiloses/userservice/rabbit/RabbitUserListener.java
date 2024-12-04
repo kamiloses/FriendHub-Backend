@@ -25,7 +25,7 @@ public class RabbitUserListener {
 
     @RabbitListener(queues = RabbitConfig.Queue_To_User_Service)
     public String receive_And_Resend_UserDetails(String username) throws JsonProcessingException {
-        UserEntity userEntity = userRepository.findByUsername(username).block();
+        UserEntity userEntity = userRepository.findByUsernameOrId(username,username).block();
         UserDetailsDto userDetailsDto = new UserDetailsDto();
         userDetailsDto.setId(userEntity.getId());
         userDetailsDto.setUsername(userEntity.getUsername());
@@ -102,4 +102,17 @@ public class RabbitUserListener {
                 }).collectList().block();
     return     convertListOfUserDetailsToString(userDetails);
     }
+
+
+
+
+
+
+
+
+
+
+
+
+
 }
