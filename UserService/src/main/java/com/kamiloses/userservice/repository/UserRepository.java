@@ -17,5 +17,6 @@ Flux<UserEntity> findUserEntitiesByIdIn(List<String> userIds);
 
 
     Mono<Boolean> existsByUsername(String username);
+    Flux<UserEntity> findByUsernameContaining(String username);
 }
 

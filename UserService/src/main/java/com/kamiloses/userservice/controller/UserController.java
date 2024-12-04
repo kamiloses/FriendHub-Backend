@@ -9,6 +9,9 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Mono;
 
+import java.util.HashMap;
+import java.util.Map;
+
 @RestController
 @Validated //todo usuń potem
 @RequestMapping("/api/user")
@@ -34,14 +37,14 @@ return userService.existsByUsernameAndPassword(username,password);}
 
 
     @PostMapping("/signup")
-    public Mono<ResponseEntity<String>> signup(@RequestBody @Valid RegistrationDto user) {
-
-
-
+    public Mono<ResponseEntity<Map<String, String>>> signup(@RequestBody @Valid RegistrationDto user) {
         return userService.save(user)
-                .map(savedUser -> ResponseEntity.ok("User signed up successfully"));
+                .map(savedUser -> {
+                    Map<String, String> response = new HashMap<>();
+                    response.put("message", "User signed up successfully");
+                    return ResponseEntity.ok(response);
+                });
     }
-
 
 
 

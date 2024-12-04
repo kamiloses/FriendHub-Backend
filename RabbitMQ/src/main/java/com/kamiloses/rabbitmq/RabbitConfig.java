@@ -26,6 +26,11 @@ public class RabbitConfig {
     public static final String Queue_Auth = "auth";
 
 
+    public static final String Queue_Searched_People = "searchedPeople";
+    public static final String Exchange_searchedPeople = "exchangeSearchedPeople";
+    public static final String ROUTING_KEY_searchedPeople = "searchedPeople";
+
+
 
     @Bean
     public Queue queue_To_User_Service() {
@@ -43,6 +48,12 @@ public class RabbitConfig {
     }
 
 
+    @Bean
+    public Queue searchedPeopleQueue() {
+        return new Queue(Queue_Searched_People);
+    }
+
+
 
     @Bean
     public DirectExchange exchange_userCredentials() {
@@ -54,6 +65,12 @@ public class RabbitConfig {
     public DirectExchange exchange_Auth() {
         return new DirectExchange(Exchange_Auth);
     }
+
+    @Bean
+    public DirectExchange exchange_searchedPeople() {
+        return new DirectExchange(Exchange_searchedPeople);
+    }
+
 
 
 
@@ -69,6 +86,10 @@ public class RabbitConfig {
     @Bean
     public Binding AuthExchangeWithQueue() {
         return BindingBuilder.bind(authQueue()).to(exchange_Auth()).with(ROUTING_KEY_Auth);
+    }
+    @Bean
+    public Binding SearchedPeopleExchangeWithQueue() {
+        return BindingBuilder.bind(searchedPeopleQueue()).to(exchange_searchedPeople()).with(ROUTING_KEY_searchedPeople);
     }
 
 

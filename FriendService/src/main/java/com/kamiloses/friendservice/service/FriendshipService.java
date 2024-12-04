@@ -1,6 +1,7 @@
 package com.kamiloses.friendservice.service;
 
 import com.kamiloses.friendservice.dto.FriendShipDto;
+import com.kamiloses.friendservice.dto.SearchedPeopleDto;
 import com.kamiloses.friendservice.dto.UserDetailsDto;
 import com.kamiloses.friendservice.entity.FriendshipEntity;
 import com.kamiloses.friendservice.repository.FriendshipRepository;
@@ -44,4 +45,24 @@ public class FriendshipService {
                 })
                 .collectList();
     }
+
+    public List<SearchedPeopleDto> getPeopleWithSimilarUsername(String username) {
+
+        List<UserDetailsDto> searchedPeople = rabbitFriendshipProducer.getSimilarPeopleNameToUsername(username);
+     return    searchedPeople.stream().map(userDetails -> {
+            SearchedPeopleDto searchedPeopleDto = new SearchedPeopleDto();
+            searchedPeopleDto.setFirstName(userDetails.getFirstName());
+            searchedPeopleDto.setLastName(userDetails.getLastName());
+            searchedPeopleDto.setId(userDetails.getId());
+            searchedPeopleDto.setUsername(userDetails.getUsername());
+            searchedPeopleDto.setBio(userDetails.getBio());
+            searchedPeopleDto.setIsYourFriend(Boolean.FALSE);
+            return searchedPeopleDto;
+        }).toList();
+
+
+    }
+
+
+
     }

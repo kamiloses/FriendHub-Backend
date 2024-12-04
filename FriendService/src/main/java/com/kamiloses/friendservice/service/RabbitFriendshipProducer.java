@@ -22,8 +22,6 @@ public class RabbitFriendshipProducer {
     }
 
 
-
-
     public UserDetailsDto askForUserDetails(String username) {
         String userDetailsAsString = (String) rabbitTemplate.convertSendAndReceive(RabbitConfig.Exchange_To_User_Service, RabbitConfig.ROUTING_KEY_, username);
         System.err.println(userDetailsAsString);
@@ -39,7 +37,6 @@ public class RabbitFriendshipProducer {
     }
 
 
-
     public List<UserDetailsDto> askForFriendsDetails(List<FriendShipDto> friendsId) {
 
 
@@ -52,25 +49,36 @@ public class RabbitFriendshipProducer {
     }
 
 
-    private String convertListOfFriendsIdToString(List<FriendShipDto> friendsId){
+    private String convertListOfFriendsIdToString(List<FriendShipDto> friendsId) {
         ObjectMapper objectMapper = new ObjectMapper();
         try {
-    return  objectMapper.writeValueAsString(friendsId);
+            return objectMapper.writeValueAsString(friendsId);
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }
     }
-     private List<UserDetailsDto> convertStringOfUserDetailsToList(String friendsId){
-         ObjectMapper objectMapper = new ObjectMapper();
-         try {
-        return      objectMapper.readValue(friendsId,  new TypeReference<List<UserDetailsDto>>() {}) ;
-         } catch (JsonProcessingException e) {
-             throw new RuntimeException(e);
-         }
+
+    private List<UserDetailsDto> convertStringOfUserDetailsToList(String friendsId) {
+        ObjectMapper objectMapper = new ObjectMapper();
+        try {
+            return objectMapper.readValue(friendsId, new TypeReference<List<UserDetailsDto>>() {
+            });
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
 
 
-     }
+    }
 
+    public List<UserDetailsDto> getSimilarPeopleNameToUsername(String username) {
+
+
+
+        String usersDetails = (String) rabbitTemplate.convertSendAndReceive(RabbitConfig.Exchange_searchedPeople, RabbitConfig.ROUTING_KEY_searchedPeople, username);
+        List<UserDetailsDto> userDetailsDtos = convertStringOfUserDetailsToList(usersDetails);
+
+
+        return userDetailsDtos;   }
 
 
 }
