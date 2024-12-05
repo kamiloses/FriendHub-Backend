@@ -2,9 +2,11 @@ package com.kamiloses.friendservice.controller;
 
 import com.kamiloses.friendservice.dto.SearchedPeopleDto;
 import com.kamiloses.friendservice.dto.UserDetailsDto;
+import com.kamiloses.friendservice.entity.FriendshipEntity;
 import com.kamiloses.friendservice.service.FriendshipService;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 import java.util.List;
 
@@ -29,10 +31,19 @@ public Flux<UserDetailsDto> getAllFriendsRelatedWithUser(@RequestParam(name = "u
 
             @GetMapping("/{username}")
             public List<SearchedPeopleDto> getPeopleByUsername(@PathVariable String username ){
+                String myUsername ="kamiloses";
 
-
-              return friendshipService.getPeopleWithSimilarUsername(username);
+              return friendshipService.getPeopleWithSimilarUsername(username,myUsername);
             }
+
+            @PostMapping()
+            public Mono<FriendshipEntity> addFriend(@RequestHeader String friendUsername, @RequestHeader String myUsername) {
+
+
+
+         return friendshipService.addToFriendList(friendUsername,myUsername); }
+
+
 
 
 
