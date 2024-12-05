@@ -12,7 +12,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/friends")
-@CrossOrigin(origins = "http://localhost:4200", allowedHeaders = "*", methods = {RequestMethod.GET, RequestMethod.POST})
+@CrossOrigin(origins = "http://localhost:4200", allowedHeaders = "*", methods = {RequestMethod.GET, RequestMethod.POST,RequestMethod.DELETE})
 public class FriendshipController {
 
 private final FriendshipService friendshipService;
@@ -24,24 +24,31 @@ private final FriendshipService friendshipService;
 
     @GetMapping
 public Flux<UserDetailsDto> getAllFriendsRelatedWithUser(@RequestParam(name = "username") String loggedUser) {
-
-
         return friendshipService.getAllUserFriends(loggedUser);
     }
 
+
+
+
+
+
+
             @GetMapping("/{username}")
-            public List<SearchedPeopleDto> getPeopleByUsername(@PathVariable String username ){
-                String myUsername ="kamiloses";
+            public List<SearchedPeopleDto> getPeopleByUsername(@PathVariable String username,@RequestHeader String myUsername ){
 
               return friendshipService.getPeopleWithSimilarUsername(username,myUsername);
             }
 
+
+
+
+
             @PostMapping()
-            public Mono<FriendshipEntity> addFriend(@RequestHeader String friendUsername, @RequestHeader String myUsername) {
+            public Mono<Void> addFriend(@RequestHeader String friendUsername, @RequestHeader String myUsername) {
 
 
 
-         return friendshipService.addToFriendList(friendUsername,myUsername); }
+         return friendshipService.addToFriendList(friendUsername,myUsername).then(); }
 
 
           @DeleteMapping()

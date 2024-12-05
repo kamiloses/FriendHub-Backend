@@ -29,6 +29,9 @@ public class SecurityConfig {
         AuthenticationWebFilter authenticationWebFilter = new AuthenticationWebFilter(authenticationManager);
         authenticationWebFilter.setServerAuthenticationConverter(authenticationManager.authenticationConverter());
 
+        // usuń potem tą linijke kodu niżej bo ona z socketami jest związana
+        http.cors(ServerHttpSecurity.CorsSpec::disable);
+
         return http.csrf(ServerHttpSecurity.CsrfSpec::disable)
                 .authorizeExchange(exchange -> exchange
                         .pathMatchers("/api/user/signup", "/api/login").permitAll()

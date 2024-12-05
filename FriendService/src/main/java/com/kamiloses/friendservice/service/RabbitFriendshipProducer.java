@@ -24,7 +24,6 @@ public class RabbitFriendshipProducer {
 
     public UserDetailsDto askForUserDetails(String username) {
         String userDetailsAsString = (String) rabbitTemplate.convertSendAndReceive(RabbitConfig.Exchange_To_User_Service, RabbitConfig.ROUTING_KEY_, username);
-        System.err.println(userDetailsAsString);
         try {
             ObjectMapper objectMapper = new ObjectMapper();
             return objectMapper.readValue(userDetailsAsString, UserDetailsDto.class);
@@ -42,7 +41,6 @@ public class RabbitFriendshipProducer {
 
         String friendsIdAsString = convertListOfFriendsIdToString(friendsId);
         String listOfFriendsDetails = (String) rabbitTemplate.convertSendAndReceive(RabbitConfig.Exchange_To_User_Service, RabbitConfig.Routing_Key_Friends_Details, friendsIdAsString);
-        System.err.println(listOfFriendsDetails);
         return convertStringOfUserDetailsToList(listOfFriendsDetails);
 
 

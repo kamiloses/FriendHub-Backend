@@ -26,6 +26,12 @@ public class FriendshipService {
     public Flux<UserDetailsDto> getAllUserFriends(String loggedUserId) {
         UserDetailsDto userDetailsDto = rabbitFriendshipProducer.askForUserDetails(loggedUserId);
         Flux<FriendshipEntity> friendshipEntitiesByUserIdOrFriendId = friendshipRepository.getFriendshipEntitiesByUserIdOrFriendId(userDetailsDto.getId(), userDetailsDto.getId());
+
+
+//            userId=675150ba7a158f3a01f654f0, friendId=675150c67a158f3a01f654f1
+
+
+         //tu jest bład niżej
         return getYourFriendsId(friendshipEntitiesByUserIdOrFriendId, userDetailsDto.getId())
                 .flatMapMany(yourFriendsId -> Flux.fromIterable(rabbitFriendshipProducer.askForFriendsDetails(yourFriendsId)));
     }
@@ -39,7 +45,7 @@ public class FriendshipService {
                     if (!friendshipEntity.getFriendId().equals(loggedUserId)) {
                         return new FriendShipDto(friendshipEntity.getFriendId(), friendshipEntity.getId());
                     } else {
-                        return new FriendShipDto(friendshipEntity.getFriendId(), friendshipEntity.getId());
+                        return new FriendShipDto(friendshipEntity.getUserId(), friendshipEntity.getId());
                     }
                 })
                 .collectList();
@@ -58,7 +64,7 @@ public class FriendshipService {
             UserDetailsDto searchedFriendDetails = rabbitFriendshipProducer.askForUserDetails(userDetails.getUsername());
             UserDetailsDto myDetails = rabbitFriendshipProducer.askForUserDetails(myUsername);
 
-         ////
+         //// tu jest błąd poppraw to niżej
             friendshipRepository.getFriendshipEntityByUserIdOrFriendId(myDetails.getId(), myDetails.getId())
                     .collectList()
                     .map(allFriendsRelatedWithMe ->
