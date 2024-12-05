@@ -17,7 +17,7 @@ public class FriendshipService {
 
     private final FriendshipRepository friendshipRepository;
     private final RabbitFriendshipProducer rabbitFriendshipProducer;
-
+    private Boolean isYourFriend=false;
     public FriendshipService(FriendshipRepository friendshipRepository, RabbitFriendshipProducer rabbitFriendshipProducer) {
         this.friendshipRepository = friendshipRepository;
         this.rabbitFriendshipProducer = rabbitFriendshipProducer;
@@ -55,7 +55,38 @@ public class FriendshipService {
             searchedPeopleDto.setId(userDetails.getId());
             searchedPeopleDto.setUsername(userDetails.getUsername());
             searchedPeopleDto.setBio(userDetails.getBio());
-            searchedPeopleDto.setIsYourFriend(Boolean.FALSE);
+            UserDetailsDto searchedFriendDetails = rabbitFriendshipProducer.askForUserDetails(userDetails.getUsername());
+            UserDetailsDto myDetails = rabbitFriendshipProducer.askForUserDetails(myUsername);
+
+         ////
+            friendshipRepository.getFriendshipEntityByUserIdOrFriendId(myDetails.getId(), myDetails.getId())
+                    .collectList()
+                    .map(allFriendsRelatedWithMe ->
+                            allFriendsRelatedWithMe.stream()
+                                    .anyMatch(friendshipEntity ->
+                                            friendshipEntity.getFriendId().equals(searchedFriendDetails.getId()) ||
+                                                    friendshipEntity.getUserId().equals(searchedFriendDetails.getId())
+                                    )
+                    )
+                    .doOnNext(isYourFriend -> searchedPeopleDto.setIsYourFriend(isYourFriend))
+                    .subscribe();
+
+// List<FriendshipEntity> allFriendsRelatedWithMe = friendshipRepository.getFriendshipEntityByUserIdOrFriendId(myDetails.getId(), myDetails.getId()).collectList();
+//
+//            if (allFriendsRelatedWithMe != null) {
+//                for (FriendshipEntity friendshipEntity : allFriendsRelatedWithMe) {
+//                    if (friendshipEntity.getFriendId().equals(searchedFriendDetails.getId())||friendshipEntity.getUserId().equals(searchedFriendDetails.getId())){
+//                        isYourFriend=true;
+//
+//
+//                    }
+//
+//                }
+//            }
+//
+//
+//            searchedPeopleDto.setIsYourFriend(isYourFriend);
+
             return searchedPeopleDto;
         }).toList();
 
@@ -73,5 +104,7 @@ public class FriendshipService {
         friendshipEntity.setCreatedAt(new Date());
        return friendshipRepository.save(friendshipEntity);
     }
+
+
 
 }

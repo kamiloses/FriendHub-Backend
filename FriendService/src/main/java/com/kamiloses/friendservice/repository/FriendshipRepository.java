@@ -9,5 +9,6 @@ public interface FriendshipRepository extends ReactiveMongoRepository<Friendship
 
 
 Flux<FriendshipEntity> getFriendshipEntitiesByUserIdOrFriendId(String userId, String friendId);
+Flux<FriendshipEntity> getFriendshipEntityByUserIdOrFriendId(String userId, String friendId);
 
 }
