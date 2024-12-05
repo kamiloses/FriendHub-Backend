@@ -105,6 +105,13 @@ public class FriendshipService {
        return friendshipRepository.save(friendshipEntity);
     }
 
+    public Mono<Void> removeFriend(String friendUsername, String myUsername){
+        UserDetailsDto friendDetails = rabbitFriendshipProducer.askForUserDetails(friendUsername);
+        UserDetailsDto myDetails = rabbitFriendshipProducer.askForUserDetails(myUsername);
+        return friendshipRepository.deleteByUserIdAndFriendId(myDetails.getId(), friendDetails.getId())
+                .then(friendshipRepository.deleteByUserIdAndFriendId(friendDetails.getId(), myDetails.getId()));
+
+    }
 
 
 }

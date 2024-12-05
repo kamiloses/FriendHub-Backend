@@ -44,7 +44,11 @@ public Flux<UserDetailsDto> getAllFriendsRelatedWithUser(@RequestParam(name = "u
          return friendshipService.addToFriendList(friendUsername,myUsername); }
 
 
+          @DeleteMapping()
+    public Mono<Void> deleteFriend(@RequestHeader String friendUsername, @RequestHeader String myUsername) {
 
+    return friendshipService.removeFriend(friendUsername,myUsername);
+          }
 
 
 
