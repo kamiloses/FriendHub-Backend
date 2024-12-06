@@ -35,6 +35,7 @@ public class SecurityConfig {
         return http.csrf(ServerHttpSecurity.CsrfSpec::disable)
                 .authorizeExchange(exchange -> exchange
                         .pathMatchers("/api/user/signup", "/api/login").permitAll()
+                        .pathMatchers("/api/test").permitAll()
                         .anyExchange().authenticated()).authenticationManager(authenticationManager)
                 .addFilterAt(authenticationWebFilter, SecurityWebFiltersOrder.AUTHENTICATION)
                 .build();

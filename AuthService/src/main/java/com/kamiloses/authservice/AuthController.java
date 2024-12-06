@@ -3,6 +3,7 @@ package com.kamiloses.authservice;
 import com.kamiloses.authservice.security.jwt.LoginDetails;
 import com.kamiloses.authservice.security.jwt.AuthResponse;
 import com.kamiloses.authservice.security.jwt.JWTUtil;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -34,6 +35,9 @@ private JWTUtil jwtUtil;
                 .flatMap(userDetails -> {
                     if (passwordEncoder.matches(loginDetails.getPassword(),userDetails.getPassword())) {
                         String token = jwtUtil.generateToken(loginDetails.getUsername());
+
+                      //dodaje do redisa-nazwe użytkownika
+
                         return Mono.just(ResponseEntity.ok(new AuthResponse(token)));
                     } else {
 
@@ -42,6 +46,9 @@ private JWTUtil jwtUtil;
                 })
                 .switchIfEmpty(Mono.error(new BadCredentialsException("Invalid username or password")));
     }
+
+
+
 
 
 
