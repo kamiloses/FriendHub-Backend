@@ -79,7 +79,6 @@ public class RabbitUserListener {
     private String convertListOfUserDetailsToString(List<UserDetailsDto> userDetails) {
         ObjectMapper objectMapper = new ObjectMapper();
         try {
-            System.err.println(userDetails);
             return objectMapper.writeValueAsString(userDetails);
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
