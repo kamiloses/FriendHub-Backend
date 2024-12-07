@@ -1,16 +1,15 @@
 package com.kamiloses.friendservice.websockets;
 
-import com.kamiloses.friendservice.dto.UserDetailsDto;
+import com.kamiloses.friendservice.dto.UserActivityDto;
 import com.kamiloses.friendservice.service.RabbitFriendshipProducer;
-import jakarta.annotation.PreDestroy;
 import org.springframework.context.event.EventListener;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.messaging.SessionConnectedEvent;
 import org.springframework.web.socket.messaging.SessionDisconnectEvent;
 
-import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -18,9 +17,11 @@ import java.util.regex.Pattern;
 public class EventsUserAvailability {
 
     private final RedisTemplate<String, String> redisTemplate;
+    private final SimpMessagingTemplate messagingTemplate;
 
-    public EventsUserAvailability(RedisTemplate<String, String> redisTemplate, RabbitFriendshipProducer rabbitFriendshipProducer) {
+    public EventsUserAvailability(RedisTemplate<String, String> redisTemplate, SimpMessagingTemplate messagingTemplate, RabbitFriendshipProducer rabbitFriendshipProducer) {
         this.redisTemplate = redisTemplate;
+        this.messagingTemplate = messagingTemplate;
         this.rabbitFriendshipProducer = rabbitFriendshipProducer;
     }
      private final RabbitFriendshipProducer rabbitFriendshipProducer;
@@ -42,6 +43,8 @@ public class EventsUserAvailability {
             redisTemplate.opsForValue().set(sessionId,username);
 
             System.out.println("user: "+username +" Connected");
+              updateFriendStatus(username,true);
+
         }
     }
 
@@ -55,17 +58,17 @@ public class EventsUserAvailability {
         redisTemplate.delete(sessionId);
 
         System.out.println("user: "+username +" Disconnected");
+        updateFriendStatus(username,false);
 
 
     }
 
-    @PreDestroy
-    public void cleanUp(){
 
 
-
+    private void updateFriendStatus(String username, boolean isOnline) {
+        UserActivityDto friendStatus = new UserActivityDto(username, isOnline);
+        messagingTemplate.convertAndSend("/topic/public/friendsOnline", friendStatus); // Zmieniamy ścieżkę
     }
-
 
 
 }
