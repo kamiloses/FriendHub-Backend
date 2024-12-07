@@ -5,22 +5,28 @@ import com.kamiloses.friendservice.dto.SearchedPeopleDto;
 import com.kamiloses.friendservice.dto.UserDetailsDto;
 import com.kamiloses.friendservice.entity.FriendshipEntity;
 import com.kamiloses.friendservice.repository.FriendshipRepository;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 @Service
 public class FriendshipService {
 
     private final FriendshipRepository friendshipRepository;
     private final RabbitFriendshipProducer rabbitFriendshipProducer;
-    private Boolean isYourFriend=false;
-    public FriendshipService(FriendshipRepository friendshipRepository, RabbitFriendshipProducer rabbitFriendshipProducer) {
+    private Boolean isYourFriend = false;
+
+    private final RedisTemplate<String, String> redisTemplate;
+
+    public FriendshipService(FriendshipRepository friendshipRepository, RabbitFriendshipProducer rabbitFriendshipProducer, RedisTemplate<String, String> redisTemplate) {
         this.friendshipRepository = friendshipRepository;
         this.rabbitFriendshipProducer = rabbitFriendshipProducer;
+        this.redisTemplate = redisTemplate;
     }
 
     public Flux<UserDetailsDto> getAllUserFriends(String loggedUserId) {
@@ -28,12 +34,19 @@ public class FriendshipService {
         Flux<FriendshipEntity> friendshipEntitiesByUserIdOrFriendId = friendshipRepository.getFriendshipEntitiesByUserIdOrFriendId(userDetailsDto.getId(), userDetailsDto.getId());
 
 
-//            userId=675150ba7a158f3a01f654f0, friendId=675150c67a158f3a01f654f1
-
-
-         //tu jest bład niżej
         return getYourFriendsId(friendshipEntitiesByUserIdOrFriendId, userDetailsDto.getId())
-                .flatMapMany(yourFriendsId -> Flux.fromIterable(rabbitFriendshipProducer.askForFriendsDetails(yourFriendsId)));
+                .flatMapMany(yourFriendsId -> Flux.fromIterable(rabbitFriendshipProducer.askForFriendsDetails(yourFriendsId)))
+                .map(user -> {
+                    if (isOnline(redisTemplate, user.getUsername())) {
+                        user.setIsOnline(true);
+                    } else {
+                        user.setIsOnline(false);
+                    }
+                    return user;
+
+                });
+
+
     }
 
 
@@ -64,7 +77,7 @@ public class FriendshipService {
             UserDetailsDto searchedFriendDetails = rabbitFriendshipProducer.askForUserDetails(userDetails.getUsername());
             UserDetailsDto myDetails = rabbitFriendshipProducer.askForUserDetails(myUsername);
 
-         //// tu jest błąd poppraw to niżej
+            //// tu jest błąd poppraw to niżej
             friendshipRepository.getFriendshipEntityByUserIdOrFriendId(myDetails.getId(), myDetails.getId())
                     .collectList()
                     .map(allFriendsRelatedWithMe ->
@@ -108,10 +121,10 @@ public class FriendshipService {
         friendshipEntity.setFriendId(friendDetails.getId());
         friendshipEntity.setUserId(myDetails.getId());
         friendshipEntity.setCreatedAt(new Date());
-       return friendshipRepository.save(friendshipEntity);
+        return friendshipRepository.save(friendshipEntity);
     }
 
-    public Mono<Void> removeFriend(String friendUsername, String myUsername){
+    public Mono<Void> removeFriend(String friendUsername, String myUsername) {
         UserDetailsDto friendDetails = rabbitFriendshipProducer.askForUserDetails(friendUsername);
         UserDetailsDto myDetails = rabbitFriendshipProducer.askForUserDetails(myUsername);
         return friendshipRepository.deleteByUserIdAndFriendId(myDetails.getId(), friendDetails.getId())
@@ -119,5 +132,18 @@ public class FriendshipService {
 
     }
 
+
+    public boolean isOnline(RedisTemplate<String, String> redisTemplate, String username) {
+        Set<String> keys = redisTemplate.keys("*");
+        if (keys != null) {
+            for (String key : keys) {
+                String value = redisTemplate.opsForValue().get(key);
+                if (username.equals(value)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
 
 }

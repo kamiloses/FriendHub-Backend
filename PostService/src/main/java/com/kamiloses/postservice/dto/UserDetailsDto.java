@@ -14,7 +14,7 @@ public class UserDetailsDto {
     private String username;
     private String chatId;
     private String password;
-
+    private Boolean isOnline;
     private String email;
 
     private String firstName;

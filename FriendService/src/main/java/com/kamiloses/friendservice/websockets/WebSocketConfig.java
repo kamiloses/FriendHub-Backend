@@ -1,4 +1,4 @@
-package com.kamiloses.userservice.websockets;
+package com.kamiloses.friendservice.websockets;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.messaging.simp.config.MessageBrokerRegistry;

@@ -1,5 +1,8 @@
-package com.kamiloses.userservice.websockets;
+package com.kamiloses.friendservice.websockets;
 
+import com.kamiloses.friendservice.dto.UserDetailsDto;
+import com.kamiloses.friendservice.service.RabbitFriendshipProducer;
+import jakarta.annotation.PreDestroy;
 import org.springframework.context.event.EventListener;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
@@ -7,15 +10,20 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.socket.messaging.SessionConnectedEvent;
 import org.springframework.web.socket.messaging.SessionDisconnectEvent;
 
-import java.util.List;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 @Component
 public class EventsUserAvailability {
 
-    private final ConcurrentHashMap<String, String> activeUsers = new ConcurrentHashMap<>();
+    private final RedisTemplate<String, String> redisTemplate;
+
+    public EventsUserAvailability(RedisTemplate<String, String> redisTemplate, RabbitFriendshipProducer rabbitFriendshipProducer) {
+        this.redisTemplate = redisTemplate;
+        this.rabbitFriendshipProducer = rabbitFriendshipProducer;
+    }
+     private final RabbitFriendshipProducer rabbitFriendshipProducer;
 
     @EventListener
     public void handleWebSocketConnectListener(SessionConnectedEvent event) {
@@ -29,7 +37,9 @@ public class EventsUserAvailability {
             String username = matcher.group(1);
             String sessionId = headerAccessor.getSessionId();
 
-            activeUsers.put(sessionId, username);
+
+            //UserDetailsDto userDetails = rabbitFriendshipProducer.askForUserDetails(username);
+            redisTemplate.opsForValue().set(sessionId,username);
 
             System.out.println("user: "+username +" Connected");
         }
@@ -40,12 +50,22 @@ public class EventsUserAvailability {
         StompHeaderAccessor headerAccessor = StompHeaderAccessor.wrap(event.getMessage());
         String sessionId = headerAccessor.getSessionId();
 
-        String username = activeUsers.remove(sessionId);
+
+        String username = redisTemplate.opsForValue().get(sessionId);
+        redisTemplate.delete(sessionId);
 
         System.out.println("user: "+username +" Disconnected");
 
 
     }
+
+    @PreDestroy
+    public void cleanUp(){
+
+
+
+    }
+
 
 
 }
