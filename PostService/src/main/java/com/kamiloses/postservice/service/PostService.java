@@ -11,7 +11,6 @@ import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-import java.time.LocalDateTime;
 import java.util.Date;
 
 @Service
@@ -27,18 +26,72 @@ public class PostService {
         this.rabbitPostProducer = rabbitPostProducer;
     }
 
-    public Mono<PostEntity> createPost(CreatePostDto post, String username) {
-        UserDetailsDto userDetails = rabbitPostProducer.askForUserDetails(username);
-        PostEntity createdPost = PostEntity.builder()
-                .userId(userDetails.getId())
-                .content(post.getContent())
-                .createdAt(new Date())
-                .build();
-        return postRepository.save(createdPost);
+    public Mono<Void> createPost(CreatePostDto post, String username) {
+        return Mono.fromSupplier(() ->
+                rabbitPostProducer.askForUserDetails(username)).flatMap(user -> {
+
+            PostEntity createdPost = PostEntity.builder()
+                    .userId(user.getId())
+                    .content(post.getContent())
+                    .createdAt(new Date())
+                    .build();
+            return postRepository.save(createdPost).then();
+        });
+
     }
 
 
+    public Mono<PostDto> getPostById(String id) {
+        return postRepository.findById(id)
+                .flatMap(postEntity ->
+                        Mono.fromSupplier(() -> rabbitPostProducer.askForUserDetails(postEntity.getUserId()))
+                                .map(userEntity -> {
+
+
+                                    PostDto postDto = PostDto.builder()
+                                            .id(postEntity.getId())
+                                            .user(userEntity)
+                                            .content(postEntity.getContent())
+                                            .createdAt(postEntity.getCreatedAt()).build();
+
+                                    return postDto;
+                                }));
+    }
+
+
+    public Flux<PostDto> getPosts() {
+        return postRepository.findAll()
+                .flatMap(postEntity -> Mono.fromSupplier(() -> rabbitPostProducer.askForUserDetails(postEntity.getUserId()))
+                        .map(userDetails -> {
+                            UserDetailsDto userDetailsDto = UserDetailsDto.builder()
+                                    .firstName(userDetails.getFirstName())
+                                    .lastName(userDetails.getLastName())
+                                    .username(userDetails.getUsername()).build();
+
+                            PostDto postDto = PostDto.builder().
+                                    id(postEntity.getId())
+                                    .user(userDetailsDto)
+                                    .content(postEntity.getContent())
+                                    .createdAt(postEntity.getCreatedAt()).build();
+                            return postDto;
+                        }));
+
+
+    }
+
+
+
+
+
+
+
+
+
+
+    // Nie używana , przyda sie w przypadku gdy będę implementował funkcje sprawdzania czyjegoś profilu
     public Flux<PostDto> getPostsRelatedWithUser(String username) {
+
+
         UserDetailsDto userDetailsDto = rabbitPostProducer.askForUserDetails(username);
 
         return postRepository.findByUserId(userDetailsDto.getId()).map(
@@ -55,39 +108,7 @@ public class PostService {
 
     }
 
-    public Mono<PostDto> getPostById(String id) {
-        System.err.println("Działa");
-        return postRepository.findById(id).map(
-                postEntity -> {
-                    UserDetailsDto userDetailsDto = rabbitPostProducer.askForUserDetails(postEntity.getUserId());
-                    PostDto postDto = new PostDto();
-                    postDto.setId(postEntity.getId());
-                    postDto.setUser(userDetailsDto);
-                    postDto.setContent(postEntity.getContent());
-                    postDto.setCreatedAt(postEntity.getCreatedAt());
-                    return postDto;
 
-                });
-    }
-
-
-    public Flux<PostDto> getPosts() {
-        return postRepository.findAll().map(postEntity -> {
-            UserDetailsDto userDetails = rabbitPostProducer.askForUserDetails(postEntity.getUserId());
-            UserDetailsDto userDetailsDto = new UserDetailsDto();
-            userDetailsDto.setFirstName(userDetails.getFirstName());
-            userDetailsDto.setLastName(userDetails.getLastName());
-            userDetailsDto.setUsername(userDetails.getUsername());
-            PostDto postDto = new PostDto();
-            postDto.setId(postEntity.getId());
-            postDto.setUser(userDetailsDto);
-            postDto.setContent(postEntity.getContent());
-            postDto.setCreatedAt(postEntity.getCreatedAt());
-            return postDto;
-        });
-
-
-    }
 }
 
 

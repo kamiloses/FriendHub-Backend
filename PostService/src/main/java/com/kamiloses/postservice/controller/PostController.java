@@ -32,7 +32,7 @@ public class PostController {
 
     @PostMapping("/{username}")
        public Mono<Void> createPost(@RequestBody CreatePostDto postDto,@PathVariable String username){
-      return    postService.createPost(postDto,username).then();
+      return    postService.createPost(postDto,username);
 
     }
 
