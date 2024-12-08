@@ -12,19 +12,25 @@ public class RabbitPostProducer {
 
 
     private final RabbitTemplate rabbitTemplate;
+    private final ObjectMapper objectMapper;
 
 
 
-
-    public RabbitPostProducer(RabbitTemplate rabbitTemplate) {
+    public RabbitPostProducer(RabbitTemplate rabbitTemplate, ObjectMapper objectMapper) {
         this.rabbitTemplate = rabbitTemplate;
+        this.objectMapper = objectMapper;
     }
 
     public UserDetailsDto askForUserDetails(String username) {
         String userDetailsAsString = (String) rabbitTemplate.convertSendAndReceive(RabbitConfig.Exchange_To_User_Service, RabbitConfig.ROUTING_KEY_, username);
-        System.err.println(userDetailsAsString);
+
+        return convertStringToUserDetailsDto(userDetailsAsString);
+
+    }
+
+
+    private UserDetailsDto convertStringToUserDetailsDto(String userDetailsAsString) {
         try {
-            ObjectMapper objectMapper = new ObjectMapper();
             return objectMapper.readValue(userDetailsAsString, UserDetailsDto.class);
 
         } catch (JsonProcessingException e) {
@@ -33,8 +39,6 @@ public class RabbitPostProducer {
 
 
     }
-
-
 
 
 }

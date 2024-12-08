@@ -6,8 +6,8 @@ services:
       - "5672:5672"
       - "15672:15672"
     environment:
-      - RABBITMQ_DEFAULT_USER=user
-      - RABBITMQ_DEFAULT_PASS=password
+      - RABBITMQ_DEFAULT_USER=kamiloses
+      - RABBITMQ_DEFAULT_PASS=kamiloses
     networks:
       - rabbitmq_network
 networks:

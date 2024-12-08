@@ -32,7 +32,7 @@ public class PostService {
         PostEntity createdPost = PostEntity.builder()
                 .userId(userDetails.getId())
                 .content(post.getContent())
-                .createdAt(LocalDateTime.now())
+                .createdAt(new Date())
                 .build();
         return postRepository.save(createdPost);
     }
@@ -48,47 +48,43 @@ public class PostService {
                     postDto.setUser(userDetailsDto);
                     postDto.setContent(postEntity.getContent());
                     postDto.setCreatedAt(postEntity.getCreatedAt());
-            return postDto;
+                    return postDto;
                 }
 
         );
 
     }
-public Mono<PostDto> getPostById(String id){
-    System.err.println("Działa");
-    return    postRepository.findById(id).map(
-                     postEntity -> {
-                         UserDetailsDto userDetailsDto = rabbitPostProducer.askForUserDetails(postEntity.getUserId());
-                         PostDto postDto = new PostDto();
-                         postDto.setId(postEntity.getId());
-                         postDto.setUser(userDetailsDto);
-                         postDto.setContent(postEntity.getContent());
-                         postDto.setCreatedAt(postEntity.getCreatedAt());
-                         return postDto;
 
-                     });}
+    public Mono<PostDto> getPostById(String id) {
+        System.err.println("Działa");
+        return postRepository.findById(id).map(
+                postEntity -> {
+                    UserDetailsDto userDetailsDto = rabbitPostProducer.askForUserDetails(postEntity.getUserId());
+                    PostDto postDto = new PostDto();
+                    postDto.setId(postEntity.getId());
+                    postDto.setUser(userDetailsDto);
+                    postDto.setContent(postEntity.getContent());
+                    postDto.setCreatedAt(postEntity.getCreatedAt());
+                    return postDto;
 
-
-
-
-
-
-
+                });
+    }
 
 
     public Flux<PostDto> getPosts() {
         return postRepository.findAll().map(postEntity -> {
+            UserDetailsDto userDetails = rabbitPostProducer.askForUserDetails(postEntity.getUserId());
             UserDetailsDto userDetailsDto = new UserDetailsDto();
-             userDetailsDto.setId(postEntity.getUserId());
-             userDetailsDto.setFirstName("Kamil");
-             userDetailsDto.setLastName("Nowak");
-
+            userDetailsDto.setFirstName(userDetails.getFirstName());
+            userDetailsDto.setLastName(userDetails.getLastName());
+            userDetailsDto.setUsername(userDetails.getUsername());
             PostDto postDto = new PostDto();
             postDto.setId(postEntity.getId());
             postDto.setUser(userDetailsDto);
             postDto.setContent(postEntity.getContent());
-         postDto.setCreatedAt(postEntity.getCreatedAt());
-        return postDto;});
+            postDto.setCreatedAt(postEntity.getCreatedAt());
+            return postDto;
+        });
 
 
     }

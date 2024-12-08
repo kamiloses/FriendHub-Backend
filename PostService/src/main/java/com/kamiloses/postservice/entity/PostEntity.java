@@ -7,14 +7,13 @@ import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import java.time.LocalDateTime;
-import java.util.List;
+import java.util.Date;
 
 @Data
-@AllArgsConstructor
 @NoArgsConstructor
-@Document
+@AllArgsConstructor
 @Builder
+@Document
 public class PostEntity {
     @Id
     private String id;
@@ -23,11 +22,10 @@ public class PostEntity {
 
     private String content;
 
-    private LocalDateTime createdAt;
+    private Date createdAt;
 
     private int likeCount = 0;
 
-    private int retweetCount = 0;
 
     private int commentsCount = 0;
 

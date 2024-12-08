@@ -19,12 +19,10 @@ public class EventsUserAvailability {
     private final RedisTemplate<String, String> redisTemplate;
     private final SimpMessagingTemplate messagingTemplate;
 
-    public EventsUserAvailability(RedisTemplate<String, String> redisTemplate, SimpMessagingTemplate messagingTemplate, RabbitFriendshipProducer rabbitFriendshipProducer) {
+    public EventsUserAvailability(RedisTemplate<String, String> redisTemplate, SimpMessagingTemplate messagingTemplate) {
         this.redisTemplate = redisTemplate;
         this.messagingTemplate = messagingTemplate;
-        this.rabbitFriendshipProducer = rabbitFriendshipProducer;
     }
-     private final RabbitFriendshipProducer rabbitFriendshipProducer;
 
     @EventListener
     public void handleWebSocketConnectListener(SessionConnectedEvent event) {
