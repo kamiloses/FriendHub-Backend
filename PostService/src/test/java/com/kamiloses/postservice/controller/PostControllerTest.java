@@ -38,12 +38,11 @@ class PostControllerTest {
 
         createPostDto = new CreatePostDto();
         createPostDto.setContent("Content");
-        createPostDto.setCreatedAt(LocalDateTime.now());
-        username = "Piotr";
+        username = "kamiloses";
 
     }
     @Test
-    public void should_Check_If_You_Can_Create_Post() {
+    public void should_Check_Create_Post_Method() {
           postRepository.deleteAll().block();
      webTestClient.post().uri("/api/posts/"+username).bodyValue(createPostDto).exchange()
              .expectStatus().isOk();

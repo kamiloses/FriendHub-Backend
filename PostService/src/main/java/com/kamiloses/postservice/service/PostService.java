@@ -59,7 +59,7 @@ public class PostService {
     }
 
 
-    public Flux<PostDto> getPosts() {
+    public Flux<PostDto> getAllPosts() {
         return postRepository.findAll()
                 .flatMap(postEntity -> Mono.fromSupplier(() -> rabbitPostProducer.askForUserDetails(postEntity.getUserId()))
                         .map(userDetails -> {
@@ -68,16 +68,30 @@ public class PostService {
                                     .lastName(userDetails.getLastName())
                                     .username(userDetails.getUsername()).build();
 
-                            PostDto postDto = PostDto.builder().
+                            return PostDto.builder().
                                     id(postEntity.getId())
                                     .user(userDetailsDto)
                                     .content(postEntity.getContent())
                                     .createdAt(postEntity.getCreatedAt()).build();
-                            return postDto;
+
                         }));
 
 
     }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

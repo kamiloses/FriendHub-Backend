@@ -25,8 +25,9 @@ public class PostInitialization {
 //        PostEntity postEntity2 = PostEntity.builder().userId("3").content("cxzczxcxzvxcvvcx").createdAt(LocalDateTime.of(2024, 9, 20, 9, 45)).likeCount(10).retweetCount(3).commentsCount(5).isDeleted(false).build();
 //
 //
-//        System.err.println("zapisało");
+//
 //        postRepository.saveAll(List.of(postEntity,postEntity1,postEntity2)).collectList().block();
+//          System.err.println("zapisało");
 //    }
 
 
