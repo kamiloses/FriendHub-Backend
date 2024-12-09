@@ -1,11 +1,11 @@
 package com.kamiloses.commentservice.dto;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import lombok.Builder;
 import lombok.Data;
 
 import java.util.Date;
 
-@Data
+@Data @Builder
 public class CommentDto {
 
 
@@ -16,8 +16,6 @@ public class CommentDto {
     private String postId;
     private String parentCommentId;
     private Integer numberOfComments;
-    private Integer numberOfLikes;
-    private Integer numberOfReplies;
 
 
 }

@@ -2,7 +2,6 @@ package com.kamiloses.commentservice.service;
 
 import com.kamiloses.commentservice.dto.CommentDto;
 import com.kamiloses.commentservice.dto.PublishCommentDto;
-import com.kamiloses.commentservice.dto.UserDetailsDto;
 import com.kamiloses.commentservice.entity.CommentEntity;
 import com.kamiloses.commentservice.rabbit.RabbitCommentProducer;
 import com.kamiloses.commentservice.repository.CommentRepository;
@@ -11,7 +10,6 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.util.Date;
-import java.util.Set;
 
 @Service
 public class CommentService {
@@ -24,24 +22,21 @@ public class CommentService {
         this.rabbitCommentProducer = rabbitCommentProducer;
     }
 
-    //todo popraw
+
     public Flux<CommentDto> findCommentsRelatedWithPost(String postId) {
-        UserDetailsDto userDetails = rabbitCommentProducer.askForUserDetails(postId);
-        return commentRepository.findCommentEntitiesByPostId(postId).map(commentEntity ->
-                {
+        return commentRepository.findCommentEntitiesByPostId(postId)
+                .flatMap(commentEntity -> Mono.fromSupplier(() -> rabbitCommentProducer.askForUserDetails(commentEntity.getUserId()))
+                        .map(userDetailsDto -> {
+                            CommentDto commendDto = CommentDto.builder()
+                                    .id(commentEntity.getId())
+                                    .content(commentEntity.getContent())
+                                    .createdAt(commentEntity.getCreatedAt())
+                                    .userDetails(userDetailsDto)
+                                    .postId(commentEntity.getPostId())
+                                    .parentCommentId(commentEntity.getParentCommentId()).build();
 
-                    CommentDto commentDto = new CommentDto();
-                    commentDto.setId(commentEntity.getId());
-                    commentDto.setContent(commentEntity.getContent());
-                    commentDto.setCreatedAt(new Date());
-                //    commentDto.setUserDetails(user);
-                    commentDto.setPostId(commentEntity.getPostId());
-                    commentDto.setParentCommentId(commentEntity.getParentCommentId());
-                    commentDto.setParentCommentId(commentEntity.getParentCommentId());
-                    return commentDto;
-                }
-
-        );
+                            return commendDto;
+                        }));
 
 
     }
@@ -57,9 +52,17 @@ public class CommentService {
                             .postId(publishCommentDto.getPostId())
                             .userId(userDetails.getId())
                             .createdAt(new Date()).build();
+
+
+                    if (publishCommentDto.getParentCommentId() != null) {
+                        commentEntity.setParentCommentId(publishCommentDto.getParentCommentId());
+                    }
+
                     return commentRepository.save(commentEntity).then();
                 });
 
 
     }
+
+
 }

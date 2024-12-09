@@ -52,11 +52,9 @@ public class RabbitUserListener {
             userDetailsDto.setPassword(userEntity.getPassword());
             userDetailsDto.setFirstName(userEntity.getFirstName());
             userDetailsDto.setLastName(userEntity.getLastName());
-            userDetailsDto.setBio(userEntity.getBio());
             userDetailsDto.setChatId(usersIdAndChatId.stream().map(FriendShipDto::getChatId).toList().get(count));
             count++;
             // userDetailsDto.setChatId(usersIdAndChatId.get(0).getChatId());
-            userDetailsDto.setProfileImageUrl(userEntity.getProfileImageUrl());
             return userDetailsDto;
         });
         List<UserDetailsDto> userDetailsList = fluxUserDetailsDto.collectList().block();
@@ -93,10 +91,8 @@ public class RabbitUserListener {
                     UserDetailsDto userDetailsDto = new UserDetailsDto();
                     userDetailsDto.setChatId(userEntity.getId());
                     userDetailsDto.setUsername(userEntity.getUsername());
-                    userDetailsDto.setBio(userEntity.getBio());
                     userDetailsDto.setFirstName(userEntity.getFirstName());
                     userDetailsDto.setLastName(userEntity.getLastName());
-                    userDetailsDto.setBio(userEntity.getBio());
                     return userDetailsDto;
                 }).collectList().block();
     return     convertListOfUserDetailsToString(userDetails);

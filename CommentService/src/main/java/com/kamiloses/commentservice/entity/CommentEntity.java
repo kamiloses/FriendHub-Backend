@@ -25,5 +25,4 @@ public class CommentEntity {
 
     private String parentCommentId;
     private Integer numberOfComments;
-    private Integer numberOfLikes;
 }
