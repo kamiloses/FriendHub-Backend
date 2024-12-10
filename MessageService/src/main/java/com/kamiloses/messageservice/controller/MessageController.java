@@ -1,13 +1,11 @@
 package com.kamiloses.messageservice.controller;
 
 import com.kamiloses.messageservice.dto.MessageDto;
-import com.kamiloses.messageservice.entity.MessageEntity;
+import com.kamiloses.messageservice.dto.SendMessageDto;
 import com.kamiloses.messageservice.service.MessageService;
 import org.springframework.web.bind.annotation.*;
-import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-import java.util.Date;
 import java.util.List;
 
 @RestController
@@ -31,26 +29,20 @@ private final MessageService messageService;
 
 
 
-@GetMapping("/{username}")
-public Flux<MessageDto> showMessagesRelatedWithUser(@PathVariable(name = "username") String username){
-        return messageService.showMessagesRelatedWithUser(username);
+@GetMapping("/{chatId}")
+public Mono<List<MessageDto>> showMessagesRelatedWithChat(@PathVariable String chatId){
+        return messageService.showMessageRelatedWithChat(chatId);
 }
 
 
 
 
-// nie działa jeszcze
 @PostMapping()
-    public void sendMessage(@RequestBody MessageDto messageDto) {
-    MessageEntity messageEntity = new MessageEntity();
-    messageEntity.setChatId(messageDto.getChatId());
-    messageEntity.setSenderUsername(messageDto.getSender().getUsername());
-    messageEntity.setRecipientUsername(messageDto.getRecipient().getUsername());
-    messageEntity.setContent(messageDto.getContent());
-    messageEntity.setTimestamp(new Date());
+    public Mono<Void> sendMessage(@RequestBody SendMessageDto messageDto) {
+     return messageService.sendMessage(messageDto);
+
 
 
 }
-//todo zamień potem void i w serwis wrzuć
 
 }

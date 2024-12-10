@@ -3,15 +3,15 @@ package com.kamiloses.messageservice.dto;
 import lombok.Data;
 
 import java.util.Date;
+
 @Data
-public class MessageDto {
+
+public class SendMessageDto {
+
     private String chatId;
 
-    private UserDetailsDto sender;
+    private String senderUsername;
 
     private String content;
 
-    private Date createdAt;
-
-    private boolean isRead = false;
 }
