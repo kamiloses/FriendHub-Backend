@@ -34,22 +34,6 @@ public class MessageService {
     }
 
 
-//    public Flux<MessageDto> showMessagesRelatedWithUser(String username) {
-//        return messageRepository.findBySenderUsernameOrRecipientUsername(username, username)
-//                .map(messageEntity -> {
-//                    UserDetailsDto sender = rabbitMessageProducer.askForUserDetails(messageEntity.getSenderUsername());
-//                    //   UserDetailsDto recipient = rabbitMessageProducer.askForUserDetails(messageEntity.getRecipientUsername());
-//                    MessageDto messageDto = new MessageDto();
-//                    messageDto.setChatId(messageEntity.getChatId());
-//                    messageDto.setSender(sender);
-//                    //   messageDto.setRecipient(recipient);
-//                    messageDto.setContent(messageEntity.getContent());
-//                    return messageDto;
-//
-//
-//                });
-//    }
-
     public Mono<Void> sendMessage(SendMessageDto messageDto) {
 
 

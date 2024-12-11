@@ -67,7 +67,8 @@ public class FriendshipService {
     public List<SearchedPeopleDto> getPeopleWithSimilarUsername(String username, String myUsername) {
 
         List<UserDetailsDto> searchedPeople = rabbitFriendshipProducer.getSimilarPeopleNameToUsername(username);
-        return searchedPeople.stream().filter(userDetailsDto -> !userDetailsDto.getUsername().equals(myUsername)).map(userDetails -> {
+        //zwraca wszystkich użytkowników z nazwą kamiloses
+    return     searchedPeople.stream().filter(userDetailsDto -> !userDetailsDto.getUsername().equals(myUsername)).map(userDetails -> {
             SearchedPeopleDto searchedPeopleDto = new SearchedPeopleDto();
             searchedPeopleDto.setFirstName(userDetails.getFirstName());
             searchedPeopleDto.setLastName(userDetails.getLastName());
@@ -77,73 +78,75 @@ public class FriendshipService {
             UserDetailsDto searchedFriendDetails = rabbitFriendshipProducer.askForUserDetails(userDetails.getUsername());
             UserDetailsDto myDetails = rabbitFriendshipProducer.askForUserDetails(myUsername);
 
-            //// tu jest błąd poppraw to niżej
-            friendshipRepository.getFriendshipEntityByUserIdOrFriendId(myDetails.getId(), myDetails.getId())
-                    .collectList()
-                    .map(allFriendsRelatedWithMe ->
-                            allFriendsRelatedWithMe.stream()
-                                    .anyMatch(friendshipEntity ->
-                                            friendshipEntity.getFriendId().equals(searchedFriendDetails.getId()) ||
-                                                    friendshipEntity.getUserId().equals(searchedFriendDetails.getId())
-                                    )
-                    )
-                    .doOnNext(isYourFriend -> searchedPeopleDto.setIsYourFriend(isYourFriend))
-                    .subscribe();
 
-// List<FriendshipEntity> allFriendsRelatedWithMe = friendshipRepository.getFriendshipEntityByUserIdOrFriendId(myDetails.getId(), myDetails.getId()).collectList();
-//
-//            if (allFriendsRelatedWithMe != null) {
-//                for (FriendshipEntity friendshipEntity : allFriendsRelatedWithMe) {
-//                    if (friendshipEntity.getFriendId().equals(searchedFriendDetails.getId())||friendshipEntity.getUserId().equals(searchedFriendDetails.getId())){
-//                        isYourFriend=true;
-//
-//
-//                    }
-//
-//                }
+            List<FriendshipEntity> allFriendsRelatedWithMe = friendshipRepository.getFriendshipEntityByUserIdOrFriendId(myDetails.getId(), myDetails.getId()).collectList().block();
+            System.err.println(allFriendsRelatedWithMe);
+            if (allFriendsRelatedWithMe != null) {
+                for (FriendshipEntity friendshipEntity : allFriendsRelatedWithMe) {
+                    if (friendshipEntity.getFriendId().equals(searchedFriendDetails.getId()) || friendshipEntity.getUserId().equals(searchedFriendDetails.getId())) {
+                        isYourFriend = true;
+
+                        searchedPeopleDto.setIsYourFriend(isYourFriend);
+
+                    }
+                }
+            }
+            return searchedPeopleDto;
+        }).toList();
+    }
+
+    //// tu jest błąd poppraw to niżej
+//            friendshipRepository.getFriendshipEntityByUserIdOrFriendId(myDetails.getId(), myDetails.getId())
+//                    .collectList()
+//                    .map(allFriendsRelatedWithMe ->
+//                            allFriendsRelatedWithMe.stream()
+//                                    .anyMatch(friendshipEntity ->
+//                                            friendshipEntity.getFriendId().equals(searchedFriendDetails.getId()) ||
+//                                                    friendshipEntity.getUserId().equals(searchedFriendDetails.getId())
+//                                    )
+//                    )
+//                    .doOnNext(isYourFriend -> searchedPeopleDto.setIsYourFriend(isYourFriend))
+//                    .subscribe();
+
+
 //            }
 //
 //
 //            searchedPeopleDto.setIsYourFriend(isYourFriend);
 
-            return searchedPeopleDto;
-        }).toList();
 
 
-    }
+public Mono<FriendshipEntity> addToFriendList(String friendUsername, String myUsername) {
+
+    UserDetailsDto friendDetails = rabbitFriendshipProducer.askForUserDetails(friendUsername);
+    UserDetailsDto myDetails = rabbitFriendshipProducer.askForUserDetails(myUsername);
+    FriendshipEntity friendshipEntity = new FriendshipEntity();
+    friendshipEntity.setFriendId(friendDetails.getId());
+    friendshipEntity.setUserId(myDetails.getId());
+    friendshipEntity.setCreatedAt(new Date());
+    return friendshipRepository.save(friendshipEntity);
+}
+
+public Mono<Void> removeFriend(String friendUsername, String myUsername) {
+    UserDetailsDto friendDetails = rabbitFriendshipProducer.askForUserDetails(friendUsername);
+    UserDetailsDto myDetails = rabbitFriendshipProducer.askForUserDetails(myUsername);
+    return friendshipRepository.deleteByUserIdAndFriendId(myDetails.getId(), friendDetails.getId())
+            .then(friendshipRepository.deleteByUserIdAndFriendId(friendDetails.getId(), myDetails.getId()));
+
+}
 
 
-    public Mono<FriendshipEntity> addToFriendList(String friendUsername, String myUsername) {
-
-        UserDetailsDto friendDetails = rabbitFriendshipProducer.askForUserDetails(friendUsername);
-        UserDetailsDto myDetails = rabbitFriendshipProducer.askForUserDetails(myUsername);
-        FriendshipEntity friendshipEntity = new FriendshipEntity();
-        friendshipEntity.setFriendId(friendDetails.getId());
-        friendshipEntity.setUserId(myDetails.getId());
-        friendshipEntity.setCreatedAt(new Date());
-        return friendshipRepository.save(friendshipEntity);
-    }
-
-    public Mono<Void> removeFriend(String friendUsername, String myUsername) {
-        UserDetailsDto friendDetails = rabbitFriendshipProducer.askForUserDetails(friendUsername);
-        UserDetailsDto myDetails = rabbitFriendshipProducer.askForUserDetails(myUsername);
-        return friendshipRepository.deleteByUserIdAndFriendId(myDetails.getId(), friendDetails.getId())
-                .then(friendshipRepository.deleteByUserIdAndFriendId(friendDetails.getId(), myDetails.getId()));
-
-    }
-
-
-    public boolean isOnline(RedisTemplate<String, String> redisTemplate, String username) {
-        Set<String> keys = redisTemplate.keys("*");
-        if (keys != null) {
-            for (String key : keys) {
-                String value = redisTemplate.opsForValue().get(key);
-                if (username.equals(value)) {
-                    return true;
-                }
+public boolean isOnline(RedisTemplate<String, String> redisTemplate, String username) {
+    Set<String> keys = redisTemplate.keys("*");
+    if (keys != null) {
+        for (String key : keys) {
+            String value = redisTemplate.opsForValue().get(key);
+            if (username.equals(value)) {
+                return true;
             }
         }
-        return false;
     }
+    return false;
+}
 
 }
