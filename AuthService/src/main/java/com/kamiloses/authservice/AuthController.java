@@ -36,7 +36,7 @@ private JWTUtil jwtUtil;
                     if (passwordEncoder.matches(loginDetails.getPassword(),userDetails.getPassword())) {
                         String token = jwtUtil.generateToken(loginDetails.getUsername());
 
-                      //dodaje do redisa-nazwe użytkownika
+
 
                         return Mono.just(ResponseEntity.ok(new AuthResponse(token)));
                     } else {

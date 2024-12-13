@@ -9,5 +9,5 @@ public class LoginDetails {
     private String username;
     private String password;
 
-    // Getters and setters
+
 }

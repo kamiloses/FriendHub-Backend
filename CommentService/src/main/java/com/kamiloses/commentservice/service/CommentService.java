@@ -3,6 +3,7 @@ package com.kamiloses.commentservice.service;
 import com.kamiloses.commentservice.dto.CommentDto;
 import com.kamiloses.commentservice.dto.PublishCommentDto;
 import com.kamiloses.commentservice.entity.CommentEntity;
+import com.kamiloses.commentservice.exception.RabbitDoesNotWorkException;
 import com.kamiloses.commentservice.rabbit.RabbitCommentProducer;
 import com.kamiloses.commentservice.repository.CommentRepository;
 import org.springframework.stereotype.Service;

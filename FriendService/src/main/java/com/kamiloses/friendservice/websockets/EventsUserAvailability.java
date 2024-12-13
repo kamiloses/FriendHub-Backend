@@ -2,6 +2,8 @@ package com.kamiloses.friendservice.websockets;
 
 import com.kamiloses.friendservice.dto.UserActivityDto;
 import com.kamiloses.friendservice.service.RabbitFriendshipProducer;
+import jakarta.annotation.PreDestroy;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.event.EventListener;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
@@ -14,6 +16,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 @Component
+@Slf4j
 public class EventsUserAvailability {
 
     private final RedisTemplate<String, String> redisTemplate;
@@ -40,8 +43,8 @@ public class EventsUserAvailability {
             //UserDetailsDto userDetails = rabbitFriendshipProducer.askForUserDetails(username);
             redisTemplate.opsForValue().set(sessionId,username);
 
-            System.out.println("user: "+username +" Connected");
-              updateFriendStatus(username,true);
+            log.info("user: {} Connected", username);
+            updateFriendStatus(username,true);
 
         }
     }
@@ -55,7 +58,8 @@ public class EventsUserAvailability {
         String username = redisTemplate.opsForValue().get(sessionId);
         redisTemplate.delete(sessionId);
 
-        System.out.println("user: "+username +" Disconnected");
+        log.info("user: {} disconnected", username);
+
         updateFriendStatus(username,false);
 
 
@@ -65,8 +69,24 @@ public class EventsUserAvailability {
 
     private void updateFriendStatus(String username, boolean isOnline) {
         UserActivityDto friendStatus = new UserActivityDto(username, isOnline);
-        messagingTemplate.convertAndSend("/topic/public/friendsOnline", friendStatus); // Zmieniamy ścieżkę
+        messagingTemplate.convertAndSend("/topic/public/friendsOnline", friendStatus);
     }
+
+
+
+
+
+
+
+    @PreDestroy
+    public void cleanUpTheRedisDB() {
+
+        //todo sprawdz jak usunąc wszystkie elementy z redisa
+
+        redisTemplate.getConnectionFactory().getConnection().flushAll();
+
+    }
+
 
 
 }
