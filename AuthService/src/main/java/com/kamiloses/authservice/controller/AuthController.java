@@ -1,12 +1,10 @@
-package com.kamiloses.authservice;
+package com.kamiloses.authservice.controller;
 
-import com.kamiloses.authservice.security.jwt.LoginDetails;
-import com.kamiloses.authservice.security.jwt.AuthResponse;
-import com.kamiloses.authservice.security.jwt.JWTUtil;
-import org.springframework.data.redis.core.RedisTemplate;
+import com.kamiloses.authservice.dto.LoginDetails;
+import com.kamiloses.authservice.dto.AuthResponse;
+import com.kamiloses.authservice.jwt.JWTUtil;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -18,7 +16,7 @@ import reactor.core.publisher.Mono;
 public class AuthController {
 
 
-private JWTUtil jwtUtil;
+private final JWTUtil jwtUtil;
     private final PasswordEncoder passwordEncoder;
 
     public AuthController(PasswordEncoder passwordEncoder, JWTUtil jwtUtil) {

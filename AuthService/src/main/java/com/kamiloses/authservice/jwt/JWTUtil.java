@@ -1,4 +1,4 @@
-package com.kamiloses.authservice.security.jwt;
+package com.kamiloses.authservice.jwt;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;

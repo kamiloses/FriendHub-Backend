@@ -12,16 +12,24 @@ public class RabbitAuthProducer {
 
 
     private final RabbitTemplate rabbitTemplate;
+    private final ObjectMapper objectMapper;
 
-    public RabbitAuthProducer(RabbitTemplate rabbitTemplate) {
+    public RabbitAuthProducer(RabbitTemplate rabbitTemplate, ObjectMapper objectMapper) {
         this.rabbitTemplate = rabbitTemplate;
+        this.objectMapper = objectMapper;
     }
 
 
     public UserDetailsDto askForUserDetails(String username) {
         String userDetailsAsString = (String) rabbitTemplate.convertSendAndReceive(RabbitConfig.Exchange_To_User_Service, RabbitConfig.ROUTING_KEY_, username);
+
+        return convertStringToUserDetailsDto(userDetailsAsString);
+
+    }
+
+
+    private UserDetailsDto convertStringToUserDetailsDto(String userDetailsAsString) {
         try {
-            ObjectMapper objectMapper = new ObjectMapper();
             return objectMapper.readValue(userDetailsAsString, UserDetailsDto.class);
 
         } catch (JsonProcessingException e) {
@@ -30,4 +38,6 @@ public class RabbitAuthProducer {
 
 
     }
+
+
 }

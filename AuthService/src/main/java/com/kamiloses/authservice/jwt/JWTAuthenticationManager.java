@@ -1,16 +1,15 @@
-package com.kamiloses.authservice.security.jwt;
+package com.kamiloses.authservice.jwt;
 
 
+import com.kamiloses.authservice.dto.LoginDetails;
 import org.springframework.security.authentication.ReactiveAuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.server.authentication.ServerAuthenticationConverter;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
-import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
 
 @Component
@@ -40,7 +39,6 @@ public class JWTAuthenticationManager implements ReactiveAuthenticationManager {
                         SecurityContextHolder.getContext().setAuthentication(auth);
                         return Mono.just(auth);
                     } else {
-                        System.err.println("ŻLe");
                         return Mono.error(new AuthenticationException("Invalid JWT token") {
                         });
                     }
@@ -50,14 +48,11 @@ public class JWTAuthenticationManager implements ReactiveAuthenticationManager {
     public ServerAuthenticationConverter authenticationConverter() {
         return exchange -> {
             String token = exchange.getRequest().getHeaders().getFirst("Authorization");
-            System.err.println("Received token: " + token);
 
             if (token != null && token.startsWith("Bearer ")) {
                 token = token.substring(7);
                 return Mono.just(new UsernamePasswordAuthenticationToken(token, token));
             }
-
-            System.out.println("Authorization header is missing or invalid");
             return Mono.empty();
         };
     }

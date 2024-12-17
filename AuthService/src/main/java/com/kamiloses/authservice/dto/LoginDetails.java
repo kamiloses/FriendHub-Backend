@@ -1,4 +1,4 @@
-package com.kamiloses.authservice.security.jwt;
+package com.kamiloses.authservice.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

@@ -1,19 +1,21 @@
-package com.kamiloses.authservice.security;
+package com.kamiloses.authservice.service;
 
 import com.kamiloses.authservice.dto.UserDetailsDto;
 import com.kamiloses.authservice.rabbit.RabbitAuthProducer;
+import com.kamiloses.rabbitmq.RabbitConfig;
+import com.kamiloses.rabbitmq.exception.RabbitExceptionHandler;
+import org.springframework.context.annotation.Import;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.ReactiveUserDetailsService;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
 
 import java.util.ArrayList;
 import java.util.List;
-@Component
+@Component @Import({RabbitConfig.class, RabbitExceptionHandler.class})
 public class CustomUserService implements ReactiveUserDetailsService {
 
     private final RabbitAuthProducer rabbitAuthProducer;
@@ -25,13 +27,10 @@ public class CustomUserService implements ReactiveUserDetailsService {
 
     @Override
     public Mono<UserDetails> findByUsername(String username) {
-        UserDetailsDto userDetails = rabbitAuthProducer.askForUserDetails(username);
-        System.err.println("User"+userDetails);
-            if (userDetails == null) {
-                return Mono.empty();
-            }
-        else return Mono.just(createUser(userDetails));
-
+        return Mono.fromSupplier(()->rabbitAuthProducer.askForUserDetails(username))
+                 .flatMap(user-> {
+                     if (user == null) return Mono.empty();
+                     else return Mono.just(createUser(user));});
 
     }
 

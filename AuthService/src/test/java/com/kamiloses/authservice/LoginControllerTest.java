@@ -1,11 +1,10 @@
 package com.kamiloses.authservice;
 
-import com.kamiloses.authservice.security.jwt.LoginDetails;
+import com.kamiloses.authservice.dto.LoginDetails;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.reactive.AutoConfigureWebTestClient;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.reactive.server.WebTestClient;
 import org.springframework.web.reactive.function.BodyInserters;
 
