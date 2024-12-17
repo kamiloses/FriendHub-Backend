@@ -2,7 +2,6 @@ package com.kamiloses.messageservice.dto;
 
 import lombok.Data;
 
-import java.util.Date;
 
 @Data
 

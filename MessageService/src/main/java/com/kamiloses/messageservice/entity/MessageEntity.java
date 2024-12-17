@@ -18,7 +18,7 @@ public class MessageEntity {
     @Id
     private String id;
 
-    private String chatId;//friendship entity ID
+    private String chatId; //friendship entity ID
     private String senderUsername;
     private String recipientUsername;
 

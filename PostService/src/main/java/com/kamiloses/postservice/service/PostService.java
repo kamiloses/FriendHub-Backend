@@ -42,7 +42,7 @@ public class PostService {
             return postRepository.save(createdPost).
                     onErrorResume(error->{
                        log.error("There was some problem with saving post to database");
-                      return Mono.error(()->new PostDatabaseFetchException("There was some problem with saving post to database"));
+                      return Mono.error(PostDatabaseFetchException::new);
                     }).
                     then();
         });
@@ -53,7 +53,7 @@ public class PostService {
     public Mono<PostDto> getPostById(String id) {
         return postRepository.findById(id).onErrorResume(error->{
             log.error("There was some problem with fetching specific post");
-            return Mono.error(()->new PostDatabaseFetchException("There was some problem with fetching specific post"));
+            return Mono.error(PostDatabaseFetchException::new);
         })
                 .flatMap(postEntity ->
                         Mono.fromSupplier(() -> rabbitPostProducer.askForUserDetails(postEntity.getUserId()))
@@ -74,7 +74,7 @@ public class PostService {
     public Flux<PostDto> getAllPosts() {
         return postRepository.findAll().onErrorResume(error->{
             log.error("There was some problem with fetching all posts");
-            return Mono.error(()->new PostDatabaseFetchException("There was some problem with fetching all posts"));
+            return Mono.error(PostDatabaseFetchException::new);
         })
                 .flatMap(postEntity -> Mono.fromSupplier(() -> rabbitPostProducer.askForUserDetails(postEntity.getUserId()))
                         .map(userDetails -> {

@@ -31,7 +31,7 @@ public class CommentService {
     public Flux<CommentDto> findCommentsRelatedWithPost(String postId) {
         return commentRepository.findCommentEntitiesByPostId(postId).onErrorResume(error->{
                     log.error("There was some problem with fetching comments related with post");
-                    return Mono.error(()->new CommentDatabaseFetchException("There was some problem with fetching comments related with post"));
+                    return Mono.error(CommentDatabaseFetchException::new);
                 })
                 .flatMap(commentEntity -> Mono.fromSupplier(() -> rabbitCommentProducer.askForUserDetails(commentEntity.getUserId()))
                         .map(userDetailsDto -> {
@@ -68,7 +68,7 @@ public class CommentService {
 
                     return commentRepository.save(commentEntity).onErrorResume(error->{
                         log.error("There was some problem with saving comment to database");
-                        return Mono.error(()->new CommentDatabaseFetchException("There was some problem with saving comment to database"));
+                        return Mono.error(CommentDatabaseFetchException::new);
                     }).then();
                 });
 
