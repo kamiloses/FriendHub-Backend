@@ -18,11 +18,11 @@ public class RabbitExceptionHandler {
 
     @ExceptionHandler({AmqpException.class, TimeoutException.class})
     public ResponseEntity<ErrorResponse> handleRabbitMQException(Exception exception) {
-        log.error("RabbitMQ communication error: {}", exception.getMessage());
+        log.error("RabbitMQ connection error: {}", exception.getMessage());
 
 
          ErrorResponse errorResponse = new ErrorResponse(
-                 "Connection error: "+exception.getMessage(),
+                 "RabbitMQ connection error: "+exception.getMessage(),
                  java.time.LocalDateTime.now().toString(),
                  RABBITMQ_CONNECTION_ERROR
          );

@@ -10,9 +10,6 @@ public class PublishCommentDto {
 
     private String content;
 
-
-    private UserDetailsDto userDetails;
-
     private String postId;
 
     private String parentCommentId;

@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
 import java.util.HashSet;
 import java.util.List;
 
-@Component
+//@Component
 public class UserInitialization {
 
 private final UserRepository userRepository;
@@ -20,12 +20,9 @@ private final UserRepository userRepository;
     @PostConstruct
     public void init() {
         if (userRepository.findAll().collectList().block().size()==0) {
-            UserEntity user1 = new UserEntity("1", "marcin", "123", "kamiloses@mail.com", "Kamil", "A", "Developer", "url1", new HashSet<>(), new HashSet<>(), new HashSet<>());
-            UserEntity user2 = new UserEntity("2", "adam", "123", "johndoe@mail.com", "John", "B", "Software Engineer", "url2", new HashSet<>(), new HashSet<>(), new HashSet<>());
-            UserEntity user3 = new UserEntity("3", "maciej", "123", "janedoe@mail.com", "Jane", "C", "Product Manager", "url3", new HashSet<>(), new HashSet<>(), new HashSet<>());
-            UserEntity user4 = new UserEntity("4", "jan", "123", "janedoe@mail.com", "Jane", "D", "Product Manager", "url3", new HashSet<>(), new HashSet<>(), new HashSet<>());
-            UserEntity user5 = new UserEntity("5", "piotr", "123", "janedoe@mail.com", "Jane", "E", "Product Manager", "url3", new HashSet<>(), new HashSet<>(), new HashSet<>());
-             userRepository.saveAll(List.of(user1, user2, user3,user4,user5)).collectList().block();
+            UserEntity user1 = new UserEntity("1", "kamil", "123", "kamiloses@mail.com", "Kamil", "A", "Developer", "url1", new HashSet<>(), new HashSet<>(), new HashSet<>());
+            UserEntity user2 = new UserEntity("2", "adam", "123", "adam@mail.com", "Adam", "B", "Developer", "url2", new HashSet<>(), new HashSet<>(), new HashSet<>());
+             userRepository.saveAll(List.of(user1, user2)).collectList().block();
         }
 
 

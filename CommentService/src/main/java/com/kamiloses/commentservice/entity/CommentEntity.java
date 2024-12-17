@@ -24,5 +24,5 @@ public class CommentEntity {
     private String postId;
 
     private String parentCommentId;
-    private Integer numberOfComments;
+
 }

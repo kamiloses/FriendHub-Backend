@@ -29,7 +29,7 @@ public class RabbitUserListener {
         UserDetailsDto userDetailsDto = new UserDetailsDto();
         userDetailsDto.setId(userEntity.getId());
         userDetailsDto.setUsername(userEntity.getUsername());
-        userDetailsDto.setPassword(userEntity.getPassword());
+       // userDetailsDto.setPassword(userEntity.getPassword());
         userDetailsDto.setFirstName(userEntity.getFirstName());
         userDetailsDto.setLastName(userEntity.getLastName());
 
@@ -49,7 +49,7 @@ public class RabbitUserListener {
             UserDetailsDto userDetailsDto = new UserDetailsDto();
             userDetailsDto.setId(userEntity.getId());
             userDetailsDto.setUsername(userEntity.getUsername());
-            userDetailsDto.setPassword(userEntity.getPassword());
+           // userDetailsDto.setPassword(userEntity.getPassword());
             userDetailsDto.setFirstName(userEntity.getFirstName());
             userDetailsDto.setLastName(userEntity.getLastName());
             userDetailsDto.setChatId(usersIdAndChatId.stream().map(FriendShipDto::getChatId).toList().get(count));
