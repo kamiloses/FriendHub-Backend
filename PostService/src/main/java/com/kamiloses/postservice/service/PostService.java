@@ -4,8 +4,11 @@ import com.kamiloses.postservice.dto.CreatePostDto;
 import com.kamiloses.postservice.dto.PostDto;
 import com.kamiloses.postservice.dto.UserDetailsDto;
 import com.kamiloses.postservice.entity.PostEntity;
+import com.kamiloses.postservice.exception.PostDatabaseFetchException;
 import com.kamiloses.postservice.rabbit.RabbitPostProducer;
 import com.kamiloses.postservice.repository.PostRepository;
+import com.kamiloses.rabbitmq.exception.RabbitExceptionHandler;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Import;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
@@ -13,8 +16,9 @@ import reactor.core.publisher.Mono;
 
 import java.util.Date;
 
+@Slf4j
 @Service
-@Import(RabbitPostProducer.class)
+@Import({RabbitPostProducer.class, RabbitExceptionHandler.class})
 public class PostService {
 
     private final PostRepository postRepository;
@@ -35,14 +39,22 @@ public class PostService {
                     .content(post.getContent())
                     .createdAt(new Date())
                     .build();
-            return postRepository.save(createdPost).then();
+            return postRepository.save(createdPost).
+                    onErrorResume(error->{
+                       log.error("There was some problem with saving post to database");
+                      return Mono.error(()->new PostDatabaseFetchException("There was some problem with saving post to database"));
+                    }).
+                    then();
         });
 
     }
 
 
     public Mono<PostDto> getPostById(String id) {
-        return postRepository.findById(id)
+        return postRepository.findById(id).onErrorResume(error->{
+            log.error("There was some problem with fetching specific post");
+            return Mono.error(()->new PostDatabaseFetchException("There was some problem with fetching specific post"));
+        })
                 .flatMap(postEntity ->
                         Mono.fromSupplier(() -> rabbitPostProducer.askForUserDetails(postEntity.getUserId()))
                                 .map(userEntity -> {
@@ -60,7 +72,10 @@ public class PostService {
 
 
     public Flux<PostDto> getAllPosts() {
-        return postRepository.findAll()
+        return postRepository.findAll().onErrorResume(error->{
+            log.error("There was some problem with fetching all posts");
+            return Mono.error(()->new PostDatabaseFetchException("There was some problem with fetching all posts"));
+        })
                 .flatMap(postEntity -> Mono.fromSupplier(() -> rabbitPostProducer.askForUserDetails(postEntity.getUserId()))
                         .map(userDetails -> {
                             UserDetailsDto userDetailsDto = UserDetailsDto.builder()
@@ -78,51 +93,6 @@ public class PostService {
 
 
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    // Nie używana , przyda sie w przypadku gdy będę implementował funkcje sprawdzania czyjegoś profilu
-    public Flux<PostDto> getPostsRelatedWithUser(String username) {
-
-
-        UserDetailsDto userDetailsDto = rabbitPostProducer.askForUserDetails(username);
-
-        return postRepository.findByUserId(userDetailsDto.getId()).map(
-                postEntity -> {
-                    PostDto postDto = new PostDto();
-                    postDto.setId(postEntity.getId());
-                    postDto.setUser(userDetailsDto);
-                    postDto.setContent(postEntity.getContent());
-                    postDto.setCreatedAt(postEntity.getCreatedAt());
-                    return postDto;
-                }
-
-        );
-
-    }
-
-
 }
 
 
