@@ -1,4 +1,4 @@
-package com.kamiloses.postservice.controller;
+package com.kamiloses.postservice.router;
 
 import com.kamiloses.postservice.dto.CreatePostDto;
 import com.kamiloses.postservice.repository.PostRepository;
@@ -12,23 +12,25 @@ import org.springframework.test.web.reactive.server.WebTestClient;
 import reactor.test.StepVerifier;
 
 import java.time.Duration;
-import java.time.LocalDateTime;
-import java.util.Date;
 
 import static org.junit.jupiter.api.Assertions.*;
-
 @SpringBootTest
 @AutoConfigureWebTestClient
 @EnableDiscoveryClient(autoRegister = false)
-class PostControllerTest {
+class PostRouterTest {
+
     @Autowired
     private WebTestClient webTestClient;
-    private CreatePostDto createPostDto;
-    private String username;
-     @Autowired
-     private  PostRepository postRepository;
 
-    // Pamiętaj że uzytkownik już itnieje w bazie danych
+
+
+    @Autowired
+    private PostRepository postRepository;
+
+    private CreatePostDto createPostDto;
+
+    private static final String username="kamiloses";
+
     @BeforeEach
     public void setUp() {
         webTestClient = webTestClient.mutate()
@@ -36,21 +38,37 @@ class PostControllerTest {
                 .build();
 
 
-        createPostDto = new CreatePostDto();
-        createPostDto.setContent("Content");
-        username = "kamiloses";
+        createPostDto = new CreatePostDto("text");
 
     }
+
+
     @Test
-    public void should_Check_Create_Post_Method() {
-          postRepository.deleteAll().block();
-     webTestClient.post().uri("/api/posts/"+username).bodyValue(createPostDto).exchange()
-             .expectStatus().isOk();
+    public void should_Check_CreatePost_Method() {
+        postRepository.deleteAll().block();
+        webTestClient.post().uri("/api/posts/" + username).bodyValue(createPostDto).exchange()
+                .expectStatus().isOk();
 
-         assertEquals(1,postRepository.findAll().collectList().block().size());
+        StepVerifier.create(postRepository.findAll())
+                .expectNextCount(1)
+                .verifyComplete();
 
 
     }
+
+    @Test
+    public void should_Check_GetAllPosts_Method() {
+     webTestClient.get().uri("/api/posts").exchange().expectStatus().isOk().expectBody(String.class)
+             .consumeWith(response -> {
+                 String body = response.getResponseBody();
+                 assertNotNull(body);
+                 assertTrue(body.contains("text"));
+             });
+
+
+
+    }
+
 
 
 

@@ -10,7 +10,7 @@ public class FriendShipDto {
 
     private String userIdOrFriendId;
     private String chatId;
-  //  private Boolean isOnline;
+
 
 }
 

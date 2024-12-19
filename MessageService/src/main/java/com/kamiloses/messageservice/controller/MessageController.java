@@ -12,6 +12,8 @@ import java.util.List;
 @RequestMapping("/api/message")
 @CrossOrigin(origins = "http://localhost:4200", allowedHeaders = "*", methods = {RequestMethod.GET, RequestMethod.POST})
 public class MessageController {
+    //todo sprawdź potem dlaczego kod nie wywoływał sie w przypadku routera
+
 
     private final MessageService messageService;
 

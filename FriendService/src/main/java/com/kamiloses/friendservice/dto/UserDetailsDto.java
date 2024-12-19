@@ -14,30 +14,16 @@ import java.util.Set;
 public class UserDetailsDto {
 
 
-
     private String id;
+
     private String chatId;
+
     private String username;
 
-    private String password;
     private Boolean isOnline;
 
-
     private String firstName;
+
     private String lastName;
-
-    private String bio;
-
-    private String profileImageUrl;
-
-
-    private Set<String> tweetsIds;
-
-    private Set<String> followersIds;
-
-    private Set<String> followingIds;
-
-
-
 
 }

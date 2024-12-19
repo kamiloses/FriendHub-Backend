@@ -67,14 +67,13 @@ public class FriendshipService {
     public List<SearchedPeopleDto> getPeopleWithSimilarUsername(String username, String myUsername) {
 
         List<UserDetailsDto> searchedPeople = rabbitFriendshipProducer.getSimilarPeopleNameToUsername(username);
-        //zwraca wszystkich użytkowników z nazwą kamiloses
+
     return     searchedPeople.stream().filter(userDetailsDto -> !userDetailsDto.getUsername().equals(myUsername)).map(userDetails -> {
             SearchedPeopleDto searchedPeopleDto = new SearchedPeopleDto();
             searchedPeopleDto.setFirstName(userDetails.getFirstName());
             searchedPeopleDto.setLastName(userDetails.getLastName());
             searchedPeopleDto.setId(userDetails.getId());
             searchedPeopleDto.setUsername(userDetails.getUsername());
-            searchedPeopleDto.setBio(userDetails.getBio());
             UserDetailsDto searchedFriendDetails = rabbitFriendshipProducer.askForUserDetails(userDetails.getUsername());
             UserDetailsDto myDetails = rabbitFriendshipProducer.askForUserDetails(myUsername);
 
@@ -94,25 +93,6 @@ public class FriendshipService {
             return searchedPeopleDto;
         }).toList();
     }
-
-    //// tu jest błąd poppraw to niżej
-//            friendshipRepository.getFriendshipEntityByUserIdOrFriendId(myDetails.getId(), myDetails.getId())
-//                    .collectList()
-//                    .map(allFriendsRelatedWithMe ->
-//                            allFriendsRelatedWithMe.stream()
-//                                    .anyMatch(friendshipEntity ->
-//                                            friendshipEntity.getFriendId().equals(searchedFriendDetails.getId()) ||
-//                                                    friendshipEntity.getUserId().equals(searchedFriendDetails.getId())
-//                                    )
-//                    )
-//                    .doOnNext(isYourFriend -> searchedPeopleDto.setIsYourFriend(isYourFriend))
-//                    .subscribe();
-
-
-//            }
-//
-//
-//            searchedPeopleDto.setIsYourFriend(isYourFriend);
 
 
 

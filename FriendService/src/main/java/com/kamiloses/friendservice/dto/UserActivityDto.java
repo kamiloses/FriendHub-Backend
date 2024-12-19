@@ -10,6 +10,6 @@ import lombok.NoArgsConstructor;
 public class UserActivityDto {
 
 
-    String username;
-    Boolean isOnline;
+  private   String username;
+  private   Boolean isOnline;
 }

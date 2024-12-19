@@ -15,8 +15,7 @@ import org.springframework.web.socket.messaging.SessionDisconnectEvent;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-@Component
-@Slf4j
+@Component  @Slf4j
 public class EventsUserAvailability {
 
     private final RedisTemplate<String, String> redisTemplate;
@@ -40,7 +39,6 @@ public class EventsUserAvailability {
             String sessionId = headerAccessor.getSessionId();
 
 
-            //UserDetailsDto userDetails = rabbitFriendshipProducer.askForUserDetails(username);
             redisTemplate.opsForValue().set(sessionId,username);
 
             log.info("user: {} Connected", username);
