@@ -32,8 +32,7 @@
 
             SendMessageDto sendMessageDto = new SendMessageDto(message.getChatId(),message.getMessage(), userDetailsDto.getUsername(), userDetailsDto.getFirstName(),userDetailsDto.getLastName());
 
-            System.err.println("message odebrana :"+sendMessageDto);
-
+  //todo popraw potem ten/topic/public na queue czy jakoś tak i po stronie frontendu tez
 
             messagingTemplate.convertAndSend("/topic/public/"+message.getChatId(), sendMessageDto);
 
