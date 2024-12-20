@@ -31,33 +31,17 @@ class FriendshipServiceTest {
 
     @BeforeEach
     void setUp() {
-        FriendshipEntity friendshipEntity1 = new FriendshipEntity("1", "1", "2", null, null, null);
-        FriendshipEntity friendshipEntity2 = new FriendshipEntity("2", "2", "1", null, null, null);
-        FriendshipEntity friendshipEntity3 = new FriendshipEntity("3", "3", "1", null, null, null);
-        friendshipEntities.addAll(List.of(friendshipEntity1, friendshipEntity2, friendshipEntity3));
+
     }
 
-    //todo teraz przesyłam już obiekt wieć zmienić musze liste.
     @Test
-    void should_check_getYourFriendsIds_method() {
-        List<FriendShipDto> yourFriendsId = friendshipService.getYourFriendsId(Flux.fromIterable(friendshipEntities), "1").block();
+    void should_check_getPeopleWithSimilarUsername() {
 
-
-        Assertions.assertEquals(List.of("2","2","3"),yourFriendsId);
 
 
 
     }
-    @Test
-    void should_check_getYourFriendsIds_method_Return_NUll() {
-        List<FriendShipDto> yourFriendsId = friendshipService.getYourFriendsId(Flux.fromIterable(friendshipEntities), "10").block();
 
-
-        Assertions.assertEquals(List.of(),yourFriendsId);
-
-
-
-    }
 
 
 

@@ -19,6 +19,7 @@ import reactor.test.StepVerifier;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.when;
 
 @SpringBootTest
 @ActiveProfiles("test")
@@ -48,9 +49,9 @@ class PostServiceTest {
           userDetailsDto.setFirstName("Jan");
           userDetailsDto.setLastName("Nowak");
 
-        doReturn(userDetailsDto).when(rabbitPostProducer).askForUserDetails(anyString());
+//        doReturn(userDetailsDto).when(rabbitPostProducer).askForUserDetails(anyString());
 
-
+         when(rabbitPostProducer.askForUserDetails(anyString())).thenReturn(userDetailsDto);
 
 
     }
@@ -70,8 +71,10 @@ class PostServiceTest {
     @Test
     void should_check_create_post_throws_PostDatabaseFetchException() {
 
-        doReturn(Mono.error(new PostDatabaseFetchException()))
-                .when(postRepository).save(any());
+//        doReturn(Mono.error(new PostDatabaseFetchException()))
+//                .when(postRepository).save(any());
+
+        when(postRepository.save(any())).thenThrow(new PostDatabaseFetchException());
 
         StepVerifier.create(postService.createPost(createPostDto, userDetailsDto.getUsername()))
                 .expectError(PostDatabaseFetchException.class)

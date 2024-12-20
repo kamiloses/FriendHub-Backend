@@ -107,6 +107,8 @@ public Mono<FriendshipEntity> addToFriendList(String friendUsername, String myUs
     return friendshipRepository.save(friendshipEntity);
 }
 
+
+
 public Mono<Void> removeFriend(String friendUsername, String myUsername) {
     UserDetailsDto friendDetails = rabbitFriendshipProducer.askForUserDetails(friendUsername);
     UserDetailsDto myDetails = rabbitFriendshipProducer.askForUserDetails(myUsername);
@@ -114,6 +116,8 @@ public Mono<Void> removeFriend(String friendUsername, String myUsername) {
             .then(friendshipRepository.deleteByUserIdAndFriendId(friendDetails.getId(), myDetails.getId()));
 
 }
+
+
 
 
 public boolean isOnline(RedisTemplate<String, String> redisTemplate, String username) {

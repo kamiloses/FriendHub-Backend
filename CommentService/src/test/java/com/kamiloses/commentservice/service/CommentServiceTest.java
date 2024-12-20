@@ -1,19 +1,32 @@
 package com.kamiloses.commentservice.service;
 
+import com.kamiloses.commentservice.dto.PublishCommentDto;
+import com.kamiloses.commentservice.dto.UserDetailsDto;
+import com.kamiloses.commentservice.entity.CommentEntity;
+import com.kamiloses.commentservice.exception.CommentDatabaseFetchException;
+import com.kamiloses.commentservice.rabbit.RabbitCommentProducer;
 import com.kamiloses.commentservice.repository.CommentRepository;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.mockito.junit.jupiter.MockitoExtension;
+import reactor.core.publisher.Mono;
+import reactor.test.StepVerifier;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.mock;
-import static reactor.core.publisher.Mono.when;
+import java.util.Date;
 
-@SpringBootTest
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.when;
+
+@ExtendWith(MockitoExtension.class)
 class CommentServiceTest {
+
+
+
+
+    @Mock
+    private RabbitCommentProducer rabbitCommentProducer;
 
     @Mock
     private CommentRepository commentRepository;
@@ -21,19 +34,56 @@ class CommentServiceTest {
     @InjectMocks
     private CommentService commentService;
 
-    @BeforeEach
-    public void setUp() {
+    private String username="Jnowak";
 
 
+    @Test
+    void should_Publish_Comment_Successfully() {
+        PublishCommentDto comment = new PublishCommentDto("Test", "1", null);
+        UserDetailsDto userDetails = new UserDetailsDto("1", "Jnowak","Jan","Nowak");
+        CommentEntity expectedEntity = CommentEntity.builder()
+                .content(comment.getContent())
+                .postId(comment.getPostId())
+                .userId(userDetails.getId())
+                .createdAt(new Date())
+                .build();
+
+
+
+
+        when(rabbitCommentProducer.askForUserDetails(username)).thenReturn(userDetails);
+        when(commentRepository.save(any(CommentEntity.class))).thenReturn(Mono.just(expectedEntity));
+
+
+
+
+        StepVerifier.create(commentService.publishComment(comment, username))
+                .verifyComplete();
     }
 
 
 
     @Test
-    void should_find_comments_By_postId(){
-      //  CommentEntity commentEntity = mock(CommentEntity.class);
+    void should_throw_Error() {
+        PublishCommentDto comment = new PublishCommentDto("Test", "1", null);
+        UserDetailsDto userDetails = new UserDetailsDto("1", "Jnowak","Jan","Nowak");
 
 
+
+
+        when(rabbitCommentProducer.askForUserDetails(username)).thenReturn(userDetails);
+        when(commentRepository.save(any(CommentEntity.class)))
+                .thenReturn(Mono.error(new RuntimeException()));
+
+
+
+
+        StepVerifier.create(commentService.publishComment(comment, username))
+                .expectError(CommentDatabaseFetchException.class)
+                .verify();
     }
+
+
+
 
 }
