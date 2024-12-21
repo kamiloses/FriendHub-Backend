@@ -5,15 +5,11 @@ import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
-import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.support.WebExchangeBindException;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 
@@ -21,29 +17,26 @@ import java.util.stream.Collectors;
 @Slf4j
 public class GlobalExceptionHandler {
 
-        @ExceptionHandler(MethodArgumentNotValidException.class)
-        public ResponseEntity<Map<String, String>> handleValidationExceptions(MethodArgumentNotValidException ex) {
-            BindingResult bindingResult = ex.getBindingResult();
-            Map<String, String> errors = new HashMap<>();
 
-            for (FieldError error : bindingResult.getFieldErrors()) {
-                errors.put(error.getField(), error.getDefaultMessage());
-            }
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<List<String>> handleRegistrationException(MethodArgumentNotValidException e) {
+        log.error("some error has just occurred with bad data");
+        var errors = e.getBindingResult()
+                .getAllErrors()
+                .stream()
+                .map(DefaultMessageSourceResolvable::getDefaultMessage)
+                .collect(Collectors.toList());
 
-            return new ResponseEntity<>(errors, HttpStatus.BAD_REQUEST);
-        }
-
-
-
-
+        System.err.println(errors);
+        return ResponseEntity.badRequest().body(errors);
+    }
 
 
 
-//zwracać jako mape
-    //todo popraw nazwy metod oraz logi
+
+
     @ExceptionHandler(UsernameAlreadyExistsException.class)
     public ResponseEntity<List<String>> handleUsernameAlreadyExistsException() {
-
 
         return ResponseEntity.badRequest().body(List.of("this Username already exists"));
     }

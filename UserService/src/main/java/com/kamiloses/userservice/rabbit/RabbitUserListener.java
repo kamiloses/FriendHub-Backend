@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kamiloses.rabbitmq.RabbitConfig;
+import com.kamiloses.userservice.dto.FriendShipDto;
 import com.kamiloses.userservice.entity.UserEntity;
 import com.kamiloses.userservice.dto.UserDetailsDto;
 import com.kamiloses.userservice.repository.UserRepository;
@@ -37,8 +38,6 @@ public class RabbitUserListener {
         ObjectMapper objectMapper = new ObjectMapper();
         return objectMapper.writeValueAsString(userDetailsDto);
     }
-//todo utwórz potem nowego listenera gdzie będą przesyłane tylko
-// najważniejsze dane w tym hasło bo ten aktualny przesyła zbyt dużo wrażliwych danycxh
 
 
     @RabbitListener(queues = RabbitConfig.Queue_For_Friends_Details)
@@ -49,18 +48,18 @@ public class RabbitUserListener {
             UserDetailsDto userDetailsDto = new UserDetailsDto();
             userDetailsDto.setId(userEntity.getId());
             userDetailsDto.setUsername(userEntity.getUsername());
-           // userDetailsDto.setPassword(userEntity.getPassword());
             userDetailsDto.setFirstName(userEntity.getFirstName());
             userDetailsDto.setLastName(userEntity.getLastName());
             userDetailsDto.setChatId(usersIdAndChatId.stream().map(FriendShipDto::getChatId).toList().get(count));
             count++;
-            // userDetailsDto.setChatId(usersIdAndChatId.get(0).getChatId());
             return userDetailsDto;
         });
         List<UserDetailsDto> userDetailsList = fluxUserDetailsDto.collectList().block();
         count = 0;
         return convertListOfUserDetailsToString(userDetailsList);
     }
+
+
 
 
     private List<FriendShipDto> convertToListOfString(String listOfFriendsId) {

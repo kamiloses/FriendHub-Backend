@@ -1,4 +1,4 @@
-package com.kamiloses.userservice.rabbit;
+package com.kamiloses.userservice.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
