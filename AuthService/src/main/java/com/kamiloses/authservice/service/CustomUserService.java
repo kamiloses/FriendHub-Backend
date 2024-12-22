@@ -12,10 +12,14 @@ import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
-
 import java.util.ArrayList;
 import java.util.List;
-@Component @Import({RabbitConfig.class, RabbitExceptionHandler.class})
+
+
+
+@Component
+@Import({RabbitConfig.class, RabbitExceptionHandler.class})
+
 public class CustomUserService implements ReactiveUserDetailsService {
 
     private final RabbitAuthProducer rabbitAuthProducer;

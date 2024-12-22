@@ -23,6 +23,9 @@ private final JWTUtil jwtUtil;
         this.passwordEncoder = passwordEncoder;
         this.jwtUtil = jwtUtil;
     }
+
+
+
     @PostMapping("/login")
     public Mono<ResponseEntity<AuthResponse>> login(@RequestBody LoginDetails loginDetails) {
         return WebClient.builder().baseUrl("http://localhost:8081")

@@ -1,6 +1,7 @@
 package com.kamiloses.friendservice.entity;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
@@ -13,6 +14,7 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class FriendshipEntity {
 
     @Id
@@ -22,9 +24,7 @@ public class FriendshipEntity {
     private String friendId;
 
     private Date createdAt;
-    private Status status;
 
-    private List<String> messagesId;
 
 
 }

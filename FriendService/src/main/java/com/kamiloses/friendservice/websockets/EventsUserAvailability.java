@@ -1,7 +1,6 @@
 package com.kamiloses.friendservice.websockets;
 
 import com.kamiloses.friendservice.dto.UserActivityDto;
-import com.kamiloses.friendservice.service.RabbitFriendshipProducer;
 import jakarta.annotation.PreDestroy;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.event.EventListener;
