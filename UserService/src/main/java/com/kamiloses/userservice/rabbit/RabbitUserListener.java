@@ -17,6 +17,10 @@ import java.util.List;
 @Component
 public class RabbitUserListener {
 
+
+
+    // rabbit listener can't resend data in reactive way. it causes exceptions
+
     private final UserRepository userRepository;
     private Integer count = 0;
 
@@ -30,7 +34,6 @@ public class RabbitUserListener {
         UserDetailsDto userDetailsDto = new UserDetailsDto();
         userDetailsDto.setId(userEntity.getId());
         userDetailsDto.setUsername(userEntity.getUsername());
-       // userDetailsDto.setPassword(userEntity.getPassword());
         userDetailsDto.setFirstName(userEntity.getFirstName());
         userDetailsDto.setLastName(userEntity.getLastName());
 

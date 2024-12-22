@@ -20,8 +20,8 @@ private final UserRepository userRepository;
     @PostConstruct
     public void init() {
         if (userRepository.findAll().collectList().block().size()==0) {
-            UserEntity user1 = new UserEntity("1", "kamil", "123", "kamiloses@mail.com", "Kamil", "A", "Developer", "url1", new HashSet<>(), new HashSet<>(), new HashSet<>());
-            UserEntity user2 = new UserEntity("2", "adam", "123", "adam@mail.com", "Adam", "B", "Developer", "url2", new HashSet<>(), new HashSet<>(), new HashSet<>());
+            UserEntity user1 = new UserEntity("1", "kamil", "123", "Kamil", "A");
+            UserEntity user2 = new UserEntity("2", "adam", "123", "Adam", "B");
              userRepository.saveAll(List.of(user1, user2)).collectList().block();
         }
 

@@ -22,13 +22,6 @@ public class UserService {
         this.rabbitTemplate = rabbitTemplate;
     }
 
-    public Mono<Boolean> existsByUsernameAndPassword(String username, String password) {
-
-
-        return userRepository.existsByUsernameAndPassword(username, password);
-    }
-
-
     public Mono<UserEntity> save(RegistrationDto user) {
         String encodedPassword = (String) rabbitTemplate.convertSendAndReceive(RabbitConfig.Exchange_Auth, RabbitConfig.ROUTING_KEY_Auth, user.getPassword());
         UserEntity userEntity = registrationDtoToUserEntity(user, encodedPassword);
@@ -42,9 +35,15 @@ public class UserService {
                     return userRepository.save(userEntity); });
     }
 
+    public Mono<LoginDetails> findByUsernameOrId(String usernameOrId) {
+        return userRepository.findByUsernameOrId(usernameOrId,usernameOrId).map(userEntity -> new LoginDetails(userEntity.getUsername(), userEntity.getPassword()));
+    }
+
+
+
+
 
     private UserEntity registrationDtoToUserEntity(RegistrationDto user, String encodedPassword) {
-
         UserEntity userEntity = new UserEntity();
         userEntity.setUsername(user.getUsername());
         userEntity.setPassword(encodedPassword);
@@ -54,8 +53,6 @@ public class UserService {
 
     }
 
-    //todo zmień nazwe potem tego registration albo utwórz nowe dto
-    public Mono<LoginDetails> findByUsername(String username) {
-        return userRepository.findByUsernameOrId(username,username).map(userEntity -> new LoginDetails(userEntity.getUsername(), userEntity.getPassword()));
-    }
+
+
 }

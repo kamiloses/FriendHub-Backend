@@ -18,38 +18,19 @@ import java.util.Map;
 @CrossOrigin(origins = "http://localhost:4200", allowedHeaders = "*", methods = {RequestMethod.GET, RequestMethod.POST})
 public class UserController {
 
-private UserService userService;
+private final UserService userService;
 
     public UserController(UserService userService) {
         this.userService = userService;
     }
 
 
-  //todo usuń potem tą metode żeby została tylko ta w authService
-
-    @PostMapping("/login")
-public Mono<Boolean> areCredentialsValid(@RequestParam String username, @RequestParam String password) {
-return userService.existsByUsernameAndPassword(username,password);}
-
-
-
-
-
-
-//    @PostMapping("/signup")
-//    public Mono<ResponseEntity<Map<String, String>>> signup(@RequestBody @Valid RegistrationDto user) {
-//        return userService.save(user)
-//                .map(savedUser -> {
-//                    Map<String, String> response = new HashMap<>();
-//                    response.put("message", "User signed up successfully");
-//                    return ResponseEntity.ok(response);
-//                });
-//    }
-
     @PostMapping("/signup")
-    public Mono<ResponseEntity<String>> signup(@RequestBody @Valid RegistrationDto user) {
+    public Mono<ResponseEntity<Map<String, String>>> signup(@RequestBody @Valid RegistrationDto user) {
+        Map<String, String> response = new HashMap<>();
+        response.put("message", "User signed up successfully");
         return userService.save(user)
-                .map(savedUser -> ResponseEntity.ok("User signed up successfully"));
+                .map(savedUser -> ResponseEntity.ok(response));
     }
 
 
@@ -60,7 +41,7 @@ return userService.existsByUsernameAndPassword(username,password);}
 
     @GetMapping("/{username}")
     public Mono<LoginDetails> getUsernameAndPasswordOfUser(@PathVariable String username) {
-        return userService.findByUsername(username)
+        return userService.findByUsernameOrId(username)
                 .switchIfEmpty(Mono.error(new RuntimeException("User not found")));
     }
 
