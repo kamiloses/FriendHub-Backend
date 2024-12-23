@@ -23,7 +23,7 @@ public class UserService {
     }
 
     public Mono<UserEntity> save(RegistrationDto user) {
-        String encodedPassword = (String) rabbitTemplate.convertSendAndReceive(RabbitConfig.Exchange_Auth, RabbitConfig.ROUTING_KEY_Auth, user.getPassword());
+        String encodedPassword = (String) rabbitTemplate.convertSendAndReceive(RabbitConfig.AUTH_EXCHANGE, RabbitConfig.AUTH_ROUTING_KEY, user.getPassword());
         UserEntity userEntity = registrationDtoToUserEntity(user, encodedPassword);
              return userRepository.existsByUsername(userEntity.getUsername())
                      .flatMap(exists->{

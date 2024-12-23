@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 public class RabbitAuthListener {
 
 
-    @RabbitListener(queues = RabbitConfig.Queue_Auth)
+    @RabbitListener(queues = RabbitConfig.AUTH_REQUEST_QUEUE)
     public String receive_And_Resend_EncodedPassword(String password) {
         return new BCryptPasswordEncoder().encode(password);
     }

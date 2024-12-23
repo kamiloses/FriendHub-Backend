@@ -28,7 +28,7 @@ public class RabbitUserListener {
         this.userRepository = userRepository;
     }
 
-    @RabbitListener(queues = RabbitConfig.Queue_To_User_Service)
+    @RabbitListener(queues = RabbitConfig.USER_INFO_REQUEST_QUEUE)
     public String receive_And_Resend_UserDetails(String username) throws JsonProcessingException {
         UserEntity userEntity = userRepository.findByUsernameOrId(username,username).block();
         UserDetailsDto userDetailsDto = new UserDetailsDto();
@@ -43,7 +43,7 @@ public class RabbitUserListener {
     }
 
 
-    @RabbitListener(queues = RabbitConfig.Queue_For_Friends_Details)
+    @RabbitListener(queues = RabbitConfig.FRIENDS_INFO_REQUEST_QUEUE)
     public String receive_And_Resend_FriendsDetails(String listOfUsersId) {
         List<FriendShipDto> usersIdAndChatId = convertToListOfString(listOfUsersId);
         Flux<UserDetailsDto> fluxUserDetailsDto = userRepository.findUserEntitiesByIdIn(usersIdAndChatId.stream().map(FriendShipDto::getUserIdOrFriendId).toList()).map(userEntity ->

@@ -21,7 +21,7 @@ public class RabbitMessageProducer {
 
 
     public UserDetailsDto askForUserDetails(String username) {
-        String userDetailsAsString = (String) rabbitTemplate.convertSendAndReceive(RabbitConfig.Exchange_To_User_Service, RabbitConfig.ROUTING_KEY_, username);
+        String userDetailsAsString = (String) rabbitTemplate.convertSendAndReceive(RabbitConfig.USER_INFO_EXCHANGE, RabbitConfig.USER_INFO_ROUTING_KEY, username);
         return convertStringToUserDetailsDto(userDetailsAsString);
 
     }

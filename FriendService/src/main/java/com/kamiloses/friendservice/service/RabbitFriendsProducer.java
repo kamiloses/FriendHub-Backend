@@ -25,7 +25,7 @@ public class RabbitFriendsProducer {
 
 
     public UserDetailsDto askForUserDetails(String username) {
-        String userDetailsAsString = (String) rabbitTemplate.convertSendAndReceive(RabbitConfig.Exchange_To_User_Service, RabbitConfig.ROUTING_KEY_, username);
+        String userDetailsAsString = (String) rabbitTemplate.convertSendAndReceive(RabbitConfig.USER_INFO_EXCHANGE, RabbitConfig.USER_INFO_ROUTING_KEY, username);
 
        return convertStringToUserDetailsDto(userDetailsAsString); }
 
@@ -52,7 +52,7 @@ public class RabbitFriendsProducer {
 
 
         String friendsIdAsString = convertListOfFriendsIdToString(friendsId);
-        String listOfFriendsDetails = (String) rabbitTemplate.convertSendAndReceive(RabbitConfig.Exchange_To_User_Service, RabbitConfig.Routing_Key_Friends_Details, friendsIdAsString);
+        String listOfFriendsDetails = (String) rabbitTemplate.convertSendAndReceive(RabbitConfig.USER_INFO_EXCHANGE, RabbitConfig.FRIENDS_INFO_ROUTING_KEY, friendsIdAsString);
         return convertStringOfUserDetailsToList(listOfFriendsDetails);
 
 
