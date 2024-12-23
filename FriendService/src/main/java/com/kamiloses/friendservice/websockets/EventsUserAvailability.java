@@ -11,6 +11,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.socket.messaging.SessionConnectedEvent;
 import org.springframework.web.socket.messaging.SessionDisconnectEvent;
 
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -38,10 +39,10 @@ public class EventsUserAvailability {
             String sessionId = headerAccessor.getSessionId();
 
 
-            redisTemplate.opsForValue().set(sessionId,username);
+            redisTemplate.opsForValue().set(sessionId, username);
 
             log.info("user: {} Connected", username);
-            updateFriendStatus(username,true);
+            updateFriendStatus(username, true);
 
         }
     }
@@ -53,20 +54,36 @@ public class EventsUserAvailability {
 
 
         String username = redisTemplate.opsForValue().get(sessionId);
-        redisTemplate.delete(sessionId);
+
+        deleteByValue(username);
+
 
         log.info("user: {} disconnected", username);
 
-        updateFriendStatus(username,false);
+        updateFriendStatus(username, false);
 
 
     }
 
 
-
     private void updateFriendStatus(String username, boolean isOnline) {
         UserActivityDto friendStatus = new UserActivityDto(username, isOnline);
         messagingTemplate.convertAndSend("/topic/public/friendsOnline", friendStatus);
+    }
+
+
+    private void deleteByValue(Object valueToDelete) {
+        Set<String> keys = redisTemplate.keys("*");
+        if (keys != null) {
+            for (String key : keys) {
+                Object value = redisTemplate.opsForValue().get(key);
+                if (value != null && value.equals(valueToDelete)) {
+                    System.err.println(""+value);
+                    redisTemplate.delete(key);
+                }
+            }
+
+        }
     }
 
 
