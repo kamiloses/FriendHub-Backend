@@ -1,4 +1,4 @@
-package com.kamiloses.userservice.controller;
+package com.kamiloses.userservice.router;
 
 import com.kamiloses.userservice.dto.LoginDetails;
 import com.kamiloses.userservice.dto.RegistrationDto;
@@ -13,7 +13,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @RestController
-@Validated //todo usuń potem
+@Validated
 @RequestMapping("/api/user")
 @CrossOrigin(origins = "http://localhost:4200", allowedHeaders = "*", methods = {RequestMethod.GET, RequestMethod.POST})
 public class UserController {

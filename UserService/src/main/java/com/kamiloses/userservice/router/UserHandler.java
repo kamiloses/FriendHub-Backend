@@ -1,5 +1,6 @@
 package com.kamiloses.userservice.router;
 
+import com.kamiloses.userservice.dto.RegistrationDto;
 import com.kamiloses.userservice.entity.UserEntity;
 import com.kamiloses.userservice.service.UserService;
 import org.springframework.stereotype.Component;
@@ -11,7 +12,6 @@ import reactor.core.publisher.Mono;
 public class UserHandler {
 
 
-
     private final UserService userService;
 
 
@@ -19,7 +19,8 @@ public class UserHandler {
         this.userService = userService;
     }
     public Mono<ServerResponse> saveUser(ServerRequest request) {
-        return request.bodyToMono(UserEntity.class).flatMap(user->ServerResponse.ok().bodyValue("User signed up successfully"));
+        return request.bodyToMono(RegistrationDto.class)
+                .flatMap(user->userService.save(user).flatMap(userEntity->ServerResponse.ok().bodyValue("User signed up successfully")));
 
 
     }
