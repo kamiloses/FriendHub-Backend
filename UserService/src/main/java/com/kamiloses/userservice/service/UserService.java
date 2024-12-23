@@ -1,16 +1,19 @@
 package com.kamiloses.userservice.service;
 
 import com.kamiloses.rabbitmq.RabbitConfig;
+import com.kamiloses.rabbitmq.exception.RabbitExceptionHandler;
 import com.kamiloses.userservice.dto.LoginDetails;
 import com.kamiloses.userservice.dto.RegistrationDto;
 import com.kamiloses.userservice.entity.UserEntity;
 import com.kamiloses.userservice.exception.UsernameAlreadyExistsException;
 import com.kamiloses.userservice.repository.UserRepository;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
+import org.springframework.context.annotation.Import;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 
 @Service
+@Import(RabbitExceptionHandler.class)
 public class UserService {
 
 

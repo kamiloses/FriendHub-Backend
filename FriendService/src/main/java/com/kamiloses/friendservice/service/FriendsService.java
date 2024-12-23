@@ -4,7 +4,11 @@ import com.kamiloses.friendservice.dto.FriendShipDto;
 import com.kamiloses.friendservice.dto.SearchedPeopleDto;
 import com.kamiloses.friendservice.dto.UserDetailsDto;
 import com.kamiloses.friendservice.entity.FriendshipEntity;
+import com.kamiloses.friendservice.exception.FriendsDatabaseFetchException;
 import com.kamiloses.friendservice.repository.FriendshipRepository;
+import com.kamiloses.rabbitmq.exception.RabbitExceptionHandler;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.annotation.Import;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
@@ -15,6 +19,8 @@ import java.util.List;
 import java.util.Set;
 
 @Service
+@Import(RabbitExceptionHandler.class)
+@Slf4j
 public class FriendsService {
 
     private final FriendshipRepository friendshipRepository;
@@ -62,6 +68,10 @@ public class FriendsService {
                                 .flatMap(searchedPeopleDto -> Mono.fromSupplier(() -> rabbitFriendsProducer.askForUserDetails(userDetails.getUsername()))
                                         .flatMap(searchedFriendDetails -> Mono.fromSupplier(() -> rabbitFriendsProducer.askForUserDetails(myUsername))
                                                 .flatMap(myDetails -> Flux.from(friendshipRepository.getFriendshipEntityByUserIdOrFriendId(myDetails.getId(), myDetails.getId()))
+                                                        .onErrorResume(error->{
+                                                            log.error("There was some problem with fetching friends");
+                                                            return Mono.error(FriendsDatabaseFetchException::new);
+                                                        })
                                                         .collectList()
                                                         .map(allFriendsRelatedWithMe -> {
                                                             boolean isYourFriend = false;
@@ -114,7 +124,13 @@ public class FriendsService {
                                                     .userId(myAccountDetails.getId())
                                                     .createdAt(new Date()).build();
 
-                                            return friendshipRepository.save(friendshipEntity);
+                                            return friendshipRepository.save(friendshipEntity)
+                                                    .onErrorResume(error->{
+                                                        log.error("There was some problem with saving - adding to friend list");
+                                                        return Mono.error(FriendsDatabaseFetchException::new);
+                                                    })
+
+                                                    ;
                                         }));
 
     }
