@@ -1,4 +1,3 @@
-POPRAW DOKŁADNIE POTEM
 
 <h4> FriendHub</h4>
 
@@ -45,26 +44,28 @@ Very handy becomed here "SessionConnectedEvent" which i used in eventListeners t
 <br><br><br>
 
 <h1>Backend</h1>
-<h2>In this section, I will discuss my backend services.</h2>
+<h2>In this section, I will briefly discuss few tools/modules in my code</h2>
 
 
 
-<h3><b>AuthService</b></h3> I used this module to integrate Spring Security, JWT, and route other service ports through the API Gateway. The entire implementation is written reactively. If any other module requires data about the connected user, it can request it from AuthService via RabbitMQ.
-<h3><b>CommentService</b></h3> This module is created for writing and displaying comments. Currently, it only supports displaying comments related to posts.
-I integrated the Eureka Discovery Client into almost every module to help the API Gateway route the ports.
+<h3><b>AuthService</b></h3> I used this module to integrate Spring Security, JWT, and route other service ports through the API Gateway.Api Gateway fetches ports through the eureka. The entire implementation is written reactively. If any other module requires data about the connected user, it can request it from AuthService via RabbitMQ.
 
-<h3><b>EurekaServer</b></h3> A simple module which contains only Eureka server. It is responsible for enabling the server.
-<h3><b>FriendService</b></h3> This module stores data about friendships between two users. I created an entity that collects two users: one as the person who sent the friend request and the other as the recipient of the invitation.
-<h4>MessageService</h4> This module manages messages related to users' chats.
+<h3><b>RabbitMq</b></h1>Modules are communicating with each other via rabbitmq.I used mainly rabbit just for delivering userData. For example PostService communicates with userService once he
+need data about the user.
 
-<h4>PostService</h4> This module stores data about posts. Currently, it supports creating and displaying posts.
 
-<h4>UserService</h4> This module contains data about users. Every other service needs access to this one.
+<h3>Webflux</h3>
 
 
 
+<h3>Testing</h3>
 
 <h1>Frontend</h1>
+Frontend is written using angular.I wasn't focussed on writing frontend that much. It was written just to endeepen into frontend tools    then there
+is stil  many things to change but the application work's as it should.
+
+Below is a link to frontend repository
+
 ![image](https://github.com/user-attachments/assets/3b82e4ba-526f-4357-9919-b1e2951f96ad)
 
 
@@ -84,6 +85,9 @@ I integrated the Eureka Discovery Client into almost every module to help the AP
 - Srping security
 - JWT
 - Lombok
+- Redis
+- Junit
+- Mockito
 
 
 
