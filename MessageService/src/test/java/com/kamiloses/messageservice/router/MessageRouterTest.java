@@ -1,44 +1,48 @@
 package com.kamiloses.messageservice.router;
 
-import com.kamiloses.messageservice.MessageServiceApplication;
 import com.kamiloses.messageservice.dto.MessageDto;
 import com.kamiloses.messageservice.dto.SendMessageDto;
+import com.kamiloses.messageservice.dto.UserDetailsDto;
 import com.kamiloses.messageservice.repository.MessageRepository;
-import com.kamiloses.messageservice.service.MessageService;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.springframework.amqp.rabbit.core.RabbitMessagingTemplate;
+import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.reactive.AutoConfigureWebTestClient;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.reactive.server.WebTestClient;
 import reactor.test.StepVerifier;
+
+import java.time.Duration;
 
 
 @SpringBootTest
 @AutoConfigureWebTestClient
 @ActiveProfiles("test")
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 class MessageRouterTest {
-
-
 
 
     @Autowired
     private WebTestClient webTestClient;
 
-     @Autowired
+    @Autowired
     private MessageRepository messageRepository;
 
+    @BeforeEach
+    public void setUp() {
+        webTestClient = webTestClient.mutate()
+                .responseTimeout(Duration.ofMillis(30000))
+                .build();
+
+
+    }
 
 
     @Test
-    void should_check_sendMessage_Works(){
-        SendMessageDto sendMessageDto = new SendMessageDto("1","kamiloses","content");
-
+    @Order(1)
+    void should_check_sendMessage_Works() {
         messageRepository.deleteAll().block();
+        SendMessageDto sendMessageDto = new SendMessageDto("1", "kamiloses", "content");
         webTestClient.post().uri("/api/message").bodyValue(sendMessageDto).exchange()
                 .expectStatus().isOk();
 
@@ -46,5 +50,31 @@ class MessageRouterTest {
                 .expectNextCount(1)
                 .verifyComplete();
     }
+
+
+    @Test
+    @Order(2)
+    void should_Check_showMessagesRelatedWithChat() {
+
+
+        UserDetailsDto userDetailsDto = new UserDetailsDto();
+        userDetailsDto.setUsername("kamiloses");
+
+        MessageDto.builder()
+                .chatId("1")
+                .sender(userDetailsDto)
+                .content("content")
+                .build();
+
+
+        webTestClient.get().uri("/api/message/1").exchange()
+                .expectStatus().isOk().expectBodyList(MessageDto.class)
+                .hasSize(1)
+
+        ;
+
+
+    }
+
 
 }

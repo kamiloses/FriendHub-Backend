@@ -33,7 +33,7 @@ class LoginControllerTest {
     WebTestClient webTestClient;
 
 
-    @Mock
+    @MockBean
     private WebClient webClient;
 
 
@@ -67,16 +67,16 @@ class LoginControllerTest {
         assertThat(response.getToken()).isNotBlank();
     }
 
-//    @Test
-//    void shouldNotLogin() {
-//
-//        LoginDetails loginDetails = new LoginDetails("Wrong username", "Wrong password");
-//
-//        webTestClient.post()
-//                .uri("/api/user/login")
-//                .body(BodyInserters.fromValue(loginDetails))
-//                .exchange()
-//                .expectStatus().isUnauthorized();
-//    }
+    @Test
+    void shouldNotLogin() {
+
+        LoginDetails loginDetails = new LoginDetails("WrongUsername", "WrongPassword");
+
+        webTestClient.post()
+                .uri("/api/user/login")
+                .body(BodyInserters.fromValue(loginDetails))
+                .exchange()
+                .expectStatus().isUnauthorized();
+    }
 
 }

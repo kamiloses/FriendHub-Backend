@@ -78,7 +78,6 @@ public class EventsUserAvailability {
             for (String key : keys) {
                 Object value = redisTemplate.opsForValue().get(key);
                 if (value != null && value.equals(valueToDelete)) {
-                    System.err.println(""+value);
                     redisTemplate.delete(key);
                 }
             }
@@ -92,11 +91,11 @@ public class EventsUserAvailability {
 
 
 
+
+
+
     @PreDestroy
     public void cleanUpTheRedisDB() {
-
-        //todo sprawdz jak usunąc wszystkie elementy z redisa
-
         redisTemplate.getConnectionFactory().getConnection().flushAll();
 
     }
