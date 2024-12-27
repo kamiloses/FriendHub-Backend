@@ -40,6 +40,7 @@ Very handy becomed here "SessionConnectedEvent" which i used in eventListeners t
 
 
 
+![msedge_491GLTYdwN](https://github.com/user-attachments/assets/704f98c4-51ac-4f0f-83e4-a422708e4ba3)
 
 <br><br><br>
 
@@ -49,6 +50,11 @@ Very handy becomed here "SessionConnectedEvent" which i used in eventListeners t
 
 
 <h3><b>AuthService</b></h3> I used this module to integrate Spring Security, JWT, and route other service ports through the API Gateway.Api Gateway fetches ports through the eureka. The entire implementation is written reactively. If any other module requires data about the connected user, it can request it from AuthService via RabbitMQ.
+
+
+
+
+
 
 <h3><b>RabbitMq</b></h1>Modules are communicating with each other via rabbitmq.I used mainly rabbit just for delivering userData. For example PostService communicates with userService once he
 need data about the user.
