@@ -1,46 +1,48 @@
 
 <h4> FriendHub</h4>
 
-FullStack application which was written in reactive style and in microservices architechture.
-  
+A Full-Stack application that was written in a reactive style and follows a microservices architecture.
 
-Initially i wanted to  upload the applicaton as container on dockerhub but i was having problem with maven which was unable to detect one module in local repository and i was not able to  
-package the project .Eventualy i decided to make only screenshots.
+Initially, I wanted to upload the application as a container on Docker Hub, but I encountered a problem with Maven, which was unable to detect one module in the local repository, preventing me from packaging the project. Eventually, I decided to only make screenshots and GIFs.
 
-The first step is registeration process. in the backend i implemented validation which checks if inputs are valid.
+
+
+The first step is the registration process. In the backend, I implemented validation to check if the inputs are valid.
 REGISTRATION IMAGE
 
-
-after successfull registration you can procced to login 
+After successful registration, you can proceed to login. On the backend side, I implemented JWT, and after a successful login,
+you receive a token. However, on the frontend side, I did not implement this.
 
 LOGIN IMAGE
 
 
-you can write posts.I have implemented on the backend side "findAll" then on home side will shown all the posts .
+You can write posts. I have implemented the 'findAll' method on the backend side, and on the home page, all the posts will be displayed.
 
 HOME SIDE
 
-once you click the post you will be moved to postDetails where you can see all the comments related with specific post  
+Once you click on a post, you will be redirected to the post details page, where you can see all the comments related with the specific post.
 POSTDETAIL IMAGE
 
 
-You can write comments and response to other comments
+You can write comments and response to other comments.
 COMMENTS IMAGE
 
 
-you can add to friend or remove depending on if user is currenty on your friendList
+You can add to friend or remove depending on if user is currenty on your friendList.
 
 
-I implemented on the backendSide websockockets which are responsible for writing messages in real time
+I implemented WebSockets on the backend side, which are responsible for sending messages in real-time.
 WRTING IN REALLIFE IMAGE
 
 
-And there is also posibility to check whether user is online or offline.
-Very handy becomed here "SessionConnectedEvent" which i used in eventListeners to check whether user has connected to StompJS or dissconnected
 
-
+<br><br><h2>User Availability</h2>
+There is also posibility to check whether user is online or offline.
+Very handy here became the 'SessionConnectedEvent,' which I used in event listeners to check whether a user has connected to or disconnected from StompJS.
 
 ![msedge_491GLTYdwN](https://github.com/user-attachments/assets/704f98c4-51ac-4f0f-83e4-a422708e4ba3)
+
+
 
 <br><br><br>
 
