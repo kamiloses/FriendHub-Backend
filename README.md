@@ -1,45 +1,58 @@
-
 <h4> FriendHub</h4>
 
 A Full-Stack application that was written in a reactive style and follows a microservices architecture.
 
-Initially, I wanted to upload the application as a container on Docker Hub, but I encountered a problem with Maven, which was unable to detect one module in the local repository, preventing me from packaging the project. Eventually, I decided to only make screenshots and GIFs.
+Initially, I wanted to upload the application as a container on Docker Hub, but I encountered a problem with Maven, which was unable to detect one module in the local repository, preventing me from packaging the project.Installing the module in the local repository didn't work, so I eventually decided to just take screenshots and create gifs instead.
 
 
 
+
+<br><br><h2>Registration-Process</h2>
 The first step is the registration process. In the backend, I implemented validation to check if the inputs are valid.
-REGISTRATION IMAGE
+![image](https://github.com/user-attachments/assets/1bd10fa2-d058-4970-b405-3e852e7a99a5)
 
+
+
+
+<br><br> <h2>Login-Process</h2>
 After successful registration, you can proceed to login. On the backend side, I implemented JWT, and after a successful login,
 you receive a token. However, on the frontend side, I did not implement this.
+![image](https://github.com/user-attachments/assets/d09dd208-7f34-43bb-8468-1edcc635f409)
 
-LOGIN IMAGE
 
 
+
+<br><br><h2>Posts</h2>
 You can write posts. I have implemented the 'findAll' method on the backend side, and on the home page, all the posts will be displayed.
 
-HOME SIDE
+
+
+
+
+
+<br><br><h2>Comments</h2>
 
 Once you click on a post, you will be redirected to the post details page, where you can see all the comments related with the specific post.
-POSTDETAIL IMAGE
+<br>You can write comments and response to other comments.
+
+![image](https://github.com/user-attachments/assets/885024a9-80d3-4b7b-8693-ff8848ce785b)
 
 
-You can write comments and response to other comments.
-COMMENTS IMAGE
 
-
+<br><br> <h2>Friends</h2>
 You can add to friend or remove depending on if user is currenty on your friendList.
+![image](https://github.com/user-attachments/assets/70cfc394-df8d-4d9b-9c48-7306fe38d6fd)
 
 
+<br><br><h2>Real-Time Messaging</h2>
 I implemented WebSockets on the backend side, which are responsible for sending messages in real-time.
-WRTING IN REALLIFE IMAGE
+GIF
 
 
 
 <br><br><h2>User Availability</h2>
 There is also posibility to check whether user is online or offline.
 Very handy here became the 'SessionConnectedEvent,' which I used in event listeners to check whether a user has connected to or disconnected from StompJS.
-
 ![msedge_491GLTYdwN](https://github.com/user-attachments/assets/704f98c4-51ac-4f0f-83e4-a422708e4ba3)
 
 
@@ -51,6 +64,8 @@ Very handy here became the 'SessionConnectedEvent,' which I used in event listen
 
 
 
+
+//todo od tąd popraw
 <h3><b>AuthService</b></h3> I used this module to integrate Spring Security, JWT, and route other service ports through the API Gateway.Api Gateway fetches ports through the eureka. The entire implementation is written reactively. If any other module requires data about the connected user, it can request it from AuthService via RabbitMQ.
 
 
