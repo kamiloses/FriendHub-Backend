@@ -67,37 +67,29 @@ Very handy here became the 'SessionConnectedEvent,' which I used in event listen
 
 
 
-//todo od tąd popraw
-<h3><b>AuthService</b></h3> I used this module to integrate Spring Security, JWT, and route other service ports through the API Gateway.Api Gateway fetches ports through the eureka. The entire implementation is written reactively. If any other module requires data about the connected user, it can request it from AuthService via RabbitMQ.
+<h3><b>AuthService</b></h3> I used this module to integrate Spring Security, JWT, and route other service ports through the API Gateway.Api Gateway fetches ports through the eureka. The entire implementation is written reactively.
 
 
+<h3><b>RabbitMq</b></h1>Modules are communicating with each other via rabbitmq.I used mainly rabbit just for delivering userData. For example PostService communicates with userService when he
+needs data about the user.
 
 
+<h3> Redis </h3> I used the tool to dynamically manage user sessions. Once a user logs in, his username and session id is saved as a hash map in Redis. When the user leave the application, his session is removed.
 
 
-<h3><b>RabbitMq</b></h1>Modules are communicating with each other via rabbitmq.I used mainly rabbit just for delivering userData. For example PostService communicates with userService once he
-need data about the user.
-
-
-<h3>Webflux</h3>
-
-
-
+//od tąd
 <h3>Testing</h3>
-
 <h1>Frontend</h1>
 Frontend is written using angular.I wasn't focussed on writing frontend that much. It was written just to endeepen into frontend tools    then there
 is stil  many things to change but the application work's as it should.
 
 Below is a link to frontend repository
-
-![image](https://github.com/user-attachments/assets/3b82e4ba-526f-4357-9919-b1e2951f96ad)
-
-
+https://github.com/kamiloses/FriendHub-Frontend
+//do tąd
 
 
 <br><br><br><br><br>
-<h4>Currently Used:</h4>
+<h4>libraries/frameworks used :</h4>
 
 - Java 17
 - Spring boot 3
