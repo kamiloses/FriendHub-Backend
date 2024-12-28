@@ -1,10 +1,19 @@
-<h4> FriendHub</h4>
+<h1>FriendHub</h1>
+<h3>
+A full-stack application developed in a reactive style with a microservices architecture.
+</h3>
 
-A Full-Stack application that was written in a reactive style and follows a microservices architecture.
-
-Initially, I wanted to upload the application as a container on Docker Hub, but I encountered a problem with Maven, which was unable to detect one module in the local repository, preventing me from packaging the project.Installing the module in the local repository didn't work, so I eventually decided to just take screenshots and create gifs instead.
-
-
+<p>
+Initially, I planned to upload the application as a container on Docker Hub, but I encountered an issue with Maven. 
+It was unable to detect one module in the local repository, which prevented me from packaging the project. 
+Installing the module locally didn’t solve the issue, so I decided to take screenshots and create GIFs instead.
+</p>
+<br><br>
+<h3>Important</h3>
+<p>
+I wasn’t as focused on the frontend as I was on the backend. There is still a lot to implement on the frontend, 
+but the backend was the most important part of the project for me.
+</p>
 
 
 <br><br><h2>Registration-Process</h2>
@@ -46,7 +55,7 @@ You can add to friend or remove depending on if user is currenty on your friendL
 
 
 <br><br><h2>Real-Time Messaging</h2>
-I implemented WebSockets on the backend side, which are responsible for sending messages in real-time.
+I implemented WebSockets, which are responsible for sending messages in real-time.
 ![webstorm64_rq8hfpT7Ih](https://github.com/user-attachments/assets/e2142e01-05f5-4a9f-b7f1-a24527ee048c)
 
 
@@ -62,7 +71,7 @@ Very handy here became the 'SessionConnectedEvent,' which I used in event listen
 <br><br><br>
 
 <h1>Backend</h1>
-<h2>In this section, I will briefly discuss few tools/modules in my code</h2>
+<h2>In this section, I will briefly discuss few tools/modules in my code.</h2>
 
 
 
@@ -77,19 +86,18 @@ needs data about the user.
 <h3> Redis </h3> I used the tool to dynamically manage user sessions. Once a user logs in, his username and session id is saved as a hash map in Redis. When the user leave the application, his session is removed.
 
 
-//od tąd
-<h3>Testing</h3>
-<h1>Frontend</h1>
-Frontend is written using angular.I wasn't focussed on writing frontend that much. It was written just to endeepen into frontend tools    then there
-is stil  many things to change but the application work's as it should.
 
-Below is a link to frontend repository
+<br><br><h1>Frontend</h1>
+The frontend is made with Angular. I didn’t focus much on it. I just wanted to try frontend tools. 
+There are still many things to fix, but the app works fine.
+
+Below is a link to frontend repository<br>
 https://github.com/kamiloses/FriendHub-Frontend
-//do tąd
+
 
 
 <br><br><br><br><br>
-<h4>libraries/frameworks used :</h4>
+<h3>libraries/frameworks used :</h3>
 
 - Java 17
 - Spring boot 3
@@ -99,7 +107,7 @@ https://github.com/kamiloses/FriendHub-Frontend
 - Eureka Discovery Server & client
 - Angular
 - Reactive Api gateway
-- Srping security
+- Spring security
 - JWT
 - Lombok
 - Redis
@@ -107,5 +115,6 @@ https://github.com/kamiloses/FriendHub-Frontend
 - Mockito
 
 
-
+<br><br><br><br>
+Fun Fact: While developing this app, I noticed for the first time how important a good computer is for programming because my computer barely handled so many backend modules running with Docker and the frontend at the same time.
 
