@@ -25,6 +25,7 @@ you receive a token. However, on the frontend side, I did not implement this.
 <br><br><h2>Posts</h2>
 You can write posts. I have implemented the 'findAll' method on the backend side, and on the home page, all the posts will be displayed.
 
+![image](https://github.com/user-attachments/assets/b6e31f35-5db8-4c63-94fb-f8a07689bcf9)
 
 
 
