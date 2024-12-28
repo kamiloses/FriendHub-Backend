@@ -46,7 +46,8 @@ You can add to friend or remove depending on if user is currenty on your friendL
 
 <br><br><h2>Real-Time Messaging</h2>
 I implemented WebSockets on the backend side, which are responsible for sending messages in real-time.
-GIF
+![webstorm64_rq8hfpT7Ih](https://github.com/user-attachments/assets/e2142e01-05f5-4a9f-b7f1-a24527ee048c)
+
 
 
 
