@@ -69,7 +69,7 @@ class RegistrationTest {
 
 
 
-    //todo dodaj potem drugi przypadek w sytuacji gdy sie nie zarejestrujemy .
+
 
 
 

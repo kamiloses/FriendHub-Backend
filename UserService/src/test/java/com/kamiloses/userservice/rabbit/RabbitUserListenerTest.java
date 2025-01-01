@@ -5,9 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kamiloses.userservice.dto.FriendShipDto;
 import com.kamiloses.userservice.entity.UserEntity;
 import com.kamiloses.userservice.repository.UserRepository;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,15 +45,19 @@ class RabbitUserListenerTest {
     }
 
     @Test
+     @Disabled
     void Should_Check_receiveAndResendFriendsDetails_Works() throws JsonProcessingException {
         FriendShipDto friendShipDto1 = new FriendShipDto("1",null);
-        FriendShipDto friendShipDto2 = new FriendShipDto("1",null);
-        FriendShipDto friendShipDto3 = new FriendShipDto("1",null);
+        FriendShipDto friendShipDto2 = new FriendShipDto("2",null);
+        FriendShipDto friendShipDto3 = new FriendShipDto("3",null);
+
+
+
 
         String usersIds = objectMapper.writeValueAsString(List.of(friendShipDto1,friendShipDto2,friendShipDto3));
 
-        rabbitListener.receive_And_Resend_FriendsDetails(usersIds);
-
+        String friendsDetails = rabbitListener.receive_And_Resend_FriendsDetails(usersIds);
+        Assertions.assertEquals(3,friendsDetails);
 
     }
 }

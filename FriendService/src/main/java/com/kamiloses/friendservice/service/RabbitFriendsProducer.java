@@ -82,7 +82,6 @@ public class RabbitFriendsProducer {
         String usersDetails = (String) rabbitTemplate.convertSendAndReceive(RabbitConfig.Exchange_searchedPeople, RabbitConfig.ROUTING_KEY_searchedPeople, username);
         List<UserDetailsDto> userDetailsDtos = convertStringOfUserDetailsToList(usersDetails);
 
-
         return userDetailsDtos;   }
 
 

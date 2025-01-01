@@ -46,7 +46,8 @@ public class RabbitUserListener {
     @RabbitListener(queues = RabbitConfig.FRIENDS_INFO_REQUEST_QUEUE)
     public String receive_And_Resend_FriendsDetails(String listOfUsersId) {
         List<FriendShipDto> usersIdAndChatId = convertToListOfString(listOfUsersId);
-        Flux<UserDetailsDto> fluxUserDetailsDto = userRepository.findUserEntitiesByIdIn(usersIdAndChatId.stream().map(FriendShipDto::getUserIdOrFriendId).toList()).map(userEntity ->
+        Flux<UserDetailsDto> fluxUserDetailsDto = userRepository.findUserEntitiesByIdIn(usersIdAndChatId.stream()
+                .map(FriendShipDto::getUserIdOrFriendId).toList()).map(userEntity ->
         {
             UserDetailsDto userDetailsDto = new UserDetailsDto();
             userDetailsDto.setId(userEntity.getId());

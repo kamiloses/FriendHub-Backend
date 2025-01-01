@@ -24,13 +24,17 @@
             UserDetailsDto userDetailsDto = rabbitFriendsProducer.askForUserDetails(message.getUsername());
 
 
-            SendMessageDto sendMessageDto = new SendMessageDto(message.getChatId(),message.getMessage(), userDetailsDto.getUsername(), userDetailsDto.getFirstName(),userDetailsDto.getLastName());
+            SendMessageDto sendMessageDto = new SendMessageDto(message.getChatId(), message.getMessage(), userDetailsDto.getUsername(), userDetailsDto.getFirstName(), userDetailsDto.getLastName());
 
-  //todo popraw potem ten/topic/public na queue czy jakoś tak i po stronie frontendu tez
-            // i popraw reaktywnosc przy rabbicie
 
-            messagingTemplate.convertAndSend("/topic/public/"+message.getChatId(), sendMessageDto);
+            messagingTemplate.convertAndSend("/topic/public/" + message.getChatId(), sendMessageDto);
 
         }
 
     }
+
+
+            //todo popraw potem ten/topic/public na queue i po stronie frontendu tez
+
+
+

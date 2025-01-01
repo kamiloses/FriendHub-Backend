@@ -39,7 +39,6 @@ class CommentRouterTest {
 
     }
       @Test
-      @Disabled
     public void should_check_if_PublishComments_works(){
          commentRepository.deleteAll().block();
           PublishCommentDto publishCommentDto = new PublishCommentDto("content","1",null);

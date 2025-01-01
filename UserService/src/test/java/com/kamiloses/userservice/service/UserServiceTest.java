@@ -1,6 +1,7 @@
 package com.kamiloses.userservice.service;
 
 import com.kamiloses.userservice.dto.RegistrationDto;
+import com.kamiloses.userservice.exception.UsernameAlreadyExistsException;
 import com.kamiloses.userservice.repository.UserRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
@@ -50,11 +51,12 @@ class UserServiceTest {
 
     @Test
     void should_check_If_SaveMethod_Works() {
+        userRepository.deleteAll().block();
         Mockito.when(userRepository.existsByUsername(anyString())).thenReturn(Mono.just(false));
 
 
-        //stepVerifier lub block
-        userService.save(user);
+
+        userService.save(user).block();
 
         Assertions.assertEquals(1, userRepository.findAll().collectList().block().size());
 
@@ -63,14 +65,9 @@ class UserServiceTest {
 
     @Test
     void should_check_if_SaveMethod_Throws_UsernameAlreadyExists() {
-        Mockito.when(userRepository.existsByUsername(anyString())).thenReturn(Mono.just(true));
+     //   Mockito.when(userRepository.existsByUsername(anyString())).thenReturn(Mono.just(true));
 
-
-        //stepVerifier lub block
-        userService.save(user);
-         //todo dodaj jeszcze throws
-
-
+        Assertions.assertThrows(UsernameAlreadyExistsException.class,()->userService.save(user).block());
 
     }
 

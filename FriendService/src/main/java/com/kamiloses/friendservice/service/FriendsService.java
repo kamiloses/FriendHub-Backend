@@ -64,14 +64,14 @@ public class FriendsService {
                                         .lastName(userDetails.getLastName())
                                         .id(userDetails.getId())
                                         .username(userDetails.getUsername())
-                                        .build())
+                                        .build())   //found users that are similar to username that i  wrote, except of my username.
                                 .flatMap(searchedPeopleDto -> Mono.fromSupplier(() -> rabbitFriendsProducer.askForUserDetails(userDetails.getUsername()))
                                         .flatMap(searchedFriendDetails -> Mono.fromSupplier(() -> rabbitFriendsProducer.askForUserDetails(myUsername))
-                                                .flatMap(myDetails -> Flux.from(friendshipRepository.getFriendshipEntityByUserIdOrFriendId(myDetails.getId(), myDetails.getId()))
+                                                .flatMap(myDetails -> friendshipRepository.getFriendshipEntityByUserIdOrFriendId(myDetails.getId(), myDetails.getId())
                                                         .onErrorResume(error->{
                                                             log.error("There was some problem with fetching friends");
                                                             return Mono.error(FriendsDatabaseFetchException::new);
-                                                        })
+                                                        })//asking for my and searchedUsers details and checking whether we are friends.
                                                         .collectList()
                                                         .map(allFriendsRelatedWithMe -> {
                                                             boolean isYourFriend = false;
