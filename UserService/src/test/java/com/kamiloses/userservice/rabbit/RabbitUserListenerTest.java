@@ -45,7 +45,6 @@ class RabbitUserListenerTest {
     }
 
     @Test
-     @Disabled
     void Should_Check_receiveAndResendFriendsDetails_Works() throws JsonProcessingException {
         FriendShipDto friendShipDto1 = new FriendShipDto("1",null);
         FriendShipDto friendShipDto2 = new FriendShipDto("2",null);
@@ -57,7 +56,8 @@ class RabbitUserListenerTest {
         String usersIds = objectMapper.writeValueAsString(List.of(friendShipDto1,friendShipDto2,friendShipDto3));
 
         String friendsDetails = rabbitListener.receive_And_Resend_FriendsDetails(usersIds);
-        Assertions.assertEquals(3,friendsDetails);
+        List<FriendShipDto> returnedUsers = objectMapper.readValue(friendsDetails, List.class);
+        Assertions.assertEquals(3,returnedUsers.size());
 
     }
 }
