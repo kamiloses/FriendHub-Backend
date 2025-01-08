@@ -42,7 +42,7 @@ You can write posts. I have implemented the 'findAll' method on the backend side
 
 <br><br><h2>Comments</h2>
 
-Once you click on a post, Angular will send a request to the backend to fetch comments related with the post, and you will be redirected to the post details page, where you can view all the comments associated with that specific post (I wasn't focused on improving css).
+Once you click on a post, Angular will send a request to the backend to fetch comments related with the post, and you will be redirected to the post details page, where you can view all the comments associated with that specific post.
 <br>You can write comments and response to other comments.
 
 ![image](https://github.com/user-attachments/assets/885024a9-80d3-4b7b-8693-ff8848ce785b)
@@ -85,7 +85,6 @@ needs data about the user.
 
 <h3> Redis </h3> I used the tool to dynamically manage user sessions. Once a user logs in, his username and session id is saved as a hash map in Redis. When the user leave the application, his session is removed.
 
-<h3>Testing</h3>In the application, I had the most difficulties with testing. I still have no clue how to test routers/controllers in microservices, and I'm not sure if mocking is a good idea. I don't know how to set up the configuration for rabbitListener, which is included in a different module than the one being tested. Eventually, when I tried to test a controller method, I encountered an issue because the rabbitListener had  different configuration than the rabbitProducer, which was a part of controller method.
 
 
 <br><br><h1>Frontend</h1>
