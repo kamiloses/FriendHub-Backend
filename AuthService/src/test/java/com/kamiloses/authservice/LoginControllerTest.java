@@ -22,7 +22,7 @@ import static reactor.core.publisher.Mono.when;
 
 
 
-@Disabled("Nauczyć sie mockowania webclienta")
+@Disabled("")
 @SpringBootTest
 @AutoConfigureWebTestClient
 class LoginControllerTest {

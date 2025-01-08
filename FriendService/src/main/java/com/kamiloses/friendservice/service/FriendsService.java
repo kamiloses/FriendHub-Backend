@@ -53,7 +53,7 @@ public class FriendsService {
 
 
 
-    //TERRIFYING EXPERIENCE
+
 
     public Flux<SearchedPeopleDto> getPeopleWithSimilarUsername(String username, String myUsername) {
         return Mono.fromSupplier(() -> rabbitFriendsProducer.getSimilarPeopleNameToUsername(username))
