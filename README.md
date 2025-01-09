@@ -3,16 +3,12 @@
 A full-stack application developed in a reactive style with a microservices architecture.
 </h3>
 
-<p>
-Initially, I planned to upload the application as a container on Docker Hub, but I encountered an issue with Maven. 
-It was unable to detect one module in the local repository, which prevented me from packaging the project. 
-Installing the module locally didn’t solve the issue, so I decided only to take screenshots and create GIFs instead.
-</p>
+
+
 <br><br>
-<h3>Important</h3>
+<h3>Important - The project is not finished yet. I am working to make this app fully resemble Facebook/Twitter and after that, I will upload it. Right now, you can check the current status of my project, where the most important features have been implemented.</h3>
 <p>
-I wasn’t as focused on the frontend as I was on the backend. There is still a lot to implement on the frontend, 
-but the backend was the most important part of the project for me.
+
 </p>
 
 
