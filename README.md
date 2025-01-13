@@ -109,8 +109,3 @@ https://github.com/kamiloses/FriendHub-Frontend
 - Redis
 - Junit
 - Mockito
-
-
-<br><br><br><br><br><br><br><br>
-Fun Fact: While developing this app, I noticed for the first time how important a good computer is for programming because my computer barely handled so many backend modules running with Docker and the frontend at the same time.
-
