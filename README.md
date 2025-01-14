@@ -1,3 +1,5 @@
+Readme 02.01.2025
+
 <h1>FriendHub</h1>
 <h3>
 A full-stack application developed in a reactive style with a microservices architecture.
