@@ -26,6 +26,7 @@ public class PostEntity {
 
     private int likeCount = 0;
 
+    private int retweetCount = 0;
 
     private int commentsCount = 0;
 
