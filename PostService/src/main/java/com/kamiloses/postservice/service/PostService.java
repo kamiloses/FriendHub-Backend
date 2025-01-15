@@ -23,11 +23,12 @@ public class PostService {
 
     private final PostRepository postRepository;
     private final RabbitPostProducer rabbitPostProducer;
+    private final RetweetService retweetService;
 
-
-    public PostService(PostRepository postRepository, RabbitPostProducer rabbitPostProducer) {
+    public PostService(PostRepository postRepository, RabbitPostProducer rabbitPostProducer, RetweetService retweetService) {
         this.postRepository = postRepository;
         this.rabbitPostProducer = rabbitPostProducer;
+        this.retweetService = retweetService;
     }
 
     public Mono<Void> createPost(CreatePostDto post, String username) {
@@ -71,7 +72,7 @@ public class PostService {
     }
 
 
-    public Flux<PostDto> getAllPosts() {
+    public Flux<PostDto> getAllPosts(String loggedUserId) {
         return postRepository.findAll().onErrorResume(error->{
             log.error("There was some problem with fetching all posts");
             return Mono.error(PostDatabaseFetchException::new);
@@ -82,14 +83,20 @@ public class PostService {
                                     .firstName(userDetails.getFirstName())
                                     .lastName(userDetails.getLastName())
                                     .username(userDetails.getUsername()).build();
+                            System.err.println("WYWOŁUJE SIE ");
 
-                            return PostDto.builder().
-                                    id(postEntity.getId())
-                                    .user(userDetailsDto)
-                                    .content(postEntity.getContent())
-                                    .createdAt(postEntity.getCreatedAt()).build();
 
-                        }));
+                            return retweetService.isPostRetweetedByMe(postEntity.getId(), loggedUserId)
+                                    .map(isRetweetedByMe -> PostDto.builder()
+                                            .id(postEntity.getId())
+                                            .user(userDetailsDto)
+                                            .content(postEntity.getContent())
+                                            .createdAt(postEntity.getCreatedAt())
+                                            .retweetCount(postEntity.getRetweetCount())
+                                            .isRetweetedByMe(isRetweetedByMe)
+                                            .build());
+
+                        })).flatMap(postDto->postDto);
 
     }
 }

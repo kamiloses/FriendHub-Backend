@@ -26,6 +26,9 @@ public class PostDto {
 
     private int commentCount = 0;
 
+    private int retweetCount;
+
+    private boolean isRetweetedByMe;
 
     private boolean isDeleted = false;
 

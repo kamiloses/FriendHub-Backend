@@ -62,13 +62,14 @@ class RetweetServiceTest {
 
 
     @Test
-    @Order(2)//The first post should have lost 1 retweet
+    @Order(2)
+//The first post should have lost 1 retweet
     void shouldUndoRetweet() {
         retweetService.undoRetweet("1", "1").block();
 
         Assertions.assertEquals(2, retweetRepository.findAll().collectList().block().size());
         Assertions.assertEquals(1, postRepository.findById(post1.getId()).block().getRetweetCount());
-        Assertions.assertEquals(1, Objects.requireNonNull(postRepository.findById(post3.getId()).block()).getRetweetCount());
+        Assertions.assertEquals(1, postRepository.findById(post3.getId()).block().getRetweetCount());
     }
 
 }

@@ -48,6 +48,12 @@ public class RetweetService {
 
 
 
+    public Mono<Boolean> isPostRetweetedByMe(String postId, String browsingUserId) {
+       return retweetRepository.existsByOriginalPostIdAndRetweetedByUserId(postId, browsingUserId);
+
+
+    }
+
 
 
 }
