@@ -95,6 +95,7 @@ public class PostService {
                                                     .createdAt(postEntity.getCreatedAt())
                                                     .retweetCount(postEntity.getRetweetCount())
                                                     .isRetweetedByMe(isRetweetedByMe)
+                                                    .likeCount(postEntity.getLikeCount())
                                                     .isLikedByMe(isLikedByMe)
                                                     .build()));
 
