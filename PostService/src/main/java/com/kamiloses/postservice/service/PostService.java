@@ -20,12 +20,13 @@ import java.util.Date;
 @Service
 @Import({RabbitPostProducer.class, RabbitExceptionHandler.class})
 public class PostService {
-
+    private final LikeService likeService;
     private final PostRepository postRepository;
     private final RabbitPostProducer rabbitPostProducer;
     private final RetweetService retweetService;
 
-    public PostService(PostRepository postRepository, RabbitPostProducer rabbitPostProducer, RetweetService retweetService) {
+    public PostService(LikeService likeService, PostRepository postRepository, RabbitPostProducer rabbitPostProducer, RetweetService retweetService) {
+        this.likeService = likeService;
         this.postRepository = postRepository;
         this.rabbitPostProducer = rabbitPostProducer;
         this.retweetService = retweetService;
@@ -41,9 +42,9 @@ public class PostService {
                     .createdAt(new Date())
                     .build();
             return postRepository.save(createdPost).
-                    onErrorResume(error->{
-                       log.error("There was some problem with saving post to database");
-                      return Mono.error(PostDatabaseFetchException::new);
+                    onErrorResume(error -> {
+                        log.error("There was some problem with saving post to database");
+                        return Mono.error(PostDatabaseFetchException::new);
                     }).
                     then();
         });
@@ -52,10 +53,10 @@ public class PostService {
 
 
     public Mono<PostDto> getPostById(String id) {
-        return postRepository.findById(id).onErrorResume(error->{
-            log.error("There was some problem with fetching specific post");
-            return Mono.error(PostDatabaseFetchException::new);
-        })
+        return postRepository.findById(id).onErrorResume(error -> {
+                    log.error("There was some problem with fetching specific post");
+                    return Mono.error(PostDatabaseFetchException::new);
+                })
                 .flatMap(postEntity ->
                         Mono.fromSupplier(() -> rabbitPostProducer.askForUserDetails(postEntity.getUserId()))
                                 .map(userEntity -> {
@@ -73,10 +74,10 @@ public class PostService {
 
 
     public Flux<PostDto> getAllPosts(String loggedUserId) {
-        return postRepository.findAll().onErrorResume(error->{
-            log.error("There was some problem with fetching all posts");
-            return Mono.error(PostDatabaseFetchException::new);
-        })
+        return postRepository.findAll().onErrorResume(error -> {
+                    log.error("There was some problem with fetching all posts");
+                    return Mono.error(PostDatabaseFetchException::new);
+                })
                 .flatMap(postEntity -> Mono.fromSupplier(() -> rabbitPostProducer.askForUserDetails(postEntity.getUserId()))
                         .map(userDetails -> {
                             UserDetailsDto userDetailsDto = UserDetailsDto.builder()
@@ -86,16 +87,18 @@ public class PostService {
 
 
                             return retweetService.isPostRetweetedByMe(postEntity.getId(), loggedUserId)
-                                    .map(isRetweetedByMe -> PostDto.builder()
-                                            .id(postEntity.getId())
-                                            .user(userDetailsDto)
-                                            .content(postEntity.getContent())
-                                            .createdAt(postEntity.getCreatedAt())
-                                            .retweetCount(postEntity.getRetweetCount())
-                                            .isRetweetedByMe(isRetweetedByMe)
-                                            .build());
+                                    .flatMap(isRetweetedByMe -> likeService.isPostRetweetedByMe(postEntity.getId(), loggedUserId)
+                                            .map(isLikedByMe -> PostDto.builder()
+                                                    .id(postEntity.getId())
+                                                    .user(userDetailsDto)
+                                                    .content(postEntity.getContent())
+                                                    .createdAt(postEntity.getCreatedAt())
+                                                    .retweetCount(postEntity.getRetweetCount())
+                                                    .isRetweetedByMe(isRetweetedByMe)
+                                                    .isLikedByMe(isLikedByMe)
+                                                    .build()));
 
-                        })).flatMap(postDto->postDto);
+                        })).flatMap(postDto -> postDto);
 
     }
 }

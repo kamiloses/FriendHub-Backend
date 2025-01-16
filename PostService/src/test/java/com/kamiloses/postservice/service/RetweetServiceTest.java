@@ -45,11 +45,11 @@ class RetweetServiceTest {
     @Test//first post should have 2 retweets and third post should have 1 retweet
     @Order(1)
     void shouldRetweetPost() {
-        retweetService.retweetPost(post1.getId(), "1").block();
+        retweetService.retweetPost(post1.getId(), "kamiloses").block();
 
-        retweetService.retweetPost(post1.getId(), "2").block();
+        retweetService.retweetPost(post1.getId(), "kamiloses2").block();
 
-        retweetService.retweetPost(post3.getId(), "1").block();
+        retweetService.retweetPost(post3.getId(), "kamiloses").block();
 
         Assertions.assertEquals(3, postRepository.findAll().collectList().block().size());
         Assertions.assertEquals(3, retweetRepository.findAll().collectList().block().size());
@@ -65,7 +65,7 @@ class RetweetServiceTest {
     @Order(2)
 //The first post should have lost 1 retweet
     void shouldUndoRetweet() {
-        retweetService.undoRetweet("1", "1").block();
+        retweetService.undoRetweet("1", "kamiloses").block();
 
         Assertions.assertEquals(2, retweetRepository.findAll().collectList().block().size());
         Assertions.assertEquals(1, postRepository.findById(post1.getId()).block().getRetweetCount());

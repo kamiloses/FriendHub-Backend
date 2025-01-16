@@ -41,10 +41,10 @@ private final PostRepository postRepository;
 
     public Mono<Void> unlikeThePost(String postId, String likedUserId) {
         UserDetailsDto userDetailsDto = rabbitPostProducer.askForUserDetails(likedUserId);
-        return likeRepository.deleteByOriginalPostIdAndRetweetedByUserId(postId, userDetailsDto.getId())
+        return likeRepository.deleteByOriginalPostIdAndLikedByUserId(postId, userDetailsDto.getId())
                 .then(postRepository.findById(postId)
                         .flatMap(postEntity -> {
-                            postEntity.setRetweetCount(postEntity.getRetweetCount() - 1);
+                            postEntity.setLikeCount(postEntity.getLikeCount() - 1);
                             return postRepository.save(postEntity);
                         })
                 )
@@ -55,7 +55,7 @@ private final PostRepository postRepository;
 
     public Mono<Boolean> isPostRetweetedByMe(String postId, String loggedUserUsername) {
         UserDetailsDto userDetailsDto = rabbitPostProducer.askForUserDetails(loggedUserUsername);
-        return retweetRepository.existsByOriginalPostIdAndRetweetedByUserId(postId, userDetailsDto.getId());
+        return likeRepository.existsByOriginalPostIdAndLikedByUserId(postId, userDetailsDto.getId());
 
 
     }

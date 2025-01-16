@@ -23,8 +23,8 @@ public class RetweetService {
         this.rabbitPostProducer = rabbitPostProducer;
     }
 
-    public Mono<Void> retweetPost(String postId, String retweetedUserId) {
-        UserDetailsDto userDetailsDto = rabbitPostProducer.askForUserDetails(retweetedUserId);
+    public Mono<Void> retweetPost(String postId, String retweetedUserUsername) {
+        UserDetailsDto userDetailsDto = rabbitPostProducer.askForUserDetails(retweetedUserUsername);
         return Mono.just(RetweetEntity.builder()
                         .retweetedByUserId(userDetailsDto.getId())
                         .originalPostId(postId)
@@ -40,8 +40,8 @@ public class RetweetService {
                 );
     }
 
-    public Mono<Void> undoRetweet(String postId, String retweetedUserId) {
-        UserDetailsDto userDetailsDto = rabbitPostProducer.askForUserDetails(retweetedUserId);
+    public Mono<Void> undoRetweet(String postId, String retweetedUserUsername) {
+        UserDetailsDto userDetailsDto = rabbitPostProducer.askForUserDetails(retweetedUserUsername);
         return retweetRepository.deleteByOriginalPostIdAndRetweetedByUserId(postId, userDetailsDto.getId())
                 .then(postRepository.findById(postId)
                         .flatMap(postEntity -> {
