@@ -33,7 +33,7 @@ public Mono<ServerResponse> getPostById(ServerRequest request) {
 
 }
 public Mono<ServerResponse> getAllPosts(ServerRequest request) {
-    String param = request.queryParam("userId").get();
+    String param = request.queryParam("username").get();
     return postService.getAllPosts(param).collectList().flatMap(post -> ServerResponse.ok().bodyValue(post));
 
 }

@@ -1,7 +1,9 @@
 package com.kamiloses.postservice.service;
 
+import com.kamiloses.postservice.dto.UserDetailsDto;
 import com.kamiloses.postservice.entity.PostEntity;
 import com.kamiloses.postservice.entity.RetweetEntity;
+import com.kamiloses.postservice.rabbit.RabbitPostProducer;
 import com.kamiloses.postservice.repository.PostRepository;
 import com.kamiloses.postservice.repository.RetweetRepository;
 import org.springframework.stereotype.Service;
@@ -14,9 +16,11 @@ public class RetweetService {
 
     private final RetweetRepository retweetRepository;
     private final PostRepository postRepository;
-    public RetweetService(RetweetRepository retweetRepository, PostRepository postRepository) {
+    private final RabbitPostProducer rabbitPostProducer;
+    public RetweetService(RetweetRepository retweetRepository, PostRepository postRepository, RabbitPostProducer rabbitPostProducer) {
         this.retweetRepository = retweetRepository;
         this.postRepository = postRepository;
+        this.rabbitPostProducer = rabbitPostProducer;
     }
 
     public Mono<Void> retweetPost(String postId, String retweetedUserId) {
@@ -48,8 +52,9 @@ public class RetweetService {
 
 
 
-    public Mono<Boolean> isPostRetweetedByMe(String postId, String browsingUserId) {
-       return retweetRepository.existsByOriginalPostIdAndRetweetedByUserId(postId, browsingUserId);
+    public Mono<Boolean> isPostRetweetedByMe(String postId, String loggedUserUsername) {
+        UserDetailsDto userDetailsDto = rabbitPostProducer.askForUserDetails(loggedUserUsername);
+        return retweetRepository.existsByOriginalPostIdAndRetweetedByUserId(postId, userDetailsDto.getId());
 
 
     }

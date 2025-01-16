@@ -83,7 +83,6 @@ public class PostService {
                                     .firstName(userDetails.getFirstName())
                                     .lastName(userDetails.getLastName())
                                     .username(userDetails.getUsername()).build();
-                            System.err.println("WYWOŁUJE SIE ");
 
 
                             return retweetService.isPostRetweetedByMe(postEntity.getId(), loggedUserId)
