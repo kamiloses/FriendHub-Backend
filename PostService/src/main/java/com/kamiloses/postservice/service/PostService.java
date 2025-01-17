@@ -112,11 +112,11 @@ public class PostService {
 
 
     public Flux<PostDto> getPostsAndRetweetsRelatedWithUser(String username) {
+      //from suppliier
         UserDetailsDto userDetailsDto = rabbitPostProducer.askForUserDetails(username);
-        return retweetRepository.findByRetweetedByUserId(username)
-                .flatMap(retweetEntity->postRepository.findById(retweetEntity.getOriginalPostId())
-                        .map(retweetedPost->
-                                PostDto.builder()
+        Flux<PostDto> postDtoFlux = retweetRepository.findByRetweetedByUserId(userDetailsDto.getId())
+                .flatMap(retweetEntity -> postRepository.findById(retweetEntity.getOriginalPostId())
+                        .map(retweetedPost -> PostDto.builder()
                                         .id(retweetedPost.getId())
                                         .user(userDetailsDto)
                                         .content(retweetedPost.getContent())
@@ -124,12 +124,14 @@ public class PostService {
                                         .likeCount(retweetedPost.getLikeCount())
                                         .commentCount(0)
                                         .retweetCount(retweetedPost.getRetweetCount())
-                                        .isLikedByMe(likeService.isPostLikedByMe(retweetedPost.getId(),userDetailsDto.getUsername()).block()) //todo popraw potem
-                                        .isRetweetedByMe(retweetService.isPostRetweetedByMe(retweetedPost.getId(),userDetailsDto.getUsername()).block())
+                                        //.isLikedByMe() //todo popraw potem
+                                        //.isRetweetedByMe(retweetService.isPostRetweetedByMe(retweetedPost.getId(), userDetailsDto.getUsername()).block())
                                         .isDeleted(retweetedPost.isDeleted())
                                         .isPostRetweet(true).build()));
 
-    }
+
+    return postDtoFlux;}
+
 
 }
 

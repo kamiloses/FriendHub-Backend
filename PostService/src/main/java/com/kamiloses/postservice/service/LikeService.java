@@ -21,7 +21,7 @@ private final PostRepository postRepository;
         this.postRepository = postRepository;
     }
 
-
+    //from suppliier
     public Mono<Void> likeThePost(String postId, String likedUserId) {
         UserDetailsDto userDetailsDto = rabbitPostProducer.askForUserDetails(likedUserId);
         return Mono.just(LikeEntity.builder()
@@ -38,7 +38,7 @@ private final PostRepository postRepository;
                         )
                 );
     }
-
+    //from suppliier
     public Mono<Void> unlikeThePost(String postId, String likedUserId) {
         UserDetailsDto userDetailsDto = rabbitPostProducer.askForUserDetails(likedUserId);
         return likeRepository.deleteByOriginalPostIdAndLikedByUserId(postId, userDetailsDto.getId())
@@ -52,7 +52,7 @@ private final PostRepository postRepository;
     }
 
 
-
+    //from suppliier
     public Mono<Boolean> isPostLikedByMe(String postId, String loggedUserUsername) {
         UserDetailsDto userDetailsDto = rabbitPostProducer.askForUserDetails(loggedUserUsername);
         return likeRepository.existsByOriginalPostIdAndLikedByUserId(postId, userDetailsDto.getId());

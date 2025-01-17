@@ -1,14 +1,13 @@
-package com.kamiloses.authservice;
+package com.kamiloses.hashtagservice;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-
-public class AuthServiceApplication {
+public class HashtagServiceApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(AuthServiceApplication.class, args);
+        SpringApplication.run(HashtagServiceApplication.class, args);
     }
 
 }
