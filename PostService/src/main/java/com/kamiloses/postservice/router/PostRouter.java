@@ -19,6 +19,7 @@ public class PostRouter {
                 .DELETE("/api/retweet",retweetHandler::undoRetweet)
                 .POST("/api/like",likeHandler::likePost)
                 .DELETE("/api/like",likeHandler::unlikeThePost)
+                .GET("/api/posts/user/{username}",postHandler::getPostsAndRetweetsRelatedWithUser)
                 .build();
 
 

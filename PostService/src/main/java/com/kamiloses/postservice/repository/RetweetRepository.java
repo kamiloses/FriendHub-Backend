@@ -12,4 +12,5 @@ public interface RetweetRepository extends ReactiveMongoRepository<RetweetEntity
          Mono<Void> deleteByOriginalPostIdAndRetweetedByUserId(String postId, String userId);
 
     Mono<Boolean> existsByOriginalPostIdAndRetweetedByUserId(String postId, String userId);
+    Flux<RetweetEntity> findByRetweetedByUserId(String userId);
 }

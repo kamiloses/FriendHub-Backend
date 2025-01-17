@@ -39,4 +39,17 @@ public Mono<ServerResponse> getAllPosts(ServerRequest request) {
 }
 
 
+
+
+
+
+
+    public Mono<ServerResponse> getPostsAndRetweetsRelatedWithUser(ServerRequest request) {
+        System.err.println("Wywołuje");
+
+        return postService.getPostsAndRetweetsRelatedWithUser(request.pathVariable("username")).collectList().flatMap(post -> ServerResponse.ok().bodyValue(post));
+
+    }
+
+
 }

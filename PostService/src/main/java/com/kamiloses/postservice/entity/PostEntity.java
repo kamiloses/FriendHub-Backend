@@ -33,4 +33,5 @@ public class PostEntity {
     private boolean isDeleted = false;
 
 
+
 }

@@ -7,6 +7,7 @@ import com.kamiloses.postservice.entity.PostEntity;
 import com.kamiloses.postservice.exception.PostDatabaseFetchException;
 import com.kamiloses.postservice.rabbit.RabbitPostProducer;
 import com.kamiloses.postservice.repository.PostRepository;
+import com.kamiloses.postservice.repository.RetweetRepository;
 import com.kamiloses.rabbitmq.exception.RabbitExceptionHandler;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Import;
@@ -24,12 +25,14 @@ public class PostService {
     private final PostRepository postRepository;
     private final RabbitPostProducer rabbitPostProducer;
     private final RetweetService retweetService;
+    private final RetweetRepository retweetRepository;
 
-    public PostService(LikeService likeService, PostRepository postRepository, RabbitPostProducer rabbitPostProducer, RetweetService retweetService) {
+    public PostService(LikeService likeService, PostRepository postRepository, RabbitPostProducer rabbitPostProducer, RetweetService retweetService, RetweetRepository retweetRepository) {
         this.likeService = likeService;
         this.postRepository = postRepository;
         this.rabbitPostProducer = rabbitPostProducer;
         this.retweetService = retweetService;
+        this.retweetRepository = retweetRepository;
     }
 
     public Mono<Void> createPost(CreatePostDto post, String username) {
@@ -87,7 +90,7 @@ public class PostService {
 
 
                             return retweetService.isPostRetweetedByMe(postEntity.getId(), loggedUserId)
-                                    .flatMap(isRetweetedByMe -> likeService.isPostRetweetedByMe(postEntity.getId(), loggedUserId)
+                                    .flatMap(isRetweetedByMe -> likeService.isPostLikedByMe(postEntity.getId(), loggedUserId)
                                             .map(isLikedByMe -> PostDto.builder()
                                                     .id(postEntity.getId())
                                                     .user(userDetailsDto)
@@ -102,6 +105,32 @@ public class PostService {
                         })).flatMap(postDto -> postDto);
 
     }
+
+
+
+
+
+
+    public Flux<PostDto> getPostsAndRetweetsRelatedWithUser(String username) {
+        UserDetailsDto userDetailsDto = rabbitPostProducer.askForUserDetails(username);
+        return retweetRepository.findByRetweetedByUserId(username)
+                .flatMap(retweetEntity->postRepository.findById(retweetEntity.getOriginalPostId())
+                        .map(retweetedPost->
+                                PostDto.builder()
+                                        .id(retweetedPost.getId())
+                                        .user(userDetailsDto)
+                                        .content(retweetedPost.getContent())
+                                        .createdAt(retweetedPost.getCreatedAt())
+                                        .likeCount(retweetedPost.getLikeCount())
+                                        .commentCount(0)
+                                        .retweetCount(retweetedPost.getRetweetCount())
+                                        .isLikedByMe(likeService.isPostLikedByMe(retweetedPost.getId(),userDetailsDto.getUsername()).block()) //todo popraw potem
+                                        .isRetweetedByMe(retweetService.isPostRetweetedByMe(retweetedPost.getId(),userDetailsDto.getUsername()).block())
+                                        .isDeleted(retweetedPost.isDeleted())
+                                        .isPostRetweet(true).build()));
+
+    }
+
 }
 
 

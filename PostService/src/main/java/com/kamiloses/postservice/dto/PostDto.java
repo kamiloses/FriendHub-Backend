@@ -33,4 +33,8 @@ public class PostDto {
 
     private boolean isDeleted = false;
 
+    //checking whether post is treated like a retweet or normal written post
+    private boolean isPostRetweet = false;
+
+
 }

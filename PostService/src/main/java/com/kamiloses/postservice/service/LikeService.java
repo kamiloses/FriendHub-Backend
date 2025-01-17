@@ -53,7 +53,7 @@ private final PostRepository postRepository;
 
 
 
-    public Mono<Boolean> isPostRetweetedByMe(String postId, String loggedUserUsername) {
+    public Mono<Boolean> isPostLikedByMe(String postId, String loggedUserUsername) {
         UserDetailsDto userDetailsDto = rabbitPostProducer.askForUserDetails(loggedUserUsername);
         return likeRepository.existsByOriginalPostIdAndLikedByUserId(postId, userDetailsDto.getId());
 
