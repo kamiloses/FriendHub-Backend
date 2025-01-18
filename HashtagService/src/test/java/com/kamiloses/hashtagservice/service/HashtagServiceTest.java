@@ -1,7 +1,8 @@
-package com.kamiloses.hashtagservice.rabbit;
+package com.kamiloses.hashtagservice.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.kamiloses.hashtagservice.rabbit.RabbitHashtagListener;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
@@ -13,16 +14,22 @@ import org.springframework.test.context.ActiveProfiles;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
-
 @ActiveProfiles("test")
 @SpringBootTest
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-class RabbitHashtagListenerTest {
+class HashtagServiceTest {
+
+
+
     @Autowired
-    private  RabbitHashtagListener rabbitHashtagListener;
+    private RabbitHashtagListener rabbitHashtagListener;
 
     @Autowired
     private RedisTemplate<String, String> redisTemplate;
+
+    @Autowired
+    private HashtagService hashtagService;
+
 
     private String formattedListOfHashtags() throws JsonProcessingException {
         ObjectMapper objectMapper = new ObjectMapper();
@@ -42,7 +49,7 @@ class RabbitHashtagListenerTest {
     public void should_save_hashtags_to_redis() throws JsonProcessingException {
         rabbitHashtagListener.receiveHashtagsFromPostAndAddToRedis(formattedListOfHashtags());
 
-
+        System.err.println(hashtagService.getMostPopularHashtags());
 
     }
 

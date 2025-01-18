@@ -25,7 +25,6 @@ public class RabbitHashtagListener {
         this.objectMapper = objectMapper;
     }
 
-
     @RabbitListener
     public void receiveHashtagsFromPostAndAddToRedis(String hashtagsJson) throws JsonProcessingException {
 
@@ -36,7 +35,7 @@ public class RabbitHashtagListener {
             long currentTime = Instant.now().getEpochSecond();
             String id = UUID.randomUUID().toString();
 
-                                      
+
             redisTemplate.opsForZSet().add("hashtag:" + hashtag, id, currentTime);
         });
     }

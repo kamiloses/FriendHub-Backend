@@ -22,7 +22,8 @@ public class Init {
     @PostConstruct
     public void  a() {
 
-                   //
+
+
         Cursor<byte[]> allKeys = redisTemplate.getConnectionFactory().getConnection().scan(ScanOptions.scanOptions().match("hashtag:*").build());
 
         while (allKeys.hasNext()) {
@@ -43,7 +44,6 @@ public class Init {
                 .limit(3)
                 .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
 
-        System.err.println("PO"+mostPopularHashtags);
     }
 
 }
