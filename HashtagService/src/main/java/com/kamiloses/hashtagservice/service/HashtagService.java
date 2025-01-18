@@ -1,20 +1,14 @@
 package com.kamiloses.hashtagservice.service;
 
 import org.springframework.data.redis.connection.ReactiveRedisConnection;
-import org.springframework.data.redis.core.Cursor;
 import org.springframework.data.redis.core.ReactiveRedisTemplate;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ScanOptions;
 import org.springframework.stereotype.Service;
-import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
-import java.time.Instant;
 import java.util.*;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 @Service
 public class HashtagService {
@@ -31,6 +25,7 @@ public class HashtagService {
     public Mono<HashMap<String, Long>> getMostPopularHashtags() {
         mostPopularHashtags = new HashMap<>();
 
+
         ReactiveRedisConnection connection = redisTemplate.getConnectionFactory().getReactiveConnection();
         return connection.keyCommands()
                 .scan(ScanOptions.scanOptions().match("hashtag:*").build())//returning all redis keys as bytes
@@ -42,31 +37,12 @@ public class HashtagService {
                                 mostPopularHashtags.put(key, size);
                                 return mostPopularHashtags;
                             });
-                })
-                .then(Mono.just(mostPopularHashtags));
-    }
-        }
+                }).then(Mono.defer(() ->                //non-static method
+                        Mono.just(
+                                mostPopularHashtags.entrySet().stream()
+                                        .sorted(Collections.reverseOrder(Map.Entry.comparingByValue()))
+                                        .limit(5)
+                                        .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue,
+                                                (e1, e2) -> e1, LinkedHashMap::new)))));}
 
-
-
-
-
-
-
-        //sorting  top 5 most popular hashtags
-//        return mostPopularHashtags.entrySet().stream()
-//                .sorted(Collections.reverseOrder(Map.Entry.comparingByValue()))
-//                .limit(5)
-//                .collect(Collectors.toMap(
-//                        Map.Entry::getKey,
-//                        Map.Entry::getValue,
-//                        (e1, e2) -> e1,
-//                        LinkedHashMap::new));
-//    }
-
-
-
-
-
-
-
+}
