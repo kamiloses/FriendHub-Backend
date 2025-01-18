@@ -8,24 +8,26 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.redis.connection.ReactiveRedisConnection;
+import org.springframework.data.redis.core.ReactiveRedisTemplate;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.test.context.ActiveProfiles;
 
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
+
 @ActiveProfiles("test")
 @SpringBootTest
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class HashtagServiceTest {
 
 
-
     @Autowired
     private RabbitHashtagListener rabbitHashtagListener;
 
     @Autowired
-    private RedisTemplate<String, String> redisTemplate;
+    private ReactiveRedisTemplate<String, String> redisTemplate;
 
     @Autowired
     private HashtagService hashtagService;
@@ -37,19 +39,19 @@ class HashtagServiceTest {
         return objectMapper.writeValueAsString(List.of("#love", "#love", "#love", "#love", "#love", "#instagram", "#instagram", "#instagram", "#instagram", "#fashion", "#fashion", "#nature", "#nature", "#nature", "#nature", "#nature", "#nature", "#nature", "#weekend", "#weekend", "#weekend", "#weekend", "#weekend", "#photography", "#photography", "#art"));
 
     }
+
     @BeforeAll
-    public void removeAllRedisElements(){
-        redisTemplate.getConnectionFactory().getConnection().flushDb();
-
-
+    public void removeAllRedisElements() throws JsonProcessingException {
+        redisTemplate.getConnectionFactory().getReactiveConnection().serverCommands().flushAll().subscribe();
+        rabbitHashtagListener.receiveHashtagsFromPostAndAddToRedis(formattedListOfHashtags());
     }
 
 
     @Test
-    public void should_save_hashtags_to_redis() throws JsonProcessingException {
-        rabbitHashtagListener.receiveHashtagsFromPostAndAddToRedis(formattedListOfHashtags());
+    public void should_save_hashtags_to_redis() {
 
-        System.err.println(hashtagService.getMostPopularHashtags());
+        System.err.println(        hashtagService.getMostPopularHashtags().block());
+
 
     }
 
