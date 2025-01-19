@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
 
 @Component
-public class RabbitPostProducer {
+public class RabbitLikeProducer {
 
 
     private final RabbitTemplate rabbitTemplate;
@@ -17,16 +17,17 @@ public class RabbitPostProducer {
 
 
 
-    public RabbitPostProducer(RabbitTemplate rabbitTemplate, ObjectMapper objectMapper) {
+    public RabbitLikeProducer(RabbitTemplate rabbitTemplate, ObjectMapper objectMapper) {
         this.rabbitTemplate = rabbitTemplate;
         this.objectMapper = objectMapper;
     }
 
 
-    public UserDetailsDto askForUserDetails(String username) {
-        String userDetailsAsString = (String) rabbitTemplate.convertSendAndReceive(RabbitConfig.USER_INFO_EXCHANGE, RabbitConfig.USER_INFO_ROUTING_KEY, username);
-
-        return convertStringToUserDetailsDto(userDetailsAsString);
+    public Mono askForUserDetails(String username) {
+        return Mono.fromCallable(() ->
+                (String) rabbitTemplate.convertSendAndReceive(
+                        RabbitConfig.USER_INFO_EXCHANGE, RabbitConfig.USER_INFO_ROUTING_KEY, username)
+        );
 
     }
 

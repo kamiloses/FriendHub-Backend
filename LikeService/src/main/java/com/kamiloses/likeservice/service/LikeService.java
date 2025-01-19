@@ -1,8 +1,7 @@
 package com.kamiloses.likeservice.service;
 
-import com.kamiloses.likeservice.dto.UserDetailsDto;
 import com.kamiloses.likeservice.entity.LikeEntity;
-import com.kamiloses.likeservice.rabbit.RabbitPostProducer;
+import com.kamiloses.likeservice.rabbit.RabbitLikeProducer;
 import com.kamiloses.likeservice.repository.LikeRepository;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
@@ -11,25 +10,24 @@ import reactor.core.publisher.Mono;
 public class LikeService {
 
     private final LikeRepository likeRepository;
-    private final RabbitPostProducer rabbitPostProducer;
+    private final RabbitLikeProducer rabbitLikeProducer;
 
-    public LikeService(LikeRepository likeRepository, RabbitPostProducer rabbitPostProducer) {
+    public LikeService(LikeRepository likeRepository, RabbitLikeProducer rabbitLikeProducer) {
         this.likeRepository = likeRepository;
-        this.rabbitPostProducer = rabbitPostProducer;
+        this.rabbitLikeProducer = rabbitLikeProducer;
     }
 
     //from suppliier
     public Mono<Void> likeThePost(String postId, String likedUserId) {
-        System.err.println("WYWOŁUJE");
-        return Mono.fromSupplier(() -> rabbitPostProducer.askForUserDetails(likedUserId))
+        return  rabbitLikeProducer.askForUserDetails(postId)
                 .flatMap(userDetailsDto -> {
                     LikeEntity likeEntity = LikeEntity.builder()
-                            .likedByUserId(userDetailsDto.getId())
+                            .likedByUserId("123")
                             .originalPostId(postId)
                             .build();
-                    System.err.println("DZIAŁA "+userDetailsDto.getId());
+                    System.err.println("DZIAŁA ");
                     return likeRepository.save(likeEntity)
-                            .then(Mono.defer(() -> rabbitPostProducer.sendPostIdToPostModule(postId)));
+                            .then(Mono.defer(() -> rabbitLikeProducer.sendPostIdToPostModule(postId)));
 
                 });
     }
@@ -40,7 +38,7 @@ public class LikeService {
 
     //from suppliier
 //    public Mono<Void> undoLike(String postId, String likedUserId) {
-//        UserDetailsDto userDetailsDto = rabbitPostProducer.askForUserDetails(likedUserId);
+//       rabbitPostProducer.askForUserDetails(likedUserId)
 //        return likeRepository.deleteByOriginalPostIdAndLikedByUserId(postId, userDetailsDto.getId())
 //                .then(postRepository.findById(postId)
 //                        .flatMap(postEntity -> {
@@ -49,14 +47,14 @@ public class LikeService {
 //                        })
 //                )
 //                .then();
-//    }
+    }
 
 
     //from suppliier
-    public Mono<Boolean> isPostLikedByMe(String postId, String loggedUserUsername) {
-        UserDetailsDto userDetailsDto = rabbitPostProducer.askForUserDetails(loggedUserUsername);
-        return likeRepository.existsByOriginalPostIdAndLikedByUserId(postId, userDetailsDto.getId());
-
-
-    }
-}
+//    public Mono<Boolean> isPostLikedByMe(String postId, String loggedUserUsername) {
+//        UserDetailsDto userDetailsDto = rabbitPostProducer.askForUserDetails(loggedUserUsername);
+//        return likeRepository.existsByOriginalPostIdAndLikedByUserId(postId, userDetailsDto.getId());
+//
+//
+//    }
+//}

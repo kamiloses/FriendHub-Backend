@@ -5,12 +5,12 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kamiloses.rabbitmq.RabbitConfig;
 import com.kamiloses.userservice.dto.FriendShipDto;
-import com.kamiloses.userservice.entity.UserEntity;
 import com.kamiloses.userservice.dto.UserDetailsDto;
 import com.kamiloses.userservice.repository.UserRepository;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 import java.util.List;
 
@@ -23,23 +23,34 @@ public class RabbitUserListener {
 
     private final UserRepository userRepository;
     private Integer count = 0;
+    private ObjectMapper objectMapper;
 
-    public RabbitUserListener(UserRepository userRepository) {
+    public RabbitUserListener(UserRepository userRepository, ObjectMapper objectMapper) {
         this.userRepository = userRepository;
+        this.objectMapper = objectMapper;
     }
 
     @RabbitListener(queues = RabbitConfig.USER_INFO_REQUEST_QUEUE)
-    public String receive_And_Resend_UserDetails(String username) throws JsonProcessingException {
-        UserEntity userEntity = userRepository.findByUsernameOrId(username,username).block();
-        UserDetailsDto userDetailsDto = new UserDetailsDto();
-        userDetailsDto.setId(userEntity.getId());
-        userDetailsDto.setUsername(userEntity.getUsername());
-        userDetailsDto.setFirstName(userEntity.getFirstName());
-        userDetailsDto.setLastName(userEntity.getLastName());
+    public String receive_And_Resend_UserDetails(String username)  {
+       return String.valueOf(userRepository.findByUsernameOrId(username,username)
+                .map(userEntity->
+                     UserDetailsDto
+                            .builder()
+                            .id(userEntity.getId())
+                            .username(userEntity.getUsername())
+                            .firstName(userEntity.getFirstName())
+                            .lastName(userEntity.getLastName())
+                            .build()).map(userDetailsDto -> {
+                    try {
+                        return objectMapper.writeValueAsString(userDetailsDto);
+                    } catch (JsonProcessingException e) {
+                        throw new RuntimeException(e);
+                    }
+                }));
 
 
-        ObjectMapper objectMapper = new ObjectMapper();
-        return objectMapper.writeValueAsString(userDetailsDto);
+//        ObjectMapper objectMapper = new ObjectMapper();
+//        return objectMapper.writeValueAsString(userDetailsDto);
     }
 
 
