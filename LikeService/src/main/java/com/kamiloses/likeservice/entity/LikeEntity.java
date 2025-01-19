@@ -1,4 +1,4 @@
-package com.kamiloses.postservice.entity;
+package com.kamiloses.likeservice.entity;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

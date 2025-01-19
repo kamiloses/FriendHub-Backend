@@ -1,6 +1,6 @@
-package com.kamiloses.postservice.router;
+package com.kamiloses.likeservice.router;
 
-import com.kamiloses.postservice.service.LikeService;
+import com.kamiloses.likeservice.service.LikeService;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
@@ -22,10 +22,10 @@ public class LikeHandler {
         return likeService.likeThePost(postId, likedUserUsername).then(ServerResponse.ok().build());
     }
 
-    public Mono<ServerResponse> unlikeThePost(ServerRequest request) {
-        String postId = request.queryParam("postId").get();
-        String likedUserUsername = request.queryParam("username").get();
-
-        return likeService.unlikeThePost(postId, likedUserUsername).then(ServerResponse.ok().build());
-    }
+//    public Mono<ServerResponse> undoLike(ServerRequest request) {
+//        String postId = request.queryParam("postId").get();
+//        String likedUserUsername = request.queryParam("username").get();
+//
+//        return likeService.undoLike(postId, likedUserUsername).then(ServerResponse.ok().build());
+//    }
 }

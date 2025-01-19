@@ -1,6 +1,6 @@
-package com.kamiloses.postservice.repository;
+package com.kamiloses.likeservice.repository;
 
-import com.kamiloses.postservice.entity.LikeEntity;
+import com.kamiloses.likeservice.entity.LikeEntity;
 import org.springframework.data.mongodb.repository.ReactiveMongoRepository;
 import reactor.core.publisher.Mono;
 

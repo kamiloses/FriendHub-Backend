@@ -21,14 +21,13 @@ import java.util.Date;
 @Service
 @Import({RabbitPostProducer.class, RabbitExceptionHandler.class})
 public class PostService {
-    private final LikeService likeService;
     private final PostRepository postRepository;
     private final RabbitPostProducer rabbitPostProducer;
     private final RetweetService retweetService;
     private final RetweetRepository retweetRepository;
 
-    public PostService(LikeService likeService, PostRepository postRepository, RabbitPostProducer rabbitPostProducer, RetweetService retweetService, RetweetRepository retweetRepository) {
-        this.likeService = likeService;
+
+    public PostService(PostRepository postRepository, RabbitPostProducer rabbitPostProducer, RetweetService retweetService, RetweetRepository retweetRepository) {
         this.postRepository = postRepository;
         this.rabbitPostProducer = rabbitPostProducer;
         this.retweetService = retweetService;
@@ -90,8 +89,7 @@ public class PostService {
 
 
                             return retweetService.isPostRetweetedByMe(postEntity.getId(), loggedUserId)
-                                    .flatMap(isRetweetedByMe -> likeService.isPostLikedByMe(postEntity.getId(), loggedUserId)
-                                            .map(isLikedByMe -> PostDto.builder()
+                                            .map(isRetweetedByMe -> PostDto.builder()
                                                     .id(postEntity.getId())
                                                     .user(userDetailsDto)
                                                     .content(postEntity.getContent())
@@ -99,8 +97,7 @@ public class PostService {
                                                     .retweetCount(postEntity.getRetweetCount())
                                                     .isRetweetedByMe(isRetweetedByMe)
                                                     .likeCount(postEntity.getLikeCount())
-                                                    .isLikedByMe(isLikedByMe)
-                                                    .build()));
+                                                    .build());
 
                         })).flatMap(postDto -> postDto);
 
@@ -124,7 +121,7 @@ public class PostService {
                                         .likeCount(retweetedPost.getLikeCount())
                                         .commentCount(0)
                                         .retweetCount(retweetedPost.getRetweetCount())
-                                        //.isLikedByMe() //todo popraw potem
+                                         //todo popraw potem
                                         //.isRetweetedByMe(retweetService.isPostRetweetedByMe(retweetedPost.getId(), userDetailsDto.getUsername()).block())
                                         .isDeleted(retweetedPost.isDeleted())
                                         .isPostRetweet(true).build()));

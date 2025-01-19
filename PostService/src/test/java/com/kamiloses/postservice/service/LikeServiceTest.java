@@ -3,16 +3,12 @@ package com.kamiloses.postservice.service;
 import com.kamiloses.postservice.entity.PostEntity;
 import com.kamiloses.postservice.repository.LikeRepository;
 import com.kamiloses.postservice.repository.PostRepository;
-import com.kamiloses.postservice.repository.RetweetRepository;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 
 import java.util.List;
-
-import static org.junit.jupiter.api.Assertions.*;
-
 
 
 @ActiveProfiles("test")
