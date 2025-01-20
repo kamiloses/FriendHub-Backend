@@ -23,7 +23,7 @@ public class RabbitLikeProducer {
     }
 
 
-    public Mono askForUserDetails(String username) {
+    public Mono<String> askForUserDetails(String username) {
         return Mono.fromCallable(() ->
                 (String) rabbitTemplate.convertSendAndReceive(
                         RabbitConfig.USER_INFO_EXCHANGE, RabbitConfig.USER_INFO_ROUTING_KEY, username)
