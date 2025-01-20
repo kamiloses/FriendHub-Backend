@@ -6,12 +6,16 @@ import com.kamiloses.postservice.entity.RetweetEntity;
 import com.kamiloses.postservice.rabbit.RabbitPostProducer;
 import com.kamiloses.postservice.repository.PostRepository;
 import com.kamiloses.postservice.repository.RetweetRepository;
+import com.kamiloses.rabbitmq.exception.RabbitExceptionHandler;
+import org.springframework.context.annotation.Import;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 
 import java.util.Date;
 
 @Service
+@Import({RabbitPostProducer.class, RabbitExceptionHandler.class})
+
 public class RetweetService {
 
     private final RetweetRepository retweetRepository;

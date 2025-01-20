@@ -17,9 +17,9 @@ public class PostRouter {
                 .POST("/api/posts/{username}",postHandler::createPost)
                 .POST("/api/retweet",retweetHandler::retweetPost)
                 .DELETE("/api/retweet",retweetHandler::undoRetweet)
-                .GET("/api/posts/user/{username}",postHandler::getPostsAndRetweetsRelatedWithUser)
                 .build();
 
 
+        // .GET("/api/posts/user/{username}",postHandler::getPostsAndRetweetsRelatedWithUser)
     }
 }

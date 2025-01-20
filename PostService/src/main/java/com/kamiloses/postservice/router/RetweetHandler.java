@@ -1,6 +1,5 @@
 package com.kamiloses.postservice.router;
 
-import com.kamiloses.postservice.dto.CreatePostDto;
 import com.kamiloses.postservice.service.RetweetService;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.server.ServerRequest;

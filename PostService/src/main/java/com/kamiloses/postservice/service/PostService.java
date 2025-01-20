@@ -7,7 +7,6 @@ import com.kamiloses.postservice.entity.PostEntity;
 import com.kamiloses.postservice.exception.PostDatabaseFetchException;
 import com.kamiloses.postservice.rabbit.RabbitPostProducer;
 import com.kamiloses.postservice.repository.PostRepository;
-import com.kamiloses.postservice.repository.RetweetRepository;
 import com.kamiloses.rabbitmq.exception.RabbitExceptionHandler;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Import;
@@ -24,14 +23,12 @@ public class PostService {
     private final PostRepository postRepository;
     private final RabbitPostProducer rabbitPostProducer;
     private final RetweetService retweetService;
-    private final RetweetRepository retweetRepository;
 
 
-    public PostService(PostRepository postRepository, RabbitPostProducer rabbitPostProducer, RetweetService retweetService, RetweetRepository retweetRepository) {
+    public PostService(PostRepository postRepository, RabbitPostProducer rabbitPostProducer, RetweetService retweetService) {
         this.postRepository = postRepository;
         this.rabbitPostProducer = rabbitPostProducer;
         this.retweetService = retweetService;
-        this.retweetRepository = retweetRepository;
     }
 
     public Mono<Void> createPost(CreatePostDto post, String username) {
@@ -108,29 +105,32 @@ public class PostService {
 
 
 
-    public Flux<PostDto> getPostsAndRetweetsRelatedWithUser(String username) {
-      //from suppliier
-        UserDetailsDto userDetailsDto = rabbitPostProducer.askForUserDetails(username);
-        Flux<PostDto> postDtoFlux = retweetRepository.findByRetweetedByUserId(userDetailsDto.getId())
-                .flatMap(retweetEntity -> postRepository.findById(retweetEntity.getOriginalPostId())
-                        .map(retweetedPost -> PostDto.builder()
-                                        .id(retweetedPost.getId())
-                                        .user(userDetailsDto)
-                                        .content(retweetedPost.getContent())
-                                        .createdAt(retweetedPost.getCreatedAt())
-                                        .likeCount(retweetedPost.getLikeCount())
-                                        .commentCount(0)
-                                        .retweetCount(retweetedPost.getRetweetCount())
-                                         //todo popraw potem
-                                        //.isRetweetedByMe(retweetService.isPostRetweetedByMe(retweetedPost.getId(), userDetailsDto.getUsername()).block())
-                                        .isDeleted(retweetedPost.isDeleted())
-                                        .isPostRetweet(true).build()));
-
-
-    return postDtoFlux;}
-
-
 }
+
+
+//    public Flux<PostDto> getPostsAndRetweetsRelatedWithUser(String username) {
+//      //from suppliier
+//        UserDetailsDto userDetailsDto = rabbitPostProducer.askForUserDetails(username);
+//        Flux<PostDto> postDtoFlux = retweetRepository.findByRetweetedByUserId(userDetailsDto.getId())
+//                .flatMap(retweetEntity -> postRepository.findById(retweetEntity.getOriginalPostId())
+//                        .map(retweetedPost -> PostDto.builder()
+//                                        .id(retweetedPost.getId())
+//                                        .user(userDetailsDto)
+//                                        .content(retweetedPost.getContent())
+//                                        .createdAt(retweetedPost.getCreatedAt())
+//                                        .likeCount(retweetedPost.getLikeCount())
+//                                        .commentCount(0)
+//                                        .retweetCount(retweetedPost.getRetweetCount())
+//                                         //todo popraw potem
+//                                        //.isRetweetedByMe(retweetService.isPostRetweetedByMe(retweetedPost.getId(), userDetailsDto.getUsername()).block())
+//                                        .isDeleted(retweetedPost.isDeleted())
+//                                        .isPostRetweet(true).build()));
+//
+//
+//    return postDtoFlux;}
+
+
+
 
 
 

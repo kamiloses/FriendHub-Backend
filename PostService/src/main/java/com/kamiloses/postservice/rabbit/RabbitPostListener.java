@@ -1,32 +1,38 @@
 package com.kamiloses.postservice.rabbit;
 
+import com.kamiloses.postservice.exception.PostDatabaseFetchException;
 import com.kamiloses.postservice.repository.PostRepository;
 import com.kamiloses.rabbitmq.RabbitConfig;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.stereotype.Component;
+import reactor.core.publisher.Mono;
 
 @Component
+@Slf4j
 public class RabbitPostListener {
 
 
-private final PostRepository postRepository;
+    private final PostRepository postRepository;
 
     public RabbitPostListener(PostRepository postRepository) {
         this.postRepository = postRepository;
     }
 
 
-    @RabbitListener(queues = RabbitConfig.AUTH_REQUEST_QUEUE)
-    public void receivePostIdFromLikeModule(String postId){
-        postRepository.findById(postId)
-                .flatMap(fetchedPost -> {
+//    @RabbitListener(queues = RabbitConfig.AUTH_REQUEST_QUEUE)
+    public Mono<Void> receivePostIdFromLikeModule(String postId) {
+        return postRepository.findById(postId)
+                .onErrorResume(error -> {
+                    log.error("Failed to fetch post from database, error: {}", error.getMessage());
+                    return Mono.error(PostDatabaseFetchException::new);
+                })
+                .map(fetchedPost -> {
                     fetchedPost.setLikeCount(fetchedPost.getLikeCount() + 1);
-                    return postRepository.save(fetchedPost).then();
-                }).subscribe();}
+                    return fetchedPost;
+                })
+                .flatMap(postRepository::save).then();
 
 
-
-
-
-
+    }
 }
