@@ -18,6 +18,10 @@ import java.util.Objects;
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class RetweetServiceTest {
 
+
+    //This test class requires to turn on "UserService" module to get the real operation on retweetService.
+
+
     @Autowired
     private RetweetService retweetService;
 
@@ -46,10 +50,9 @@ class RetweetServiceTest {
     @Order(1)
     void shouldRetweetPost() {
         retweetService.retweetPost(post1.getId(), "kamiloses").block();
-
         retweetService.retweetPost(post1.getId(), "kamiloses2").block();
-
         retweetService.retweetPost(post3.getId(), "kamiloses").block();
+
 
         Assertions.assertEquals(3, postRepository.findAll().collectList().block().size());
         Assertions.assertEquals(3, retweetRepository.findAll().collectList().block().size());

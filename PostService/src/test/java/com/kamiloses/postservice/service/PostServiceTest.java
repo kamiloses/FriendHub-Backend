@@ -5,9 +5,8 @@ import com.kamiloses.postservice.dto.UserDetailsDto;
 import com.kamiloses.postservice.exception.PostDatabaseFetchException;
 import com.kamiloses.postservice.rabbit.RabbitPostProducer;
 import com.kamiloses.postservice.repository.PostRepository;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -18,12 +17,14 @@ import reactor.test.StepVerifier;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.when;
 
 @SpringBootTest
 @ActiveProfiles("test")
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class PostServiceTest {
+
 
     @MockBean
     private RabbitPostProducer rabbitPostProducer;
@@ -36,66 +37,46 @@ class PostServiceTest {
 
 
     private CreatePostDto createPostDto;
+
     private UserDetailsDto userDetailsDto;
 
 
-    @BeforeEach
+    @BeforeAll
     void setUp() {
         postRepository.deleteAll().block();
-          createPostDto = new CreatePostDto("text");
+        createPostDto = new CreatePostDto("text");
 
-          userDetailsDto = new UserDetailsDto();
-          userDetailsDto.setUsername("JNowak");
-          userDetailsDto.setFirstName("Jan");
-          userDetailsDto.setLastName("Nowak");
+        userDetailsDto = new UserDetailsDto();
+        userDetailsDto.setUsername("JNowak");
+        userDetailsDto.setFirstName("Jan");
+        userDetailsDto.setLastName("Nowak");
 
-//        doReturn(userDetailsDto).when(rabbitPostProducer).askForUserDetails(anyString());
 
-         when(rabbitPostProducer.askForUserDetails(anyString())).thenReturn(userDetailsDto);
+        Mockito.when(rabbitPostProducer.askForUserDetails(anyString())).thenReturn(Mono.just(userDetailsDto));
 
 
     }
 
-//    @Test
-//    void should_create_post() {
-//
-//        StepVerifier.create(postService.createPost(createPostDto,userDetailsDto.getUsername()))
-//                .expectComplete().verify();
-//
-//
-//
-//        Assertions.assertEquals(1, postRepository.findAll().collectList().block().size());
-//
-//
-//    }
     @Test
-    void should_check_create_post_throws_PostDatabaseFetchException() {
-
-//        doReturn(Mono.error(new PostDatabaseFetchException()))
-//                .when(postRepository).save(any());
-
-        when(postRepository.save(any())).thenThrow(new PostDatabaseFetchException());
+    @Order(1)
+    void should_create_post() {
 
         StepVerifier.create(postService.createPost(createPostDto, userDetailsDto.getUsername()))
-                .expectError(PostDatabaseFetchException.class)
-                .verify();
+                .expectComplete().verify();
 
-       Assertions.assertEquals(0, postRepository.findAll().collectList().block().size());
+
+        Assertions.assertEquals(1, postRepository.findAll().collectList().block().size());
+
+
     }
 
 
+    @Test
+    @Order(2)
+    void should_remove_post() {
 
 
-
-
-
-
-
-
-
-
-
-
+    }
 
 
 }

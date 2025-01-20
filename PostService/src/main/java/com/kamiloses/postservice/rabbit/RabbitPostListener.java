@@ -2,14 +2,11 @@ package com.kamiloses.postservice.rabbit;
 
 import com.kamiloses.postservice.exception.PostDatabaseFetchException;
 import com.kamiloses.postservice.repository.PostRepository;
-import com.kamiloses.rabbitmq.RabbitConfig;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
-
-@Component
 @Slf4j
+@Component
 public class RabbitPostListener {
 
 

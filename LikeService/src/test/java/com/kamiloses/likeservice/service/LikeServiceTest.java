@@ -1,4 +1,4 @@
-package com.kamiloses.postservice.service;
+package com.kamiloses.likeservice.service;
 
 import com.kamiloses.postservice.entity.PostEntity;
 import com.kamiloses.postservice.repository.LikeRepository;
