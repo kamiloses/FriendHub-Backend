@@ -15,7 +15,8 @@ import reactor.core.publisher.Mono;
 
 import java.util.Date;
 
-@Service @Import(RabbitExceptionHandler.class)
+@Service
+@Import(RabbitExceptionHandler.class)
 @Slf4j
 public class CommentService {
 
@@ -29,32 +30,28 @@ public class CommentService {
 
 
     public Flux<CommentDto> findCommentsRelatedWithPost(String postId) {
-        return commentRepository.findCommentEntitiesByPostId(postId).onErrorResume(error->{
+        return commentRepository.findCommentEntitiesByPostId(postId).onErrorResume(error -> {
                     log.error("There was some problem with fetching comments related with post");
                     return Mono.error(CommentDatabaseFetchException::new);
                 })
-                .flatMap(commentEntity -> Mono.fromSupplier(() -> rabbitCommentProducer.askForUserDetails(commentEntity.getUserId()))
-                        .map(userDetailsDto -> {
-                            CommentDto commendDto = CommentDto.builder()
-                                    .id(commentEntity.getId())
-                                    .content(commentEntity.getContent())
-                                    .createdAt(commentEntity.getCreatedAt())
-                                    .userDetails(userDetailsDto)
-                                    .postId(commentEntity.getPostId())
-                                    .parentCommentId(commentEntity.getParentCommentId()).build();
-
-                            return commendDto;
-                        }));
-
-
+                .flatMap(commentEntity -> rabbitCommentProducer.askForUserDetails(commentEntity.getUserId())
+                        .map(userDetailsDto ->
+                                CommentDto.builder()
+                                        .id(commentEntity.getId())
+                                        .content(commentEntity.getContent())
+                                        .createdAt(commentEntity.getCreatedAt())
+                                        .userDetails(userDetailsDto)
+                                        .postId(commentEntity.getPostId())
+                                        .parentCommentId(commentEntity.getParentCommentId())
+                                        .build()));
     }
+
 
     public Mono<Void> publishComment(PublishCommentDto publishCommentDto, String username) {
 
 
-        return Mono.fromSupplier(() -> rabbitCommentProducer.askForUserDetails(username))
+        return rabbitCommentProducer.askForUserDetails(username)
                 .flatMap(userDetails -> {
-
                     CommentEntity commentEntity = CommentEntity.builder()
                             .content(publishCommentDto.getContent())
                             .postId(publishCommentDto.getPostId())
@@ -66,7 +63,7 @@ public class CommentService {
                         commentEntity.setParentCommentId(publishCommentDto.getParentCommentId());
                     }
 
-                    return commentRepository.save(commentEntity).onErrorResume(error->{
+                    return commentRepository.save(commentEntity).onErrorResume(error -> {
                         log.error("There was some problem with saving comment to database");
                         return Mono.error(CommentDatabaseFetchException::new);
                     }).then();

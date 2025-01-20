@@ -4,9 +4,11 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kamiloses.commentservice.dto.UserDetailsDto;
 import com.kamiloses.rabbitmq.RabbitConfig;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.stereotype.Component;
-
+import reactor.core.publisher.Mono;
+@Slf4j
 @Component
 public class RabbitCommentProducer {
 
@@ -20,25 +22,24 @@ public class RabbitCommentProducer {
     }
 
 
-    public UserDetailsDto askForUserDetails(String username) {
-        String userDetailsAsString = (String) rabbitTemplate.convertSendAndReceive(RabbitConfig.USER_INFO_EXCHANGE, RabbitConfig.USER_INFO_ROUTING_KEY, username);
-
-        return convertStringToUserDetailsDto(userDetailsAsString);
-
-
+    public Mono<UserDetailsDto> askForUserDetails(String usernameOrId) {
+        return Mono.fromSupplier(() ->
+                        (String) rabbitTemplate.convertSendAndReceive(
+                                RabbitConfig.USER_INFO_EXCHANGE, RabbitConfig.USER_INFO_ROUTING_KEY, usernameOrId)
+                )
+                .flatMap(this::convertStringToUserDetailsDto);
     }
 
 
 
 
 
-    private UserDetailsDto convertStringToUserDetailsDto(String userDetailsAsString) {
-        try {
-            return objectMapper.readValue(userDetailsAsString, UserDetailsDto.class);
-
-        } catch (JsonProcessingException e) {
-            throw new RuntimeException(e);
-        }
+    private Mono<UserDetailsDto> convertStringToUserDetailsDto(String userDetailsAsString) {
+        return Mono.fromCallable(()->objectMapper.readValue(userDetailsAsString, UserDetailsDto.class)).
+                onErrorResume(JsonProcessingException.class, e -> {
+                    log.error("Error occurred while reading value, error: {}", e.getMessage());
+                    return Mono.error(new RuntimeException("Invalid user details format"));
+                });
 
 
     }
