@@ -14,23 +14,23 @@ public class RetweetHandler {
     public RetweetHandler(RetweetService retweetService) {
         this.retweetService = retweetService;
     }
-
-    public Mono<ServerResponse> retweetPost(ServerRequest request) {
-        String postId = request.queryParam("postId").get();
-        String retweetedUserUsername = request.queryParam("username").get();
-
-        return retweetService.retweetPost(postId, retweetedUserUsername).then(ServerResponse.ok().build());
-
-    }
-
-        public Mono<ServerResponse> undoRetweet(ServerRequest request) {
-            String postId = request.queryParam("postId").get();
-            String retweetedUserUsername= request.queryParam("username").get();
-
-            return retweetService.undoRetweet(postId,retweetedUserUsername).then(ServerResponse.ok().build());
-
-
-        }
+//
+//    public Mono<ServerResponse> retweetPost(ServerRequest request) {
+//        String postId = request.queryParam("postId").get();
+//        String retweetedUserUsername = request.queryParam("username").get();
+//
+//        return retweetService.retweetPost(postId, retweetedUserUsername).then(ServerResponse.ok().build());
+//
+//    }
+//
+//        public Mono<ServerResponse> undoRetweet(ServerRequest request) {
+//            String postId = request.queryParam("postId").get();
+//            String retweetedUserUsername= request.queryParam("username").get();
+//
+//            return retweetService.undoRetweet(postId,retweetedUserUsername).then(ServerResponse.ok().build());
+//
+//
+//        }
 
 
 

@@ -32,7 +32,7 @@ public class RabbitUserListener {
 
     @RabbitListener(queues = RabbitConfig.USER_INFO_REQUEST_QUEUE)
     public String receive_And_Resend_UserDetails(String username)  {
-       return String.valueOf(userRepository.findByUsernameOrId(username,username)
+       return userRepository.findByUsernameOrId(username,username)
                 .map(userEntity->
                      UserDetailsDto
                             .builder()
@@ -42,11 +42,14 @@ public class RabbitUserListener {
                             .lastName(userEntity.getLastName())
                             .build()).map(userDetailsDto -> {
                     try {
-                        return objectMapper.writeValueAsString(userDetailsDto);
+                        String s = objectMapper.writeValueAsString(userDetailsDto);
+                        return s;
+
+
                     } catch (JsonProcessingException e) {
                         throw new RuntimeException(e);
                     }
-                }));
+                }).block();
 
 
 //        ObjectMapper objectMapper = new ObjectMapper();

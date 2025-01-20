@@ -24,10 +24,10 @@ public class RabbitPostProducer {
         this.objectMapper = objectMapper;
     }
 
-    public Mono<UserDetailsDto> askForUserDetails(String username) {
+    public Mono<UserDetailsDto> askForUserDetails(String usernameOrId) {
         return Mono.fromSupplier(() ->
                         (String) rabbitTemplate.convertSendAndReceive(
-                                RabbitConfig.USER_INFO_EXCHANGE, RabbitConfig.USER_INFO_ROUTING_KEY, username)
+                                RabbitConfig.USER_INFO_EXCHANGE, RabbitConfig.USER_INFO_ROUTING_KEY, usernameOrId)
                 )
                 .flatMap(this::convertStringToUserDetailsDto);
     }

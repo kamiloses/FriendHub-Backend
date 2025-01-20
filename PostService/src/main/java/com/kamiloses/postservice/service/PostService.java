@@ -31,45 +31,45 @@ public class PostService {
         this.retweetService = retweetService;
     }
 
-    public Mono<Void> createPost(CreatePostDto post, String username) {
-        return Mono.fromSupplier(() ->
-                rabbitPostProducer.askForUserDetails(username)).flatMap(user -> {
-
-            PostEntity createdPost = PostEntity.builder()
-                    .userId(user.getId())
-                    .content(post.getContent())
-                    .createdAt(new Date())
-                    .build();
-            return postRepository.save(createdPost).
-                    onErrorResume(error -> {
-                        log.error("There was some problem with saving post to database");
-                        return Mono.error(PostDatabaseFetchException::new);
-                    }).
-                    then();
-        });
-
-    }
-
-
-    public Mono<PostDto> getPostById(String id) {
-        return postRepository.findById(id).onErrorResume(error -> {
-                    log.error("There was some problem with fetching specific post");
-                    return Mono.error(PostDatabaseFetchException::new);
-                })
-                .flatMap(postEntity ->
-                        Mono.fromSupplier(() -> rabbitPostProducer.askForUserDetails(postEntity.getUserId()))
-                                .map(userEntity -> {
+//    public Mono<Void> createPost(CreatePostDto post, String username) {
+//        return Mono.fromSupplier(() ->
+//                rabbitPostProducer.askForUserDetails(username)).flatMap(user -> {
+//
+//            PostEntity createdPost = PostEntity.builder()
+//                    .userId(user.getId())
+//                    .content(post.getContent())
+//                    .createdAt(new Date())
+//                    .build();
+//            return postRepository.save(createdPost).
+//                    onErrorResume(error -> {
+//                        log.error("There was some problem with saving post to database");
+//                        return Mono.error(PostDatabaseFetchException::new);
+//                    }).
+//                    then();
+//        });
+//
+//    }
 
 
-                                    PostDto postDto = PostDto.builder()
-                                            .id(postEntity.getId())
-                                            .user(userEntity)
-                                            .content(postEntity.getContent())
-                                            .createdAt(postEntity.getCreatedAt()).build();
-
-                                    return postDto;
-                                }));
-    }
+//    public Mono<PostDto> getPostById(String id) {
+//        return postRepository.findById(id).onErrorResume(error -> {
+//                    log.error("There was some problem with fetching specific post");
+//                    return Mono.error(PostDatabaseFetchException::new);
+//                })
+//                .flatMap(postEntity ->
+//                        Mono.fromSupplier(() -> rabbitPostProducer.askForUserDetails(postEntity.getUserId()))
+//                                .map(userEntity -> {
+//
+//
+//                                    PostDto postDto = PostDto.builder()
+//                                            .id(postEntity.getId())
+//                                            .user(userEntity)
+//                                            .content(postEntity.getContent())
+//                                            .createdAt(postEntity.getCreatedAt()).build();
+//
+//                                    return postDto;
+//                                }));
+//    }
 
 
     public Flux<PostDto> getAllPosts(String loggedUserId) {
@@ -77,7 +77,7 @@ public class PostService {
                     log.error("There was some problem with fetching all posts");
                     return Mono.error(PostDatabaseFetchException::new);
                 })
-                .flatMap(postEntity -> Mono.fromSupplier(() -> rabbitPostProducer.askForUserDetails(postEntity.getUserId()))
+                .flatMap(postEntity ->rabbitPostProducer.askForUserDetails(postEntity.getUserId())
                         .map(userDetails -> {
                             UserDetailsDto userDetailsDto = UserDetailsDto.builder()
                                     .firstName(userDetails.getFirstName())
@@ -96,7 +96,7 @@ public class PostService {
                                                     .likeCount(postEntity.getLikeCount())
                                                     .build());
 
-                        })).flatMap(postDto -> postDto);
+                        }).flatMap(postDto -> postDto));
 
     }
 

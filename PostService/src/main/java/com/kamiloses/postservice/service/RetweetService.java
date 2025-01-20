@@ -27,40 +27,43 @@ public class RetweetService {
         this.rabbitPostProducer = rabbitPostProducer;
     }
 
-    public Mono<Void> retweetPost(String postId, String retweetedUserUsername) {
-        UserDetailsDto userDetailsDto = rabbitPostProducer.askForUserDetails(retweetedUserUsername);
-        return Mono.just(RetweetEntity.builder()
-                        .retweetedByUserId(userDetailsDto.getId())
-                        .originalPostId(postId)
-                        .build())
-                .flatMap(retweetEntity ->
-                        retweetRepository.save(retweetEntity).then(
-                                 postRepository.findById(postId)
-                                        .flatMap(fetchedPost -> {
-                                            fetchedPost.setRetweetCount(fetchedPost.getRetweetCount() + 1);
-                                            return postRepository.save(fetchedPost).then();
-                                        })
-                        )
-                );
-    }
+//    public Mono<Void> retweetPost(String postId, String retweetedUserUsername) {
+//        UserDetailsDto userDetailsDto = rabbitPostProducer.askForUserDetails(retweetedUserUsername);
+//        return Mono.just(RetweetEntity.builder()
+//                        .retweetedByUserId(userDetailsDto.getId())
+//                        .originalPostId(postId)
+//                        .build())
+//                .flatMap(retweetEntity ->
+//                        retweetRepository.save(retweetEntity).then(
+//                                 postRepository.findById(postId)
+//                                        .flatMap(fetchedPost -> {
+//                                            fetchedPost.setRetweetCount(fetchedPost.getRetweetCount() + 1);
+//                                            return postRepository.save(fetchedPost).then();
+//                                        })
+//                        )
+//                );
+//    }
 
-    public Mono<Void> undoRetweet(String postId, String retweetedUserUsername) {
-        UserDetailsDto userDetailsDto = rabbitPostProducer.askForUserDetails(retweetedUserUsername);
-        return retweetRepository.deleteByOriginalPostIdAndRetweetedByUserId(postId, userDetailsDto.getId())
-                .then(postRepository.findById(postId)
-                        .flatMap(postEntity -> {
-                            postEntity.setRetweetCount(postEntity.getRetweetCount() - 1);
-                            return postRepository.save(postEntity);
-                        })
-                )
-                .then();
-    }
+//    public Mono<Void> undoRetweet(String postId, String retweetedUserUsername) {
+//        UserDetailsDto userDetailsDto = rabbitPostProducer.askForUserDetails(retweetedUserUsername);
+//        return retweetRepository.deleteByOriginalPostIdAndRetweetedByUserId(postId, userDetailsDto.getId())
+//                .then(postRepository.findById(postId)
+//                        .flatMap(postEntity -> {
+//                            postEntity.setRetweetCount(postEntity.getRetweetCount() - 1);
+//                            return postRepository.save(postEntity);
+//                        })
+//                )
+//                .then();
+//    }
+
+
+
 
 
 
     public Mono<Boolean> isPostRetweetedByMe(String postId, String loggedUserUsername) {
-        UserDetailsDto userDetailsDto = rabbitPostProducer.askForUserDetails(loggedUserUsername);
-        return retweetRepository.existsByOriginalPostIdAndRetweetedByUserId(postId, userDetailsDto.getId());
+      return    rabbitPostProducer.askForUserDetails(loggedUserUsername)
+                 .flatMap(userDetails->retweetRepository.existsByOriginalPostIdAndRetweetedByUserId(postId,userDetails.getId()));
 
 
     }

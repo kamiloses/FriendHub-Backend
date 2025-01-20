@@ -56,18 +56,18 @@ class PostServiceTest {
 
     }
 
-    @Test
-    void should_create_post() {
-
-        StepVerifier.create(postService.createPost(createPostDto,userDetailsDto.getUsername()))
-                .expectComplete().verify();
-
-
-
-        Assertions.assertEquals(1, postRepository.findAll().collectList().block().size());
-
-
-    }
+//    @Test
+//    void should_create_post() {
+//
+//        StepVerifier.create(postService.createPost(createPostDto,userDetailsDto.getUsername()))
+//                .expectComplete().verify();
+//
+//
+//
+//        Assertions.assertEquals(1, postRepository.findAll().collectList().block().size());
+//
+//
+//    }
     @Test
     void should_check_create_post_throws_PostDatabaseFetchException() {
 
