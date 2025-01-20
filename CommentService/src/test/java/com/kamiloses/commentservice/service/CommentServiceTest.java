@@ -51,7 +51,7 @@ class CommentServiceTest {
 
 
 
-        when(rabbitCommentProducer.askForUserDetails(username)).thenReturn(userDetails);
+        when(rabbitCommentProducer.askForUserDetails(username)).thenReturn(Mono.just(userDetails));
         when(commentRepository.save(any(CommentEntity.class))).thenReturn(Mono.just(expectedEntity));
 
 
@@ -63,7 +63,7 @@ class CommentServiceTest {
 
 
 
-    @Test
+    @Test//todo usuń i zmień na getById
     void should_throw_Error() {
         PublishCommentDto comment = new PublishCommentDto("Test", "1", null);
         UserDetailsDto userDetails = new UserDetailsDto("1", "Jnowak","Jan","Nowak");
@@ -71,7 +71,7 @@ class CommentServiceTest {
 
 
 
-        when(rabbitCommentProducer.askForUserDetails(username)).thenReturn(userDetails);
+        when(rabbitCommentProducer.askForUserDetails(username)).thenReturn(Mono.just(userDetails));
         when(commentRepository.save(any(CommentEntity.class)))
                 .thenReturn(Mono.error(new RuntimeException()));
 
