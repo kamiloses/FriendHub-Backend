@@ -13,10 +13,10 @@ public class PostRouter {
     public RouterFunction<ServerResponse> route(PostHandler postHandler,RetweetHandler retweetHandler) {
         return RouterFunctions.route()
                 .GET("/api/posts", postHandler::getAllPosts)
-               // .GET("/api/posts/{id}",postHandler::getPostById)
-               // .POST("/api/posts/{username}",postHandler::createPost)
-              //  .POST("/api/retweet",retweetHandler::retweetPost)
-              //  .DELETE("/api/retweet",retweetHandler::undoRetweet)
+                .GET("/api/posts/{id}",postHandler::getPostById)
+                .POST("/api/posts/{username}",postHandler::createPost)
+                .POST("/api/retweet",retweetHandler::retweetPost)
+                .DELETE("/api/retweet",retweetHandler::undoRetweet)
                 .build();
 
 

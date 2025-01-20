@@ -18,16 +18,16 @@ public class PostHandler {
     public PostHandler(PostService postService) {
         this.postService = postService;
     }
-//public Mono<ServerResponse> createPost(ServerRequest request) {
-//return request.bodyToMono(CreatePostDto.class).flatMap(post ->
-//
-//    postService.createPost(post,request.pathVariable("username")).then(ServerResponse.ok().build()));}
+public Mono<ServerResponse> createPost(ServerRequest request) {
+return request.bodyToMono(CreatePostDto.class).flatMap(post ->
 
-//public Mono<ServerResponse> getPostById(ServerRequest request) {
-// return postService.getPostById(request.pathVariable("id")).flatMap(post ->ServerResponse.ok().bodyValue(post));
-//
-//
-//}
+    postService.createPost(post,request.pathVariable("username")).then(ServerResponse.ok().build()));}
+
+public Mono<ServerResponse> getPostById(ServerRequest request) {
+ return postService.getPostById(request.pathVariable("id")).flatMap(post ->ServerResponse.ok().bodyValue(post));
+
+
+}
 public Mono<ServerResponse> getAllPosts(ServerRequest request) {
     String param = request.queryParam("username").get();
     return postService.getAllPosts(param).collectList().flatMap(post -> ServerResponse.ok().bodyValue(post));
