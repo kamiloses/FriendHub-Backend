@@ -21,7 +21,7 @@
         @MessageMapping("/chat.sendMessage")
         public void checkFriendsActivity(SendMessageDto message) {
 
-            UserDetailsDto userDetailsDto = rabbitFriendsProducer.askForUserDetails(message.getUsername());
+            UserDetailsDto userDetailsDto = rabbitFriendsProducer.askForUserDetails(message.getUsername()).block();
 
 
             SendMessageDto sendMessageDto = new SendMessageDto(message.getChatId(), message.getMessage(), userDetailsDto.getUsername(), userDetailsDto.getFirstName(), userDetailsDto.getLastName());

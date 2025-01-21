@@ -6,11 +6,13 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kamiloses.friendservice.dto.FriendShipDto;
 import com.kamiloses.friendservice.dto.UserDetailsDto;
 import com.kamiloses.rabbitmq.RabbitConfig;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.stereotype.Component;
+import reactor.core.publisher.Mono;
 
 import java.util.List;
-
+@Slf4j
 @Component
 public class RabbitFriendsProducer {
 
@@ -24,20 +26,24 @@ public class RabbitFriendsProducer {
     }
 
 
-    public UserDetailsDto askForUserDetails(String username) {
-        String userDetailsAsString = (String) rabbitTemplate.convertSendAndReceive(RabbitConfig.USER_INFO_EXCHANGE, RabbitConfig.USER_INFO_ROUTING_KEY, username);
+    public Mono<UserDetailsDto> askForUserDetails(String usernameOrId) {
+        return Mono.fromSupplier(() ->
+                        (String) rabbitTemplate.convertSendAndReceive(
+                                RabbitConfig.USER_INFO_EXCHANGE, RabbitConfig.USER_INFO_ROUTING_KEY, usernameOrId)
+                )
+                .flatMap(this::convertStringToUserDetailsDto);
+    }
 
-       return convertStringToUserDetailsDto(userDetailsAsString); }
+
+    private Mono<UserDetailsDto> convertStringToUserDetailsDto(String userDetailsAsString) {
+        return Mono.fromCallable(()->objectMapper.readValue(userDetailsAsString, UserDetailsDto.class)).
+                onErrorResume(JsonProcessingException.class, e -> {
+                    log.error("Error occurred while reading value, error: {}", e.getMessage());
+                    return Mono.error(new RuntimeException("There was some problem with converting value"));
+                });
 
 
 
-    private UserDetailsDto convertStringToUserDetailsDto(String userDetailsAsString) {
-        try {
-            return objectMapper.readValue(userDetailsAsString, UserDetailsDto.class);
-
-        } catch (JsonProcessingException e) {
-            throw new RuntimeException(e);
-        }
     }
 
 

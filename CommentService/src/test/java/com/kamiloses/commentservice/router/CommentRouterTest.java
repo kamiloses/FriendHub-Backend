@@ -79,7 +79,7 @@ class CommentRouterTest {
         CommentEntity commentEntity2 = new CommentEntity("2", "content1", null, "1", "2", "1");
 
 
-        //related with post 1
+        //related with postId 1
         CommentEntity commentEntity3 = new CommentEntity("3", "content1", null, "1", "1", "2");
         CommentEntity commentEntity4 = new CommentEntity("4", "content1", null, "1", "1", null);
         commentRepository.saveAll(List.of(commentEntity1, commentEntity2, commentEntity3, commentEntity4)).collectList().block();

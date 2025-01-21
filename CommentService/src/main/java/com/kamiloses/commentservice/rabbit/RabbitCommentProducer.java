@@ -38,7 +38,7 @@ public class RabbitCommentProducer {
         return Mono.fromCallable(()->objectMapper.readValue(userDetailsAsString, UserDetailsDto.class)).
                 onErrorResume(JsonProcessingException.class, e -> {
                     log.error("Error occurred while reading value, error: {}", e.getMessage());
-                    return Mono.error(new RuntimeException("Invalid user details format"));
+                    return Mono.error(new RuntimeException("There was some problem with converting value"));
                 });
 
 

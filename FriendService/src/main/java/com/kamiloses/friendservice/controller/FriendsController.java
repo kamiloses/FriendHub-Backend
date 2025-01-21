@@ -15,7 +15,7 @@ import java.util.List;
 public class FriendsController {
 
 
-    //Router configuration does not work when WebSockets are included in the pom file.
+    //Router  does not work when WebSockets are included in the pom file.
 
 private final FriendsService friendsService;
 

@@ -36,7 +36,7 @@ public class FriendsService {
     }
 
     public Flux<UserDetailsDto> getAllUserFriends(String loggedUserId) {
-        return Mono.fromSupplier(() -> rabbitFriendsProducer.askForUserDetails(loggedUserId))
+        return rabbitFriendsProducer.askForUserDetails(loggedUserId)
                 .flatMapMany(userDetailsDto -> {
                     Flux<FriendshipEntity> friendshipEntities = friendshipRepository.getFriendshipEntitiesByUserIdOrFriendId(
                             userDetailsDto.getId(), userDetailsDto.getId());
@@ -65,8 +65,8 @@ public class FriendsService {
                                         .id(userDetails.getId())
                                         .username(userDetails.getUsername())
                                         .build())   //found users that are similar to username that i  wrote, except of my username.
-                                .flatMap(searchedPeopleDto -> Mono.fromSupplier(() -> rabbitFriendsProducer.askForUserDetails(userDetails.getUsername()))
-                                        .flatMap(searchedFriendDetails -> Mono.fromSupplier(() -> rabbitFriendsProducer.askForUserDetails(myUsername))
+                                .flatMap(searchedPeopleDto ->  rabbitFriendsProducer.askForUserDetails(userDetails.getUsername())
+                                        .flatMap(searchedFriendDetails ->  rabbitFriendsProducer.askForUserDetails(myUsername)
                                                 .flatMap(myDetails -> friendshipRepository.getFriendshipEntityByUserIdOrFriendId(myDetails.getId(), myDetails.getId())
                                                         .onErrorResume(error->{
                                                             log.error("There was some problem with fetching friends");
@@ -115,9 +115,9 @@ public class FriendsService {
 
     public Mono<FriendshipEntity> addToFriendList(String friendUsername, String myUsername) {
 
-        return Mono.fromSupplier(() -> rabbitFriendsProducer.askForUserDetails(friendUsername))
+        return rabbitFriendsProducer.askForUserDetails(friendUsername)
                 .flatMap(friendDetails ->
-                                Mono.fromSupplier(() -> rabbitFriendsProducer.askForUserDetails(myUsername))
+                                 rabbitFriendsProducer.askForUserDetails(myUsername)
                                         .flatMap(myAccountDetails -> {
                                             FriendshipEntity friendshipEntity = FriendshipEntity.builder()
                                                     .friendId(friendDetails.getId())
@@ -137,9 +137,9 @@ public class FriendsService {
 
     public Mono<Void> removeFriend(String friendUsername, String myUsername) {
 
-     return    Mono.fromSupplier(() -> rabbitFriendsProducer.askForUserDetails(friendUsername))
-                .flatMap(friendDetails -> Mono.fromSupplier(() ->
-                                rabbitFriendsProducer.askForUserDetails(myUsername))
+     return    rabbitFriendsProducer.askForUserDetails(friendUsername)
+                .flatMap(friendDetails ->
+                                rabbitFriendsProducer.askForUserDetails(myUsername)
                         .flatMap(myAccountDetails ->
                                 friendshipRepository.deleteByUserIdAndFriendId(myAccountDetails.getId(), friendDetails.getId())
                                         .then(friendshipRepository.deleteByUserIdAndFriendId(friendDetails.getId(), myAccountDetails.getId()))));
