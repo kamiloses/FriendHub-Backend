@@ -151,6 +151,16 @@ public class FriendsService {
     }
 
 
+
+
+
+
+
+
+
+
+
+    //todo zmień potem implementacje oraz redisTemplae na reactive
     public boolean isOnline(RedisTemplate<String, String> redisTemplate, String username) {
         Set<String> keys = redisTemplate.keys("*");
         if (keys != null) {

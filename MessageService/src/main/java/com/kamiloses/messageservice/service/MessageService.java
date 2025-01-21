@@ -32,7 +32,7 @@ public class MessageService {
                     log.error("There was some problem with fetching messages from database");
                     return Mono.error(MessageDatabaseFetchException::new);})
                 .flatMap(messageEntity ->
-                        Mono.fromSupplier(() -> rabbitMessageProducer.askForUserDetails(messageEntity.getSenderUsername()))
+                        rabbitMessageProducer.askForUserDetails(messageEntity.getSenderUsername())
                                 .map(sender -> MessageDto.builder()
                                         .sender(sender)
                                         .content(messageEntity.getContent())
