@@ -42,11 +42,14 @@ public class FriendsService {
                             userDetailsDto.getId(), userDetailsDto.getId());
 
                     return getYourFriendsId(friendshipEntities, userDetailsDto.getId())
-                            .flatMapMany(friendIds -> Flux.fromIterable(rabbitFriendsProducer.askForFriendsDetails(friendIds))
-                                    .map(friend -> {
-                                        friend.setIsOnline(isOnline(redisTemplate, friend.getUsername()));
-                                        return friend;
-                                    }));
+                            .flatMapMany(friendIds -> rabbitFriendsProducer.askForFriendsDetails(friendIds)
+                                    .flatMapMany(friendsList -> Flux.fromIterable(friendsList)
+                                            .map(friend -> {
+                                                friend.setIsOnline(isOnline(redisTemplate, friend.getUsername()));
+                                                return friend;
+                                            })
+                                    )
+                            );
                 });
     }
 
@@ -56,8 +59,8 @@ public class FriendsService {
 
 
     public Flux<SearchedPeopleDto> getPeopleWithSimilarUsername(String username, String myUsername) {
-        return Mono.fromSupplier(() -> rabbitFriendsProducer.getSimilarPeopleNameToUsername(username))
-                .flatMapMany(searchedPeople -> Flux.fromStream(searchedPeople.stream())
+        return   rabbitFriendsProducer.getSimilarPeopleNameToUsername(username)
+                .flatMapMany(searchedPeople -> Flux.fromIterable(searchedPeople)
                         .filter(userDetailsDto -> !userDetailsDto.getUsername().equals(myUsername))
                         .flatMap(userDetails -> Mono.just(SearchedPeopleDto.builder()
                                         .firstName(userDetails.getFirstName())
