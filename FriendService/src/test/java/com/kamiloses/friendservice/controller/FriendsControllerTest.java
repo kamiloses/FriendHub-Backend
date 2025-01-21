@@ -14,6 +14,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.reactive.server.WebTestClient;
+import reactor.core.publisher.Mono;
 
 import java.util.Date;
 
@@ -24,6 +25,8 @@ import java.util.Date;
 @Disabled("UnsatisfiedDependencyException-WebTestClient")
 class FriendsControllerTest {
 
+
+      //most likely websockets cause inability to test the router.
 
 
     @Autowired
@@ -38,21 +41,16 @@ class FriendsControllerTest {
 
 
 
-
-//    @InjectMocks
-//    private FriendsService friendsService;
-
-
     private UserDetailsDto myUserDetails=new UserDetailsDto("1",null,"JNowak",false,"Jan","Nowak");
     private UserDetailsDto friendDetails=new UserDetailsDto("2",null,"MKowalski",false,"Maciej","Kowalski");
 
 
     @Test
     @Order(1)
-    public void should_check_if_addToFriend_works() {
+    public void should_check_addToFriend() {
         friendshipRepository.deleteAll().block();
-        Mockito.when(rabbitFriendsProducer.askForUserDetails(friendDetails.getUsername())).thenReturn(friendDetails);
-        Mockito.when(rabbitFriendsProducer.askForUserDetails(myUserDetails.getUsername())).thenReturn(myUserDetails);
+        Mockito.when(rabbitFriendsProducer.askForUserDetails(friendDetails.getUsername())).thenReturn(Mono.just(friendDetails));
+        Mockito.when(rabbitFriendsProducer.askForUserDetails(myUserDetails.getUsername())).thenReturn(Mono.just(myUserDetails));
 
 
 
@@ -67,9 +65,9 @@ class FriendsControllerTest {
 
     @Test
     @Order(2)
-    public void should_check_if_delete_works() {
-        Mockito.when(rabbitFriendsProducer.askForUserDetails(friendDetails.getUsername())).thenReturn(friendDetails);
-        Mockito.when(rabbitFriendsProducer.askForUserDetails(myUserDetails.getUsername())).thenReturn(myUserDetails);
+    public void should_check_removeFromFriends() {
+        Mockito.when(rabbitFriendsProducer.askForUserDetails(friendDetails.getUsername())).thenReturn(Mono.just(friendDetails));
+        Mockito.when(rabbitFriendsProducer.askForUserDetails(myUserDetails.getUsername())).thenReturn(Mono.just(myUserDetails));
 
 
         webTestClient.delete().uri("/api/friends").header("friendUsername", friendDetails.getUsername())

@@ -3,13 +3,18 @@ package com.kamiloses.messageservice.router;
 import com.kamiloses.messageservice.dto.MessageDto;
 import com.kamiloses.messageservice.dto.SendMessageDto;
 import com.kamiloses.messageservice.dto.UserDetailsDto;
+import com.kamiloses.messageservice.entity.MessageEntity;
+import com.kamiloses.messageservice.rabbit.RabbitMessageProducer;
 import com.kamiloses.messageservice.repository.MessageRepository;
 import org.junit.jupiter.api.*;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.reactive.AutoConfigureWebTestClient;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.reactive.server.WebTestClient;
+import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 
 import java.time.Duration;
@@ -28,6 +33,10 @@ class MessageRouterTest {
     @Autowired
     private MessageRepository messageRepository;
 
+    @MockBean
+    private RabbitMessageProducer rabbitMessageProducer;
+
+
     @BeforeEach
     public void setUp() {
         webTestClient = webTestClient.mutate()
@@ -35,12 +44,14 @@ class MessageRouterTest {
                 .build();
 
 
+        UserDetailsDto userDetailsDto = new UserDetailsDto("1","kamiloses","1","Jan","Nowak");
+        Mockito.when(rabbitMessageProducer.askForUserDetails(Mockito.any())).thenReturn(Mono.just(userDetailsDto));
     }
 
 
     @Test
     @Order(1)
-    void should_check_sendMessage_Works() {
+    void should_check_sendMessage() {
         messageRepository.deleteAll().block();
         SendMessageDto sendMessageDto = new SendMessageDto("1", "kamiloses", "content");
         webTestClient.post().uri("/api/message").bodyValue(sendMessageDto).exchange()
@@ -55,18 +66,6 @@ class MessageRouterTest {
     @Test
     @Order(2)
     void should_Check_showMessagesRelatedWithChat() {
-
-
-        UserDetailsDto userDetailsDto = new UserDetailsDto();
-        userDetailsDto.setUsername("kamiloses");
-
-        MessageDto.builder()
-                .chatId("1")
-                .sender(userDetailsDto)
-                .content("content")
-                .build();
-
-
         webTestClient.get().uri("/api/message/1").exchange()
                 .expectStatus().isOk().expectBodyList(MessageDto.class)
                 .hasSize(1)

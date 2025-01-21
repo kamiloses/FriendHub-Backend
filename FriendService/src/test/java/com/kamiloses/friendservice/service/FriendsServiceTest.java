@@ -17,6 +17,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.test.context.ActiveProfiles;
 import reactor.core.Disposable;
+import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 
 import java.util.ArrayList;
@@ -62,13 +63,13 @@ class FriendsServiceTest {
     @Test
     @DisplayName("Should return 3 users: 2 displayed as friends, 1 as non-friend")
     void should_check_getPeopleWithSimilarUsername() {
-        Mockito.when(rabbitFriendsProducer.getSimilarPeopleNameToUsername(searchedUsername)).thenReturn(searchedUsers);
+        Mockito.when(rabbitFriendsProducer.getSimilarPeopleNameToUsername(searchedUsername)).thenReturn(Mono.just(searchedUsers));
 
 
-        Mockito.when(rabbitFriendsProducer.askForUserDetails("kamiloses1")).thenReturn(user1);
-        Mockito.when(rabbitFriendsProducer.askForUserDetails("kamiloses2")).thenReturn(user2);
-        Mockito.when(rabbitFriendsProducer.askForUserDetails("kamiloses3")).thenReturn(user3);
-        Mockito.when(rabbitFriendsProducer.askForUserDetails("kamiloses")).thenReturn(myUsername);
+        Mockito.when(rabbitFriendsProducer.askForUserDetails("kamiloses1")).thenReturn(Mono.just(user1));
+        Mockito.when(rabbitFriendsProducer.askForUserDetails("kamiloses2")).thenReturn(Mono.just(user2));
+        Mockito.when(rabbitFriendsProducer.askForUserDetails("kamiloses3")).thenReturn(Mono.just(user3));
+        Mockito.when(rabbitFriendsProducer.askForUserDetails("kamiloses")).thenReturn(Mono.just(myUsername));
 
         StepVerifier.create(friendsService.getPeopleWithSimilarUsername(searchedUsername, myUsername.getUsername()).collectList())
                 .expectNextMatches(users ->
@@ -80,6 +81,6 @@ class FriendsServiceTest {
                 .verifyComplete();
     }
 
-               // .expectNextCount(3)
+
 
 }
