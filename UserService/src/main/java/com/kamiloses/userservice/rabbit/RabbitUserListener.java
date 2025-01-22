@@ -33,6 +33,7 @@ public class RabbitUserListener {
 
     @RabbitListener(queues = RabbitConfig.USER_INFO_REQUEST_QUEUE)
     public String receive_And_Resend_UserDetails(String username) {
+        System.err.println("WYWOŁUJE");
         return userRepository.findByUsernameOrId(username, username)
                 .onErrorResume(error->{
                     log.error("There was some problem with fetching User in receive_And_Resend_UserDetails method");

@@ -76,7 +76,7 @@ public class PostService {
                     return Mono.error(PostDatabaseFetchException::new);
                 })
                 .flatMap(postEntity ->
-                 rabbitPostProducer.askForUserDetails(postEntity.getUserId())
+                 rabbitPostProducer.askForUserDetails(loggedUserUsername)
                         .map(userDetails -> {
                             UserDetailsDto userDetailsDto = UserDetailsDto.builder()
                                     .firstName(userDetails.getFirstName())
@@ -92,7 +92,7 @@ public class PostService {
                                             .retweetCount(postEntity.getRetweetCount())
                                             .isRetweetedByMe(isRetweetedByMe)
                                             .likeCount(postEntity.getLikeCount())
-                                       //     .isLikedByMe(rabbitPostProducer.isPostLiked(postEntity.getId(),loggedUserUsername))
+                                            .isLikedByMe(Boolean.parseBoolean(rabbitPostProducer.isPostLiked(postEntity.getId(),loggedUserUsername)))
                                             .build());
 
                         }).flatMap(postDto -> postDto));

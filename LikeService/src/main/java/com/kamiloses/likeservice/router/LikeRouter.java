@@ -12,8 +12,8 @@ public class LikeRouter {
     @Bean
     public RouterFunction<ServerResponse> route(LikeHandler likeHandler) {
         return RouterFunctions.route()
-                .POST("/api/like", likeHandler::likePost).build();
-//               .DELETE("/api/like", likeHandler::undoLike).build();
+                .POST("/api/like", likeHandler::likePost)
+                .DELETE("/api/like", likeHandler::undoLike).build();
     }
 
 }

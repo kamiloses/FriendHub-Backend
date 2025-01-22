@@ -18,12 +18,11 @@ public class RabbitLikeListener {
     }
 
     @RabbitListener(queues = RabbitConfig.IS_POST_LIKED_QUEUE)
-    public Boolean receive_And_Resend_EncodedPassword(String postAndUserUsername) {
+    public String receive_And_Resend_EncodedPassword(String postAndUserUsername) {
         String[] data = postAndUserUsername.split(":");
         String postId =  data[0];
         String username =  data[1];
-
-        return isPostLikedByMe(postId,username);
+        return isPostLikedByMe(postId,username).toString();
 
     }
 
