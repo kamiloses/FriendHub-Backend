@@ -114,9 +114,12 @@ public class RabbitConfig {
 
     public static final String POST_ADD_REQUEST_QUEUE = "postAddRequestQueue";
     public static final String POST_REMOVE_REQUEST_QUEUE = "postRemoveRequestQueue";
+    public static final String IS_POST_LIKED_QUEUE = "isPostLikedRequestQueue";
+
     public static final String POST_OPERATIONS_EXCHANGE = "postOperationsExchange";
     public static final String POST_ADD_ROUTING_KEY = "postAddRoutingKey";
     public static final String POST_REMOVE_ROUTING_KEY = "postRemoveRoutingKey";
+    public static final String IS_POST_LIKED_ROUTING_KEY = "isPostLikedRoutingKey";
 
 
 
@@ -133,6 +136,15 @@ public class RabbitConfig {
 
 
     @Bean
+    public Queue isPostLikedQueue() {
+        return new Queue(IS_POST_LIKED_QUEUE);
+    }
+
+
+
+
+
+    @Bean
     public DirectExchange exchange_postOperations() {
         return new DirectExchange(POST_OPERATIONS_EXCHANGE);
     }
@@ -142,11 +154,14 @@ public class RabbitConfig {
     }
     @Bean
     public Binding postRemoveBinding() {
-        return BindingBuilder.bind(searchedPeopleQueue()).to(exchange_searchedPeople()).with(POST_REMOVE_ROUTING_KEY);
+        return BindingBuilder.bind(postRemoveQueue()).to(exchange_postOperations()).with(POST_REMOVE_ROUTING_KEY);
     }
 
 
-
+    @Bean
+    public Binding isPostLikedBinding() {
+        return BindingBuilder.bind(isPostLikedQueue()).to(exchange_postOperations()).with(IS_POST_LIKED_ROUTING_KEY);
+    }
 
 
 

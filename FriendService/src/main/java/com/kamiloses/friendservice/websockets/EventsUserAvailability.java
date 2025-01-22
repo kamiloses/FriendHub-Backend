@@ -18,6 +18,8 @@ import java.util.regex.Pattern;
 @Component  @Slf4j
 public class EventsUserAvailability {
 
+    //todo reaktywny redis
+
     private final RedisTemplate<String, String> redisTemplate;
     private final SimpMessagingTemplate messagingTemplate;
 

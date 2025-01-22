@@ -42,10 +42,5 @@ public class LikeService {
 
 
 
-    public Mono<Boolean> isPostLikedByMe(String postId, String loggedUserUsername) {
-        return rabbitLikeProducer.askForUserDetails(loggedUserUsername)
-                .flatMap(userDetailsDto ->likeRepository.existsByOriginalPostIdAndLikedByUserId(postId, userDetailsDto.getId()));
 
-
-    }
 }

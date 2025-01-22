@@ -17,7 +17,7 @@
             this.messagingTemplate = messagingTemplate;
             this.rabbitFriendsProducer = rabbitFriendsProducer;
         }
-
+        //todo popraw potem ten/topic/public na queue i po stronie frontendu tez oraz from supplier
         @MessageMapping("/chat.sendMessage")
         public void checkFriendsActivity(SendMessageDto message) {
 
@@ -34,7 +34,7 @@
     }
 
 
-            //todo popraw potem ten/topic/public na queue i po stronie frontendu tez
+
 
 
 

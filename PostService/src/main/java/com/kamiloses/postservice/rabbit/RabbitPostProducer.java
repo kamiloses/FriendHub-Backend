@@ -18,7 +18,6 @@ public class RabbitPostProducer {
     private final ObjectMapper objectMapper;
 
 
-
     public RabbitPostProducer(RabbitTemplate rabbitTemplate, ObjectMapper objectMapper) {
         this.rabbitTemplate = rabbitTemplate;
         this.objectMapper = objectMapper;
@@ -34,12 +33,24 @@ public class RabbitPostProducer {
 
 
     private Mono<UserDetailsDto> convertStringToUserDetailsDto(String userDetailsAsString) {
-            return Mono.fromCallable(()->objectMapper.readValue(userDetailsAsString, UserDetailsDto.class)).
-                    onErrorResume(JsonProcessingException.class, e -> {
-                        log.error("Error occurred while reading value, error: {}", e.getMessage());
-                        return Mono.error(new RuntimeException("There was some problem with converting value"));
-                    });
+        return Mono.fromCallable(() -> objectMapper.readValue(userDetailsAsString, UserDetailsDto.class)).
+                onErrorResume(JsonProcessingException.class, e -> {
+                    log.error("Error occurred while reading value, error: {}", e.getMessage());
+                    return Mono.error(new RuntimeException("There was some problem with converting value"));
+                });
 
+
+    }
+
+
+
+
+    public boolean isPostLiked(String postId, String loggedUserUsername) {
+        String dataToBeDelivered = postId + ":" + loggedUserUsername;
+        return Mono.fromSupplier(() ->
+                (Boolean) rabbitTemplate.convertSendAndReceive(
+                        RabbitConfig.USER_INFO_EXCHANGE, RabbitConfig.USER_INFO_ROUTING_KEY,dataToBeDelivered)
+        ).block();
 
 
     }

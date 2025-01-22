@@ -92,6 +92,7 @@ public class PostService {
                                             .retweetCount(postEntity.getRetweetCount())
                                             .isRetweetedByMe(isRetweetedByMe)
                                             .likeCount(postEntity.getLikeCount())
+                                            .isLikedByMe(rabbitPostProducer.isPostLiked(postEntity.getId(),loggedUserUsername))
                                             .build());
 
                         }).flatMap(postDto -> postDto));
