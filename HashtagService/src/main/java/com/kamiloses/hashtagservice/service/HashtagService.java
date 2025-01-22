@@ -26,8 +26,7 @@ public class HashtagService {
         mostPopularHashtags = new HashMap<>();
 
 
-        ReactiveRedisConnection connection = redisTemplate.getConnectionFactory().getReactiveConnection();
-        return connection.keyCommands()
+        return redisTemplate.getConnectionFactory().getReactiveConnection().keyCommands()
                 .scan(ScanOptions.scanOptions().match("hashtag:*").build())//returning all redis keys as bytes
                 .flatMap(keyBytes -> {
                     String key = new String(keyBytes.array(), StandardCharsets.UTF_8);

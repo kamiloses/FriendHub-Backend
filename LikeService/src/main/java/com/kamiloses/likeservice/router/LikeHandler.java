@@ -22,10 +22,10 @@ public class LikeHandler {
         return likeService.likeThePost(postId, likedUserUsername).then(ServerResponse.ok().build());
     }
 
-//    public Mono<ServerResponse> undoLike(ServerRequest request) {
-//        String postId = request.queryParam("postId").get();
-//        String likedUserUsername = request.queryParam("username").get();
-//
-//        return likeService.undoLike(postId, likedUserUsername).then(ServerResponse.ok().build());
-//    }
+    public Mono<ServerResponse> undoLike(ServerRequest request) {
+        String postId = request.queryParam("postId").get();
+        String likedUserUsername = request.queryParam("username").get();
+
+        return likeService.undoLike(postId, likedUserUsername).then(ServerResponse.ok().build());
+    }
 }

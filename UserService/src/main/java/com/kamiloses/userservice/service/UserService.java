@@ -8,12 +8,10 @@ import com.kamiloses.userservice.entity.UserEntity;
 import com.kamiloses.userservice.exception.UserDatabaseFetchException;
 import com.kamiloses.userservice.exception.UsernameAlreadyExistsException;
 import com.kamiloses.userservice.repository.UserRepository;
-import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.context.annotation.Import;
 import org.springframework.stereotype.Service;
-import org.springframework.validation.annotation.Validated;
 import reactor.core.publisher.Mono;
 
 @Service
@@ -31,9 +29,15 @@ public class UserService {
     }
 
     public Mono<UserEntity> save(RegistrationDto user) {
-        String encodedPassword = (String) rabbitTemplate.convertSendAndReceive(RabbitConfig.AUTH_EXCHANGE, RabbitConfig.AUTH_ROUTING_KEY, user.getPassword());
-        UserEntity userEntity = registrationDtoToUserEntity(user, encodedPassword);
-             return userRepository.existsByUsername(userEntity.getUsername())
+      return   Mono.fromSupplier(()->(String)rabbitTemplate.convertSendAndReceive(RabbitConfig.AUTH_EXCHANGE, RabbitConfig.AUTH_ROUTING_KEY, user.getPassword()))
+                .map(encodedPassword->
+                        UserEntity.builder()
+                                .username(user.getUsername())
+                                .password(user.getPassword())
+                                .firstName(user.getFirstName())
+                                .lastName(user.getLastName())
+                                .build()
+                        ).flatMap(userEntity->userRepository.existsByUsername(userEntity.getUsername())
                      .onErrorResume(error->{
                          log.error("There was some problem with fetching User");
                          return Mono.error(UserDatabaseFetchException::new);
@@ -44,7 +48,7 @@ public class UserService {
                            return Mono.error(new UsernameAlreadyExistsException("Username already exists"));}
 
 
-                    return userRepository.save(userEntity); });
+                    return userRepository.save(userEntity); }));
     }
 
     public Mono<LoginDetails> findByUsernameOrId(String usernameOrId) {
@@ -60,6 +64,7 @@ public class UserService {
 
 
     private UserEntity registrationDtoToUserEntity(RegistrationDto user, String encodedPassword) {
+
         UserEntity userEntity = new UserEntity();
         userEntity.setUsername(user.getUsername());
         userEntity.setPassword(encodedPassword);

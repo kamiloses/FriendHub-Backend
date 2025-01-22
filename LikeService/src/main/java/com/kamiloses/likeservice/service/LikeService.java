@@ -19,42 +19,33 @@ public class LikeService {
 
     //from suppliier
     public Mono<Void> likeThePost(String postId, String likedUserId) {
-        return  rabbitLikeProducer.askForUserDetails(postId)
+        return rabbitLikeProducer.askForUserDetails(postId)
                 .flatMap(userDetailsDto -> {
                     LikeEntity likeEntity = LikeEntity.builder()
-                            .likedByUserId("123")
+                            .likedByUserId(userDetailsDto.getId())
                             .originalPostId(postId)
                             .build();
-                    System.err.println("DZIAŁA ");
                     return likeRepository.save(likeEntity)
-                            .then(Mono.defer(() -> rabbitLikeProducer.sendPostIdToPostModule(postId)));
+                            .then(rabbitLikeProducer.sendPostIdToPostModule(postId));
 
                 });
     }
 
 
+    public Mono<Void> undoLike(String postId, String likedUserId) {
+        return rabbitLikeProducer.askForUserDetails(likedUserId)
+                .flatMap(userDetailsDto ->
+                        likeRepository.deleteByOriginalPostIdAndLikedByUserId(postId, userDetailsDto.getId())
+                                .then(rabbitLikeProducer.sendPostIdToPostModule(postId)));//todo zmień tą metode na tą która zwraca do listenera który usuwa a nie zapisuje
 
-
-
-    //from suppliier
-//    public Mono<Void> undoLike(String postId, String likedUserId) {
-//       rabbitPostProducer.askForUserDetails(likedUserId)
-//        return likeRepository.deleteByOriginalPostIdAndLikedByUserId(postId, userDetailsDto.getId())
-//                .then(postRepository.findById(postId)
-//                        .flatMap(postEntity -> {
-//                            postEntity.setLikeCount(postEntity.getLikeCount() - 1);
-//                            return postRepository.save(postEntity);
-//                        })
-//                )
-//                .then();
     }
 
 
     //from suppliier
-//    public Mono<Boolean> isPostLikedByMe(String postId, String loggedUserUsername) {
-//        UserDetailsDto userDetailsDto = rabbitPostProducer.askForUserDetails(loggedUserUsername);
-//        return likeRepository.existsByOriginalPostIdAndLikedByUserId(postId, userDetailsDto.getId());
-//
-//
-//    }
-//}
+    public Mono<Boolean> isPostLikedByMe(String postId, String loggedUserUsername) {
+        return rabbitLikeProducer.askForUserDetails(loggedUserUsername)
+                .flatMap(userDetailsDto ->likeRepository.existsByOriginalPostIdAndLikedByUserId(postId, userDetailsDto.getId()));
+
+
+    }
+}

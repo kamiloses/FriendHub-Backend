@@ -11,7 +11,6 @@ public interface UserRepository extends ReactiveMongoRepository<UserEntity,Strin
 
 Mono<UserEntity> findByUsernameOrId(String username,String id);
 
-Mono<Boolean> existsByUsernameAndPassword(String username,String password);
 
 Flux<UserEntity> findUserEntitiesByIdIn(List<String> userIds);
 

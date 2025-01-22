@@ -29,8 +29,7 @@ public class RabbitHashtagListener {
     @RabbitListener
     public void receiveHashtagsFromPostAndAddToRedis(String hashtagsJson) throws JsonProcessingException {
 
-        List<String> hashtags = objectMapper.readValue(hashtagsJson, new TypeReference<List<String>>() {
-        });
+        List<String> hashtags = objectMapper.readValue(hashtagsJson, new TypeReference<List<String>>() {});
 
         hashtags.forEach(hashtag -> {
             long currentTime = Instant.now().getEpochSecond();

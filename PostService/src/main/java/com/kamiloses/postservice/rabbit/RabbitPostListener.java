@@ -18,7 +18,7 @@ public class RabbitPostListener {
 
 
 //    @RabbitListener(queues = RabbitConfig.AUTH_REQUEST_QUEUE)
-    public Mono<Void> receivePostIdFromLikeModule(String postId) {
+    public Mono<Void> receivePostIdFromLikeModuleAndSave(String postId) {
         return postRepository.findById(postId)
                 .onErrorResume(error -> {
                     log.error("Failed to fetch post from database, error: {}", error.getMessage());
@@ -32,4 +32,22 @@ public class RabbitPostListener {
 
 
     }
+
+
+    public Mono<Void> receivePostIdFromLikeModuleAndRemove(String postId) {
+        return postRepository.findById(postId)
+                .onErrorResume(error -> {
+                    log.error("Failed to fetch post from database, error: {}", error.getMessage());
+                    return Mono.error(PostDatabaseFetchException::new);
+                })
+                .map(fetchedPost -> {
+                    fetchedPost.setLikeCount(fetchedPost.getLikeCount() - 1);
+                    return fetchedPost;
+                })
+                .flatMap(postRepository::save).then();
+
+
+
+    }
+
 }

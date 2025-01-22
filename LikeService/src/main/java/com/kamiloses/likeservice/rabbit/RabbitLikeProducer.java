@@ -4,11 +4,13 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kamiloses.likeservice.dto.UserDetailsDto;
 import com.kamiloses.rabbitmq.RabbitConfig;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
 
 @Component
+@Slf4j
 public class RabbitLikeProducer {
 
 
@@ -23,11 +25,11 @@ public class RabbitLikeProducer {
     }
 
 
-    public Mono<String> askForUserDetails(String username) {
+    public Mono<UserDetailsDto> askForUserDetails(String username) {
         return Mono.fromCallable(() ->
                 (String) rabbitTemplate.convertSendAndReceive(
                         RabbitConfig.USER_INFO_EXCHANGE, RabbitConfig.USER_INFO_ROUTING_KEY, username)
-        );
+        ).flatMap(this::convertStringToUserDetailsDto);
 
     }
 
@@ -43,13 +45,12 @@ public class RabbitLikeProducer {
 
 
 
-    private UserDetailsDto convertStringToUserDetailsDto(String userDetailsAsString) {
-        try {
-            return objectMapper.readValue(userDetailsAsString, UserDetailsDto.class);
-
-        } catch (JsonProcessingException e) {
-            throw new RuntimeException(e);
-        }
+    private Mono<UserDetailsDto> convertStringToUserDetailsDto(String userDetailsAsString) {
+        return Mono.fromCallable(()->objectMapper.readValue(userDetailsAsString, UserDetailsDto.class)).
+                onErrorResume(JsonProcessingException.class, e -> {
+                    log.error("Error occurred in convertStringToUserDetailsDto while reading value: {}", e.getMessage());
+                    return Mono.error(new RuntimeException("There was some problem with converting value"));
+                });
 
 
     }

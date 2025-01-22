@@ -6,24 +6,25 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kamiloses.rabbitmq.RabbitConfig;
 import com.kamiloses.userservice.dto.FriendShipDto;
 import com.kamiloses.userservice.dto.UserDetailsDto;
+import com.kamiloses.userservice.exception.UserDatabaseFetchException;
 import com.kamiloses.userservice.repository.UserRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.stereotype.Component;
-import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.util.List;
 
+@Slf4j
 @Component
 public class RabbitUserListener {
 
 
-
-    // rabbit listener can't resend data in reactive way. it causes exceptions
+    // rabbit listener can't resend data in reactive way. it causes too long receiving data.
 
     private final UserRepository userRepository;
+    private final ObjectMapper objectMapper;
     private Integer count = 0;
-    private ObjectMapper objectMapper;
 
     public RabbitUserListener(UserRepository userRepository, ObjectMapper objectMapper) {
         this.userRepository = userRepository;
@@ -31,100 +32,102 @@ public class RabbitUserListener {
     }
 
     @RabbitListener(queues = RabbitConfig.USER_INFO_REQUEST_QUEUE)
-    public String receive_And_Resend_UserDetails(String username)  {
-       return userRepository.findByUsernameOrId(username,username)
-                .map(userEntity->
-                     UserDetailsDto
-                            .builder()
-                            .id(userEntity.getId())
-                            .username(userEntity.getUsername())
-                            .firstName(userEntity.getFirstName())
-                            .lastName(userEntity.getLastName())
-                            .build()).map(userDetailsDto -> {
-                    try {
-                        String s = objectMapper.writeValueAsString(userDetailsDto);
-                        return s;
+    public String receive_And_Resend_UserDetails(String username) {
+        return userRepository.findByUsernameOrId(username, username)
+                .onErrorResume(error->{
+                    log.error("There was some problem with fetching User in receive_And_Resend_UserDetails method");
+                    return Mono.error(UserDatabaseFetchException::new);
+                })
+                .map(userEntity ->
+                        UserDetailsDto
+                                .builder()
+                                .id(userEntity.getId())
+                                .username(userEntity.getUsername())
+                                .firstName(userEntity.getFirstName())
+                                .lastName(userEntity.getLastName())
+                                .build()).flatMap(userDetailsDto ->
+                        Mono.fromCallable(() -> objectMapper.writeValueAsString(userDetailsDto))
+                                .onErrorResume(JsonProcessingException.class, e -> {
+                                    log.error("Error occurred in receiveAndResendUserDetails method while reading value, error: {}", e.getMessage());
+                                    return Mono.error(new RuntimeException("There was some problem with converting value"));
+                                })).block();
 
 
-                    } catch (JsonProcessingException e) {
-                        throw new RuntimeException(e);
-                    }
-                }).block();
-
-
-//        ObjectMapper objectMapper = new ObjectMapper();
-//        return objectMapper.writeValueAsString(userDetailsDto);
     }
 
 
     @RabbitListener(queues = RabbitConfig.FRIENDS_INFO_REQUEST_QUEUE)
     public String receive_And_Resend_FriendsDetails(String listOfUsersId) {
-        List<FriendShipDto> usersIdAndChatId = convertToListOfString(listOfUsersId);
-        Flux<UserDetailsDto> fluxUserDetailsDto = userRepository.findUserEntitiesByIdIn(usersIdAndChatId.stream()
-                .map(FriendShipDto::getUserIdOrFriendId).toList()).map(userEntity ->
-        {
-            UserDetailsDto userDetailsDto = new UserDetailsDto();
-            userDetailsDto.setId(userEntity.getId());
-            userDetailsDto.setUsername(userEntity.getUsername());
-            userDetailsDto.setFirstName(userEntity.getFirstName());
-            userDetailsDto.setLastName(userEntity.getLastName());
-            userDetailsDto.setChatId(usersIdAndChatId.stream().map(FriendShipDto::getChatId).toList().get(count));
-            count++;
-            return userDetailsDto;
-        });
-        List<UserDetailsDto> userDetailsList = fluxUserDetailsDto.collectList().block();
-        count = 0;
-        return convertListOfUserDetailsToString(userDetailsList);
+        return convertToListOfObjects(listOfUsersId)
+                .map(convertedUserId -> userRepository.findUserEntitiesByIdIn(convertedUserId
+                        .stream().map(FriendShipDto::getUserIdOrFriendId).toList())
+                        .onErrorResume(error->{
+                            log.error("There was some problem with fetching User in receive_And_Resend_FriendsDetails method");
+                            return Mono.error(UserDatabaseFetchException::new);
+                        })
+                        .map(userEntity -> {
+                    UserDetailsDto userDetailsDto = UserDetailsDto.builder()
+                            .id(userEntity.getId())
+                            .username(userEntity.getUsername())
+                            .firstName(userEntity.getFirstName())
+                            .lastName(userEntity.getLastName())
+                            .chatId(convertedUserId.stream().map(FriendShipDto::getChatId).toList().get(count))
+                            .build();
+                    count++;
+                    return userDetailsDto;
+                })).flatMap(userDetailsDto -> {
+                    count = 0;
+                    return convertListOfUserDetailsToString(userDetailsDto.collectList().block());
+                }).block();
     }
 
 
 
 
-    private List<FriendShipDto> convertToListOfString(String listOfFriendsId) {
-        ObjectMapper objectMapper = new ObjectMapper();
-        try {
-            return objectMapper.readValue(listOfFriendsId, new TypeReference<List<FriendShipDto>>() {
-            });
-        } catch (JsonProcessingException e) {
-            throw new RuntimeException(e);
-        }
 
-    }
 
-    private String convertListOfUserDetailsToString(List<UserDetailsDto> userDetails) {
-        ObjectMapper objectMapper = new ObjectMapper();
-        try {
-            return objectMapper.writeValueAsString(userDetails);
-        } catch (JsonProcessingException e) {
-            throw new RuntimeException(e);
-        }
 
-    }
+
+
+
+
+
+
 
     @RabbitListener(queues = RabbitConfig.Queue_Searched_People)
     private String receive_And_Resend_Similar_Users_With_Details(String username) {
-        List<UserDetailsDto> userDetails = userRepository.findByUsernameContaining(username).map(
-                userEntity -> {
-                    UserDetailsDto userDetailsDto = new UserDetailsDto();
-                    userDetailsDto.setChatId(userEntity.getId());
-                    userDetailsDto.setUsername(userEntity.getUsername());
-                    userDetailsDto.setFirstName(userEntity.getFirstName());
-                    userDetailsDto.setLastName(userEntity.getLastName());
-                    return userDetailsDto;
-                }).collectList().block();
-    return     convertListOfUserDetailsToString(userDetails);
+        return userRepository.findByUsernameContaining(username).map(
+                userEntity ->
+                    UserDetailsDto.builder()
+                            .chatId(userEntity.getId())
+                            .username(userEntity.getUsername())
+                            .firstName(userEntity.getFirstName())
+                            .lastName(userEntity.getLastName()).build())
+                .collectList()
+                .flatMap(userDetailsDto ->convertListOfUserDetailsToString(userDetailsDto)).block();
     }
 
 
+    private Mono<List<FriendShipDto>> convertToListOfObjects(String listOfFriendsId) {
+        return Mono.fromCallable(() -> objectMapper.readValue(listOfFriendsId, new TypeReference<List<FriendShipDto>>() {
+                }))
+                .onErrorResume(JsonProcessingException.class, e -> {
+                    log.error("Error occurred in convertToListOfString method while reading value, error: {}", e.getMessage());
+                    return Mono.error(new RuntimeException("There was some problem with converting value"));
+                });
 
 
+    }
 
+    private Mono<String> convertListOfUserDetailsToString(List<UserDetailsDto> userDetails) {
 
+        return Mono.fromCallable(() -> objectMapper.writeValueAsString(userDetails))
+                .onErrorResume(JsonProcessingException.class, e -> {
+                    log.error("Error occurred in convertListOfUserDetailsToString method while reading value, error: {}", e.getMessage());
+                    return Mono.error(new RuntimeException("There was some problem with converting value"));
+                });
 
-
-
-
-
+    }
 
 
 }

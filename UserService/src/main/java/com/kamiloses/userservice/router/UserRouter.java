@@ -9,7 +9,7 @@
 //public class UserRouter {
 //
 //
-//    //todo sprawdz jak dodać @valid i potem usuń kontroller
+//    //todo sprawdz integracje @valid
 //
 //   @Bean
 //    public RouterFunction<ServerResponse> route(UserHandler userHandler) {
