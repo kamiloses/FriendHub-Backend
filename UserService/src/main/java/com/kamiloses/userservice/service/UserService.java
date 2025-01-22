@@ -30,13 +30,15 @@ public class UserService {
 
     public Mono<UserEntity> save(RegistrationDto user) {
       return   Mono.fromSupplier(()->(String)rabbitTemplate.convertSendAndReceive(RabbitConfig.AUTH_EXCHANGE, RabbitConfig.AUTH_ROUTING_KEY, user.getPassword()))
-                .map(encodedPassword->
-                        UserEntity.builder()
-                                .username(user.getUsername())
-                                .password(user.getPassword())
-                                .firstName(user.getFirstName())
-                                .lastName(user.getLastName())
-                                .build()
+                .map(encodedPassword->{
+                            UserEntity build = UserEntity.builder()
+                                    .username(user.getUsername())
+                                    .password(user.getPassword())
+                                    .firstName(user.getFirstName())
+                                    .lastName(user.getLastName())
+                                    .build();
+                            System.err.println(build);
+                        return build;}
                         ).flatMap(userEntity->userRepository.existsByUsername(userEntity.getUsername())
                      .onErrorResume(error->{
                          log.error("There was some problem with fetching User");

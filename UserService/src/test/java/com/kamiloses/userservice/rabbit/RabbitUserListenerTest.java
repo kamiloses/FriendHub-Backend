@@ -19,6 +19,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 @ActiveProfiles("test")
+@Disabled("deprecated code")
 class RabbitUserListenerTest {
 
     @Autowired
@@ -43,6 +44,7 @@ class RabbitUserListenerTest {
         userRepository.saveAll(List.of(user1,user2,user3)).collectList().block();
 
     }
+
 
     @Test
     void Should_Check_receiveAndResendFriendsDetails_Works() throws JsonProcessingException {

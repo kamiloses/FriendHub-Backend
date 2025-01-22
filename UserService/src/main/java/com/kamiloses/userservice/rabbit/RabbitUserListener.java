@@ -104,7 +104,7 @@ public class RabbitUserListener {
                             .firstName(userEntity.getFirstName())
                             .lastName(userEntity.getLastName()).build())
                 .collectList()
-                .flatMap(userDetailsDto ->convertListOfUserDetailsToString(userDetailsDto)).block();
+                .flatMap(this::convertListOfUserDetailsToString).block();
     }
 
 
