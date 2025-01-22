@@ -70,6 +70,7 @@ public class PostService {
 
 
     public Flux<PostDto> getAllPosts(String loggedUserUsername) {
+
         return postRepository.findAll().onErrorResume(error -> {
                     log.error("There was some problem with fetching all posts");
                     return Mono.error(PostDatabaseFetchException::new);
@@ -82,7 +83,6 @@ public class PostService {
                                     .lastName(userDetails.getLastName())
                                     .username(userDetails.getUsername()).build();
 
-
                             return retweetService.isPostRetweetedByMe(postEntity.getId(), loggedUserUsername)
                                     .map(isRetweetedByMe -> PostDto.builder()
                                             .id(postEntity.getId())
@@ -92,7 +92,7 @@ public class PostService {
                                             .retweetCount(postEntity.getRetweetCount())
                                             .isRetweetedByMe(isRetweetedByMe)
                                             .likeCount(postEntity.getLikeCount())
-                                            .isLikedByMe(rabbitPostProducer.isPostLiked(postEntity.getId(),loggedUserUsername))
+                                       //     .isLikedByMe(rabbitPostProducer.isPostLiked(postEntity.getId(),loggedUserUsername))
                                             .build());
 
                         }).flatMap(postDto -> postDto));

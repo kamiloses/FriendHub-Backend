@@ -45,15 +45,16 @@ public class RabbitPostProducer {
 
 
 
-    public boolean isPostLiked(String postId, String loggedUserUsername) {
-        String dataToBeDelivered = postId + ":" + loggedUserUsername;
-        return Mono.fromSupplier(() ->
-                (Boolean) rabbitTemplate.convertSendAndReceive(
-                        RabbitConfig.USER_INFO_EXCHANGE, RabbitConfig.USER_INFO_ROUTING_KEY,dataToBeDelivered)
-        ).block();
-
-
-    }
+//    public boolean isPostLiked(String postId, String loggedUserUsername) {
+//        String dataToBeDelivered = postId + ":" + loggedUserUsername;
+//        System.err.println("IsPost");
+////        return Mono.fromSupplier(() ->
+//               return  (Boolean) rabbitTemplate.convertSendAndReceive(
+//                       RabbitConfig.POST_OPERATIONS_EXCHANGE, RabbitConfig.IS_POST_LIKED_ROUTING_KEY,dataToBeDelivered)
+//        ;
+//
+//
+//    }
 
 
 }
