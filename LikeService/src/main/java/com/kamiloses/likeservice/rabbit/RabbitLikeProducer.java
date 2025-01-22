@@ -33,13 +33,24 @@ public class RabbitLikeProducer {
 
     }
 
-    public Mono<Void> sendPostIdToPostModule(String postId){
+    public Mono<Void> sendPostIdForLikeAdding(String postId){
        return Mono.fromRunnable(()->
-                rabbitTemplate.convertAndSend(RabbitConfig.AUTH_EXCHANGE,
-                        RabbitConfig.AUTH_ROUTING_KEY
+                rabbitTemplate.convertAndSend(RabbitConfig.POST_OPERATIONS_EXCHANGE,
+                        RabbitConfig.POST_ADD_ROUTING_KEY
                         ,postId));
 
     }
+
+    public Mono<Void> sendPostIdForLikeRemoval(String postId){
+        return Mono.fromRunnable(()->
+                rabbitTemplate.convertAndSend(RabbitConfig.POST_OPERATIONS_EXCHANGE,
+                        RabbitConfig.POST_REMOVE_ROUTING_KEY
+                        ,postId));
+
+    }
+
+
+
 
 
 

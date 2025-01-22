@@ -17,16 +17,16 @@ public class LikeService {
         this.rabbitLikeProducer = rabbitLikeProducer;
     }
 
-    //from suppliier
+
     public Mono<Void> likeThePost(String postId, String likedUserId) {
-        return rabbitLikeProducer.askForUserDetails(postId)
+        return rabbitLikeProducer.askForUserDetails(likedUserId)
                 .flatMap(userDetailsDto -> {
                     LikeEntity likeEntity = LikeEntity.builder()
                             .likedByUserId(userDetailsDto.getId())
                             .originalPostId(postId)
                             .build();
                     return likeRepository.save(likeEntity)
-                            .then(rabbitLikeProducer.sendPostIdToPostModule(postId));
+                            .then(rabbitLikeProducer.sendPostIdForLikeAdding(postId));
 
                 });
     }
@@ -36,12 +36,12 @@ public class LikeService {
         return rabbitLikeProducer.askForUserDetails(likedUserId)
                 .flatMap(userDetailsDto ->
                         likeRepository.deleteByOriginalPostIdAndLikedByUserId(postId, userDetailsDto.getId())
-                                .then(rabbitLikeProducer.sendPostIdToPostModule(postId)));//todo zmień tą metode na tą która zwraca do listenera który usuwa a nie zapisuje
+                                .then(rabbitLikeProducer.sendPostIdForLikeRemoval(postId)));
 
     }
 
 
-    //from suppliier
+
     public Mono<Boolean> isPostLikedByMe(String postId, String loggedUserUsername) {
         return rabbitLikeProducer.askForUserDetails(loggedUserUsername)
                 .flatMap(userDetailsDto ->likeRepository.existsByOriginalPostIdAndLikedByUserId(postId, userDetailsDto.getId()));

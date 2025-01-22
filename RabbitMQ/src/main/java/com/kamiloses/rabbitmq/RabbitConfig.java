@@ -85,21 +85,6 @@ public class RabbitConfig {
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     public static final String Queue_Searched_People = "searchedPeople";
     public static final String Exchange_searchedPeople = "exchangeSearchedPeople";
     public static final String ROUTING_KEY_searchedPeople = "searchedPeople";
@@ -118,6 +103,52 @@ public class RabbitConfig {
     public Binding SearchedPeopleExchangeWithQueue() {
         return BindingBuilder.bind(searchedPeopleQueue()).to(exchange_searchedPeople()).with(ROUTING_KEY_searchedPeople);
     }
+
+
+
+
+
+
+                                         //removing like amount of the post
+
+
+    public static final String POST_ADD_REQUEST_QUEUE = "postAddRequestQueue";
+    public static final String POST_REMOVE_REQUEST_QUEUE = "postRemoveRequestQueue";
+    public static final String POST_OPERATIONS_EXCHANGE = "postOperationsExchange";
+    public static final String POST_ADD_ROUTING_KEY = "postAddRoutingKey";
+    public static final String POST_REMOVE_ROUTING_KEY = "postRemoveRoutingKey";
+
+
+
+    @Bean
+    public Queue postAddQueue() {
+        return new Queue(POST_ADD_REQUEST_QUEUE);
+    }
+
+
+    @Bean
+    public Queue postRemoveQueue() {
+        return new Queue(POST_REMOVE_REQUEST_QUEUE);
+    }
+
+
+    @Bean
+    public DirectExchange exchange_postOperations() {
+        return new DirectExchange(POST_OPERATIONS_EXCHANGE);
+    }
+    @Bean
+    public Binding postAddBinding() {
+        return BindingBuilder.bind(postAddQueue()).to(exchange_postOperations()).with(POST_ADD_ROUTING_KEY);
+    }
+    @Bean
+    public Binding postRemoveBinding() {
+        return BindingBuilder.bind(searchedPeopleQueue()).to(exchange_searchedPeople()).with(POST_REMOVE_ROUTING_KEY);
+    }
+
+
+
+
+
 
 
 }
