@@ -33,7 +33,7 @@ public class UserService {
                 .map(encodedPassword->{
                             UserEntity build = UserEntity.builder()
                                     .username(user.getUsername())
-                                    .password(user.getPassword())
+                                    .password(encodedPassword)
                                     .firstName(user.getFirstName())
                                     .lastName(user.getLastName())
                                     .build();
