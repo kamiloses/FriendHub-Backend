@@ -7,7 +7,6 @@ import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 import org.springframework.context.annotation.Import;
 
 @SpringBootApplication
-@Import(RabbitConfig.class)
 public class PostServiceApplication {
 
     public static void main(String[] args) {
