@@ -1,4 +1,4 @@
-Readme 02.01.2025
+Readme 23.01.2025
 
 <h1>FriendHub</h1>
 <h3>
@@ -8,7 +8,7 @@ A full-stack application developed in a reactive style with a microservices arch
 
 
 <br><br>
-<h3>Important - The project is not finished yet. I am working to make this app fully resemble Facebook/Twitter and after that, I will upload it. Right now, you can check the current status of my project, where the most important features have been implemented.</h3>
+<h3>Important - The project is not finished yet. I am working to make this app resemble Twitter and after that, I will upload it. Right now, you can check the current status of my project, where the most important features have been implemented. Some of the screenshots and GIFs may be outdated, but it's mainly CSS.</h3>
 <p>
 
 </p>
@@ -31,8 +31,9 @@ you receive a token. However, on the frontend side, I did not implement this.
 
 <br><br><h2>Posts</h2>
 You can write posts. I have implemented the 'findAll' method on the backend side, and on the home page, all the posts will be displayed.
+I have implemented functions to like and retweet posts, as well as to undo likes and retweets. You can also check how many likes and retweets a post has, and depending on your choice, the button will change.
+![image](https://github.com/user-attachments/assets/180f0e44-ff92-4680-a4f6-9d0d55dbbef6)
 
-![image](https://github.com/user-attachments/assets/b6e31f35-5db8-4c63-94fb-f8a07689bcf9)
 
 
 
@@ -43,16 +44,18 @@ You can write posts. I have implemented the 'findAll' method on the backend side
 Once you click on a post, Angular will send a request to the backend to fetch comments related with the post, and you will be redirected to the post details page, where you can view all the comments associated with that specific post.
 <br>You can write comments and response to other comments.
 
-![image](https://github.com/user-attachments/assets/885024a9-80d3-4b7b-8693-ff8848ce785b)
+![image](https://github.com/user-attachments/assets/4ce59cda-b116-482d-b9eb-ffdffe89a866)
+
 
 
 
 <br><br> <h2>Friends</h2>
 You can add to friend or remove depending on if user is currenty on your friendList.
-![image](https://github.com/user-attachments/assets/70cfc394-df8d-4d9b-9c48-7306fe38d6fd)
+![image](https://github.com/user-attachments/assets/4dd098d2-22bc-4e47-99c6-607d021a1d39)
 
 
-<br><br><h2>Real-Time Messaging</h2>
+<br><br>
+<br> 02.01.2025<br><h2>Real-Time Messaging</h2>
 I implemented WebSockets, which are responsible for sending messages in real-time.
 ![webstorm64_rq8hfpT7Ih](https://github.com/user-attachments/assets/e2142e01-05f5-4a9f-b7f1-a24527ee048c)
 
@@ -86,8 +89,6 @@ needs data about the user.
 
 
 <br><br><h1>Frontend</h1>
-The frontend is made with Angular. I didn’t focus much on it. I just wanted to try frontend tools. 
-There are still many things to fix, but the app works fine.
 
 Below is a link to frontend repository<br>
 https://github.com/kamiloses/FriendHub-Frontend
@@ -95,7 +96,7 @@ https://github.com/kamiloses/FriendHub-Frontend
 
 
 <br><br><br>
-<h3>libraries/frameworks used :</h3>
+<h3>libraries/frameworks currently used :</h3>
 
 - Java 17
 - Spring boot 3
@@ -108,6 +109,6 @@ https://github.com/kamiloses/FriendHub-Frontend
 - Spring security
 - JWT
 - Lombok
-- Redis
+- Reactive Redis
 - Junit
 - Mockito
