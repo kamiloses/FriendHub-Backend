@@ -1,6 +1,8 @@
 package com.kamiloses.friendservice.websockets;
 
 import com.kamiloses.friendservice.dto.UserActivityDto;
+import io.micrometer.core.instrument.Gauge;
+import io.micrometer.core.instrument.MeterRegistry;
 import jakarta.annotation.PreDestroy;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.event.EventListener;
@@ -22,10 +24,16 @@ public class EventsUserAvailability {
 
     private final RedisTemplate<String, String> redisTemplate;
     private final SimpMessagingTemplate messagingTemplate;
+    private final   Gauge gauge;
+    private int onlineUsersCount = 0;
 
-    public EventsUserAvailability(RedisTemplate<String, String> redisTemplate, SimpMessagingTemplate messagingTemplate) {
+    public EventsUserAvailability(RedisTemplate<String, String> redisTemplate, SimpMessagingTemplate messagingTemplate, MeterRegistry meterRegistry) {
         this.redisTemplate = redisTemplate;
         this.messagingTemplate = messagingTemplate;
+         gauge = Gauge.builder("active_users_online", this, instance -> this.onlineUsersCount)
+                .description("Number of users currently online")
+                .register(meterRegistry);
+
     }
 
     @EventListener
@@ -45,7 +53,7 @@ public class EventsUserAvailability {
 
             log.info("user: {} Connected", username);
             updateFriendStatus(username, true);
-
+            onlineUsersCount++;
         }
     }
 
@@ -63,6 +71,7 @@ public class EventsUserAvailability {
         log.info("user: {} disconnected", username);
 
         updateFriendStatus(username, false);
+        onlineUsersCount--;
 
 
     }

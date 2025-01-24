@@ -13,3 +13,25 @@ services:
 networks:
   rabbitmq_network:
     driver: bridge
+
+  prometheus:
+      container_name: prometheus
+      image: prom/prometheus:latest
+      volumes:
+        - ./dockerConfig/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+      command:
+        - --config.file=/etc/prometheus/prometheus.yml
+      restart: always
+      ports:
+        - '9090:9090'
+      depends_on:
+        - order-service
+
+    grafana:
+      container_name: grafana
+      image: grafana/grafana:latest
+      restart: always
+      ports:
+        - "3000:3000"
+      depends_on:
+        - prometheus
