@@ -76,26 +76,26 @@ public class PostService {
                     return Mono.error(PostDatabaseFetchException::new);
                 })
                 .flatMap(postEntity ->
-                 rabbitPostProducer.askForUserDetails(loggedUserUsername)
-                        .map(userDetails -> {
-                            UserDetailsDto userDetailsDto = UserDetailsDto.builder()
-                                    .firstName(userDetails.getFirstName())
-                                    .lastName(userDetails.getLastName())
-                                    .username(userDetails.getUsername()).build();
+                        rabbitPostProducer.askForUserDetails(postEntity.getUserId())
+                                .map(userDetails -> {
+                                    UserDetailsDto userDetailsDto = UserDetailsDto.builder()
+                                            .firstName(userDetails.getFirstName())
+                                            .lastName(userDetails.getLastName())
+                                            .username(userDetails.getUsername()).build();
 
-                            return retweetService.isPostRetweetedByMe(postEntity.getId(), loggedUserUsername)
-                                    .map(isRetweetedByMe -> PostDto.builder()
-                                            .id(postEntity.getId())
-                                            .user(userDetailsDto)
-                                            .content(postEntity.getContent())
-                                            .createdAt(postEntity.getCreatedAt())
-                                            .retweetCount(postEntity.getRetweetCount())
-                                            .isRetweetedByMe(isRetweetedByMe)
-                                            .likeCount(postEntity.getLikeCount())
-                                            .isLikedByMe(Boolean.parseBoolean(rabbitPostProducer.isPostLiked(postEntity.getId(),loggedUserUsername)))
-                                            .build());
+                                    return retweetService.isPostRetweetedByMe(postEntity.getId(), loggedUserUsername)
+                                            .map(isRetweetedByMe -> PostDto.builder()
+                                                    .id(postEntity.getId())
+                                                    .user(userDetailsDto)
+                                                    .content(postEntity.getContent())
+                                                    .createdAt(postEntity.getCreatedAt())
+                                                    .retweetCount(postEntity.getRetweetCount())
+                                                    .isRetweetedByMe(isRetweetedByMe)
+                                                    .likeCount(postEntity.getLikeCount())
+                                                    .isLikedByMe(Boolean.parseBoolean(rabbitPostProducer.isPostLiked(postEntity.getId(),loggedUserUsername)))
+                                                    .build());
 
-                        }).flatMap(postDto -> postDto));
+                                }).flatMap(postDto -> postDto));
 
     }
 
