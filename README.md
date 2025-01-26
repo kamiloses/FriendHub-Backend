@@ -54,6 +54,14 @@ You can add to friend or remove depending on if user is currenty on your friendL
 ![image](https://github.com/user-attachments/assets/4dd098d2-22bc-4e47-99c6-607d021a1d39)
 
 
+<br><br> <h2>Prometheus</h2>
+ implemented gauge metrics to monitor the number of users currently using FriendHub.
+![image](https://github.com/user-attachments/assets/7dfe7447-51c7-41d2-ae25-59260253e2a6)
+
+
+
+
+
 <br><br>
 <br> 02.01.2025<br><h2>Real-Time Messaging</h2>
 I implemented WebSockets, which are responsible for sending messages in real-time.
