@@ -55,16 +55,7 @@ public class HashtagService {
 
 
 
-  public Mono<Void> removeOutdatedHashtags(){
-      return redisTemplate.getConnectionFactory().getReactiveConnection().keyCommands()
-              .scan(ScanOptions.scanOptions().match("hashtag:*").build())
-              .map(byteBuffer -> StandardCharsets.UTF_8.decode(byteBuffer).toString())
-              .flatMap(key -> {
-                  long oldestAllowedTime =  Instant.now().minus(Duration.ofHours(24)).toEpochMilli();
-                  Range<Double> range = Range.closed(0.0, (double) oldestAllowedTime);
-                  return redisTemplate.opsForZSet().removeRangeByScore(key, range);}).then();
 
-  }
 
 
 
