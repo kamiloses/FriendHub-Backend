@@ -1,14 +1,22 @@
 package com.kamiloses.hashtagservice.service;
 
+import org.springframework.data.domain.Range;
 import org.springframework.data.redis.connection.ReactiveRedisConnection;
 import org.springframework.data.redis.core.ReactiveRedisTemplate;
 import org.springframework.data.redis.core.ScanOptions;
 import org.springframework.stereotype.Service;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
+import java.time.Duration;
+import java.time.Instant;
 import java.util.*;
 import java.util.stream.Collectors;
+
+
+
 
 @Service
 public class HashtagService {
@@ -43,5 +51,23 @@ public class HashtagService {
                                         .limit(5)
                                         .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue,
                                                 (e1, e2) -> e1, LinkedHashMap::new)))));}
+
+
+
+
+  public Mono<Void> removeOutdatedHashtags(){
+      return redisTemplate.getConnectionFactory().getReactiveConnection().keyCommands()
+              .scan(ScanOptions.scanOptions().match("hashtag:*").build())
+              .map(byteBuffer -> StandardCharsets.UTF_8.decode(byteBuffer).toString())
+              .flatMap(key -> {
+                  long oldestAllowedTime =  Instant.now().minus(Duration.ofHours(24)).toEpochMilli();
+                  Range<Double> range = Range.closed(0.0, (double) oldestAllowedTime);
+                  return redisTemplate.opsForZSet().removeRangeByScore(key, range);}).then();
+
+  }
+
+
+
+
 
 }
