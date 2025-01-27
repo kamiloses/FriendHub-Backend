@@ -5,9 +5,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.data.redis.core.ReactiveRedisTemplate;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
-import reactor.core.publisher.Mono;
 
 import java.time.Duration;
 import java.time.Instant;
@@ -18,8 +16,8 @@ import java.util.UUID;
 public class RabbitHashtagListener {
 
 
-    private ReactiveRedisTemplate<String, String> redisTemplate;
-    private ObjectMapper objectMapper;
+    private final ReactiveRedisTemplate<String, String> redisTemplate;
+    private final ObjectMapper objectMapper;
 
     public RabbitHashtagListener(ReactiveRedisTemplate<String, String> redisTemplate, ObjectMapper objectMapper) {
         this.redisTemplate = redisTemplate;

@@ -1,17 +1,11 @@
 package com.kamiloses.hashtagservice.service;
 
-import org.springframework.data.domain.Range;
-import org.springframework.data.redis.connection.ReactiveRedisConnection;
 import org.springframework.data.redis.core.ReactiveRedisTemplate;
 import org.springframework.data.redis.core.ScanOptions;
 import org.springframework.stereotype.Service;
-import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
-import java.time.Duration;
-import java.time.Instant;
 import java.util.*;
 import java.util.stream.Collectors;
 
