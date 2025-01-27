@@ -4,21 +4,21 @@ package com.kamiloses.hashtagservice.service;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kamiloses.hashtagservice.rabbit.RabbitHashtagListener;
+import com.kamiloses.hashtagservice.scheduler.BatchInvoker;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.redis.core.ReactiveRedisTemplate;
-import org.springframework.test.context.ActiveProfiles;
-import reactor.test.StepVerifier;
 
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 
-@ActiveProfiles("test")
+
+//@ActiveProfiles("test")
 @SpringBootTest
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class HashtagServiceTest {
@@ -50,6 +50,10 @@ class HashtagServiceTest {
     public void removeAllRedisElements() throws JsonProcessingException {
         redisTemplate.getConnectionFactory().getReactiveConnection().serverCommands().flushAll().subscribe();
         rabbitHashtagListener.receiveHashtagsFromPostAndAddToRedis(formattedListOfHashtags());
+
+
+     //   Mockito.when(redisTemplate.opsForZSet("hashtag:#nature"))
+
     }
 
 
@@ -68,4 +72,13 @@ class HashtagServiceTest {
 //        StepVerifier.create(hashtagService.getMostPopularHashtags())
 //                .expectNext(expectedHashtags).verifyComplete();
     }
+
+
+
+
+
+
+
+
+
 }
