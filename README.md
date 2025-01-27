@@ -110,13 +110,18 @@ https://github.com/kamiloses/FriendHub-Frontend
 - Spring boot 3
 - Project Reactor
 - Reactive MongoDb
+- Reactive Api gateway
+- Reactive Redis
 - RabbitMq
 - Eureka Discovery Server & client
-- Angular
-- Reactive Api gateway
 - Spring security
 - JWT
+- Jakarta Validation API
+- Prometheus & Actuator
+- Grafana
+- Spring Batch
+- MySql (Spring Batch)
 - Lombok
-- Reactive Redis
-- Junit
+- JUnit 5
 - Mockito
+- Angular
