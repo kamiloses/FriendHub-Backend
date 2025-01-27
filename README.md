@@ -30,7 +30,7 @@ you receive a token. However, on the frontend side, I did not implement this.
 
 
 <br><br><h2>Posts</h2>
-You can write posts. I have implemented the 'findAll' method on the backend side, and on the home page, all the posts will be displayed.
+You can write posts. At this moment there is implemented 'findAll' method on the backend side, and on the home page, all the posts will be displayed.
 I have implemented functions to like and retweet posts, as well as to undo likes and retweets. You can also check how many likes and retweets a post has, and depending on your choice, the button will change.
 ![image](https://github.com/user-attachments/assets/180f0e44-ff92-4680-a4f6-9d0d55dbbef6)
 
@@ -117,6 +117,7 @@ https://github.com/kamiloses/FriendHub-Frontend
 - Spring security
 - JWT
 - Jakarta Validation API
+- Websockets
 - Prometheus & Actuator
 - Grafana
 - Spring Batch
