@@ -37,8 +37,13 @@ class HashtagServiceTest {
     private String formattedListOfHashtags() throws JsonProcessingException {
         ObjectMapper objectMapper = new ObjectMapper();
         // nature - 7 / love - 5 / weekend - 5 / instagram - 4 / fashion - 2 / photography - 2 / art - 1
-        return objectMapper.writeValueAsString(List.of("#love", "#love", "#love", "#love", "#love", "#instagram", "#instagram", "#instagram", "#instagram", "#fashion", "#fashion", "#nature", "#nature", "#nature", "#nature", "#nature", "#nature", "#nature", "#weekend", "#weekend", "#weekend", "#weekend", "#weekend", "#photography", "#photography", "#art"));
-
+        return objectMapper.writeValueAsString(List.of(
+                "#nature", "#weekend", "#love", "#nature", "#nature", "#weekend",
+                "#instagram", "#fashion", "#nature", "#photography", "#fashion",
+                "#weekend", "#instagram", "#art", "#love", "#nature", "#instagram",
+                "#weekend", "#nature", "#love", "#photography", "#nature", "#love",
+                 "#weekend", "#instagram", "#love"
+        ));
     }
 
     @BeforeAll
@@ -58,10 +63,9 @@ class HashtagServiceTest {
         expectedHashtags.put("hashtag:#fashion", 2L);
 
 
-        System.out.println(hashtagService.getMostPopularHashtags().block());
+         hashtagService.getMostPopularHashtags().subscribe(System.out::println);
 
         StepVerifier.create(hashtagService.getMostPopularHashtags())
-                .expectNext(expectedHashtags)
-                .verifyComplete();
+                .expectNext(expectedHashtags).verifyComplete();
     }
 }
