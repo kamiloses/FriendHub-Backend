@@ -2,6 +2,7 @@ package com.kamiloses.hashtagservice.service;
 
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
+import org.springframework.batch.core.configuration.annotation.EnableBatchProcessing;
 import org.springframework.batch.core.job.builder.JobBuilder;
 import org.springframework.batch.core.repository.JobRepository;
 import org.springframework.batch.core.step.builder.StepBuilder;
@@ -21,11 +22,13 @@ import java.time.Duration;
 import java.time.Instant;
 
 @Configuration
+@EnableBatchProcessing
 public class BatchConfig {
 
     private final ReactiveRedisTemplate<String, String> redisTemplate;
     private final JobRepository jobRepository;
     private final PlatformTransactionManager transactionManager;
+
 
     public BatchConfig(ReactiveRedisTemplate<String, String> redisTemplate, JobRepository jobRepository, PlatformTransactionManager transactionManager) {
         this.redisTemplate = redisTemplate;
@@ -59,11 +62,11 @@ public class BatchConfig {
     }
 
     @Bean
-    public Step processHashtagStep(ItemReader<String> reader, ItemWriter<String>writer){
+    public Step processHashtagStep(ItemReader<String> reader, ItemWriter<String> writer) {
 
 
-        return new StepBuilder("processHashtagStep",jobRepository)
-                .<String, String>chunk(1000,transactionManager)
+        return new StepBuilder("processHashtagStep", jobRepository)
+                .<String, String>chunk(1000, transactionManager)
                 .reader(reader)
                 .writer(writer)
                 .build();
@@ -76,9 +79,9 @@ public class BatchConfig {
                 .start(processOderStep).build();
 
 
-    }}
+    }
 
-
+}
 
 
 
