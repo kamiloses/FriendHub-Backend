@@ -111,10 +111,10 @@ https://github.com/kamiloses/FriendHub-Frontend
 - Project Reactor
 - Reactive MongoDb
 - Reactive Api gateway
-- Reactive Redis
+- Reactive Redis & Redis (blocking)
 - RabbitMq
-- Eureka Discovery Server & client
-- Spring security
+- Eureka Discovery Server & Client
+- Spring Security
 - JWT
 - Jakarta Validation API
 - Websockets
