@@ -7,7 +7,6 @@ import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.data.redis.core.ReactiveRedisTemplate;
 import org.springframework.stereotype.Component;
 
-import java.time.Duration;
 import java.time.Instant;
 import java.util.List;
 import java.util.UUID;
@@ -27,7 +26,7 @@ public class RabbitHashtagListener {
     @RabbitListener
     public void receiveHashtagsFromPostAndAddToRedis(String hashtagsJson) throws JsonProcessingException {
 
-        List<String> hashtags = objectMapper.readValue(hashtagsJson, new TypeReference<List<String>>() {});
+        List<String> hashtags = objectMapper.readValue(hashtagsJson, new TypeReference<>() {});
 
         hashtags.forEach(hashtag -> {
             long currentTime = Instant.now().getEpochSecond();
