@@ -1,56 +1,70 @@
 package com.kamiloses.authservice;
 
+import com.github.tomakehurst.wiremock.WireMockServer;
+import com.github.tomakehurst.wiremock.client.WireMock;
+import com.github.tomakehurst.wiremock.junit5.WireMockTest;
+import com.kamiloses.authservice.controller.AuthController;
 import com.kamiloses.authservice.dto.AuthResponse;
 import com.kamiloses.authservice.dto.LoginDetails;
 import com.kamiloses.authservice.dto.UserDetailsDto;
 import com.kamiloses.authservice.rabbit.RabbitAuthProducer;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.reactive.AutoConfigureWebTestClient;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
+import org.springframework.http.HttpStatus;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.web.reactive.server.WebTestClient;
 import org.springframework.web.reactive.function.BodyInserters;
-import org.springframework.web.reactive.function.client.WebClient;
+import reactor.core.publisher.Mono;
 
+import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
+import static com.github.tomakehurst.wiremock.client.WireMock.equalToJson;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.mockito.ArgumentMatchers.anyString;
 import static reactor.core.publisher.Mono.when;
 
 
 
-@Disabled("")
 @SpringBootTest
 @AutoConfigureWebTestClient
+@WireMockTest(httpPort = 8081)
+//todo dodaj konfuguracje testową
 class LoginControllerTest {
 
 
-
     @Autowired
-    WebTestClient webTestClient;
-
+    private WebTestClient webTestClient;
 
     @MockBean
-    private WebClient webClient;
-
-
-
+    PasswordEncoder passwordEncoder;
 
 
     @Test
     void shouldLoginSuccessfully() {
+        WireMock.stubFor(WireMock.get(WireMock.urlEqualTo("/api/user/kamiloses"))
+                .willReturn(WireMock.aResponse()
+                        .withHeader("Content-Type", "application/json")
+                        .withStatus(HttpStatus.OK.value())
+                        .withBody("{\"username\":\"kamiloses\", \"password\":\"$2a$10$/0mQ8xdA/8PEyjEtjfy57.v5JL0hNEbL7dqKk6TiYAC.XKBDtY20C\"}")));
+
+        Mockito.when(passwordEncoder.matches(anyString(), anyString())).thenReturn(true);
+
+
+
+
+
         LoginDetails loginRequest = new LoginDetails("kamiloses", "kamiloses");
         UserDetailsDto userDetailsDto = new UserDetailsDto();
         userDetailsDto.setId("1");
         userDetailsDto.setUsername("kamiloses");
-        userDetailsDto.setPassword("kamiloses");
+        userDetailsDto.setPassword("$2a$10$/0mQ8xdA/8PEyjEtjfy57.v5JL0hNEbL7dqKk6TiYAC.XKBDtY20C");
 
-//
-//              when(webClient.get().uri("/api/user/**").retrieve()
-//                      .bodyToMono(LoginDetails.class)).thenReturn(userDetailsDto);
 
 
 
@@ -63,9 +77,9 @@ class LoginControllerTest {
                 .returnResult()
                 .getResponseBody();
 
-
         assertThat(response.getToken()).isNotBlank();
     }
+
 
     @Test
     void shouldNotLogin() {

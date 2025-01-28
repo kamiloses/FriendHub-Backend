@@ -16,14 +16,13 @@ import reactor.core.publisher.Mono;
 public class AuthController {
 
 
-private final JWTUtil jwtUtil;
+    private final JWTUtil jwtUtil;
     private final PasswordEncoder passwordEncoder;
 
     public AuthController(PasswordEncoder passwordEncoder, JWTUtil jwtUtil) {
         this.passwordEncoder = passwordEncoder;
         this.jwtUtil = jwtUtil;
     }
-
 
 
     @PostMapping("/login")
@@ -33,10 +32,13 @@ private final JWTUtil jwtUtil;
                 .uri("/api/user/{username}", loginDetails.getUsername())
                 .retrieve()
                 .bodyToMono(LoginDetails.class)
+                .onErrorResume(e -> {
+                    System.err.println("Error with fetching data: " + e.getMessage());
+                    return Mono.empty();
+                })
                 .flatMap(userDetails -> {
-                    if (passwordEncoder.matches(loginDetails.getPassword(),userDetails.getPassword())) {
+                    if (passwordEncoder.matches(loginDetails.getPassword(), userDetails.getPassword())) {
                         String token = jwtUtil.generateToken(loginDetails.getUsername());
-
 
 
                         return Mono.just(ResponseEntity.ok(new AuthResponse(token)));
@@ -47,15 +49,6 @@ private final JWTUtil jwtUtil;
                 })
                 .switchIfEmpty(Mono.error(new BadCredentialsException("Invalid username or password")));
     }
-
-
-
-
-
-
-
-
-
 
 
 }
