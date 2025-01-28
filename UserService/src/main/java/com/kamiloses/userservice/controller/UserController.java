@@ -40,7 +40,9 @@ public class UserController {
     @GetMapping("/{username}")
     public Mono<LoginDetails> getUsernameAndPasswordOfUser(@PathVariable String username) {
         return userService.findByUsernameOrId(username)
-                .switchIfEmpty(Mono.error(new RuntimeException("User not found")));
+                .switchIfEmpty(Mono.error(new UserDoesNotExistException("User not found")));
+
+        //todo handler
     }
 
 
