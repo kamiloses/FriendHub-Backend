@@ -124,5 +124,5 @@ https://github.com/kamiloses/FriendHub-Frontend
 - MySql (Spring Batch)
 - Lombok
 - JUnit 5
-- Mockito
+- Mockito & WireMock
 - Angular
