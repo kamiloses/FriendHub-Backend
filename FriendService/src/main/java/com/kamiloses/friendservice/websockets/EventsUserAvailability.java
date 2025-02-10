@@ -30,7 +30,7 @@ public class EventsUserAvailability {
     public EventsUserAvailability(RedisTemplate<String, String> redisTemplate, SimpMessagingTemplate messagingTemplate, MeterRegistry meterRegistry) {
         this.redisTemplate = redisTemplate;
         this.messagingTemplate = messagingTemplate;
-         gauge = Gauge.builder("active_users_online", this, instance -> this.onlineUsersCount)
+        this.gauge = Gauge.builder("active_users_online", this, instance -> this.onlineUsersCount)
                 .description("Number of users currently online")
                 .register(meterRegistry);
 
