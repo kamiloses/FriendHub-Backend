@@ -1,4 +1,4 @@
-Readme 23.01.2025
+Readme 29.01.2025
 
 <h1>FriendHub</h1>
 <h3>
@@ -55,7 +55,7 @@ You can add to friend or remove depending on if user is currenty on your friendL
 
 
 <br><br> <h2>Prometheus</h2>
- implemented gauge metrics to monitor the number of users currently using FriendHub.
+Implemented gauge metrics to monitor the number of users currently using FriendHub. It is visualised in grafana.
 ![image](https://github.com/user-attachments/assets/7dfe7447-51c7-41d2-ae25-59260253e2a6)
 
 
@@ -89,11 +89,13 @@ Very handy here became the 'SessionConnectedEvent,' which I used in event listen
 
 
 <h3><b>RabbitMq</b></h1>Modules are communicating with each other via rabbitmq.I used mainly rabbit just for delivering userData. For example PostService communicates with userService when he
-needs data about the user.
+needs data about the user. Rabbit is blocking but i wrapped it in reactive code, just for good looking code.
 
 
-<h3> Redis </h3> I used the tool to dynamically manage user sessions. Once a user logs in, his username and session id is saved as a hash map in Redis. When the user leave the application, his session is removed.
+<h3> Redis </h3> I used the tool to dynamically manage user sessions. Once a user logs in, his username and session id is saved as a hash map in Redis. When the user leave the application, his session is removed. I also used Redis to store hashtags. On the backend side, I implemented a Redis ZSet with (hashtagName, ID, TimeOfCreation). The hashtag will be automatically removed after 24 hours.
 
+
+<h3>Spring Batch</h3> I used the tool in HashtagService, and it is responsible for removing outdated hashtags. Schedulers invoke the Spring Batch job every 5 minutes. Spring Batch iterates through all hashtags in the Redis, checks which scores are older than 24 hours, and deletes the specific values.
 
 
 <br><br><h1>Frontend</h1>
@@ -111,10 +113,10 @@ https://github.com/kamiloses/FriendHub-Frontend
 - Project Reactor
 - Reactive MongoDb
 - Reactive Api gateway
-- Reactive Redis
+- Reactive Redis & Redis (blocking)
 - RabbitMq
-- Eureka Discovery Server & client
-- Spring security
+- Eureka Discovery Server & Client
+- Spring Security
 - JWT
 - Jakarta Validation API
 - Websockets
@@ -124,5 +126,5 @@ https://github.com/kamiloses/FriendHub-Frontend
 - MySql (Spring Batch)
 - Lombok
 - JUnit 5
-- Mockito
+- Mockito & WireMock
 - Angular
