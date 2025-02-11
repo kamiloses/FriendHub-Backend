@@ -9,11 +9,11 @@
 
 
     @Controller
-    public class WebSocketsController {
+    public class FriendActivityController {
 
     private final SimpMessagingTemplate messagingTemplate;
     private final RabbitFriendsProducer rabbitFriendsProducer;
-        public WebSocketsController(SimpMessagingTemplate messagingTemplate, RabbitFriendsProducer rabbitFriendsProducer) {
+        public FriendActivityController(SimpMessagingTemplate messagingTemplate, RabbitFriendsProducer rabbitFriendsProducer) {
             this.messagingTemplate = messagingTemplate;
             this.rabbitFriendsProducer = rabbitFriendsProducer;
         }

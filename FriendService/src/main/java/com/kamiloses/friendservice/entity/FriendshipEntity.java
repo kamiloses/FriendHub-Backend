@@ -21,6 +21,7 @@ public class FriendshipEntity {
 
     private String userId;
     private String friendId;
+    private FriendshipStatus status;
 
     private Date createdAt;
 
