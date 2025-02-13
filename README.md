@@ -32,7 +32,10 @@ you receive a token. However, on the frontend side, I did not implement this.
 <br><br><h2>Posts</h2>
 You can write posts. At this moment there is implemented 'findAll' method on the backend side, and on the home page, all the posts will be displayed.
 I have implemented functions to like and retweet posts, as well as to undo likes and retweets. You can also check how many likes and retweets a post has, and depending on your choice, the button will change.
-![image](https://github.com/user-attachments/assets/180f0e44-ff92-4680-a4f6-9d0d55dbbef6)
+![image](https://github.com/user-attachments/assets/eb49d381-73de-4c75-9a45-f13b1df6b83b)
+
+
+
 
 
 
@@ -51,7 +54,8 @@ Once you click on a post, Angular will send a request to the backend to fetch co
 
 <br><br> <h2>Friends</h2>
 You can add to friend or remove depending on if user is currenty on your friendList.
-![image](https://github.com/user-attachments/assets/4dd098d2-22bc-4e47-99c6-607d021a1d39)
+![image](https://github.com/user-attachments/assets/e43536f0-f0d2-4dfe-8a9c-51fd2e5a0c1b)
+
 
 
 <br><br> <h2>Prometheus</h2>
