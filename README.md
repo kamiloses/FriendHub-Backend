@@ -1,4 +1,4 @@
-Readme 29.01.2025
+Readme 13.02.2025
 
 <h1>FriendHub</h1>
 <h3>
@@ -8,7 +8,8 @@ A full-stack application developed in a reactive style with a microservices arch
 
 
 <br><br>
-<h3>Important - The project is not finished yet. I am working to make this app resemble Twitter and after that, I will upload it. Right now, you can check the current status of my project, where the most important features have been implemented. Some of the screenshots and GIFs may be outdated, but it's mainly CSS.</h3>
+<h3>In a few days, a Docker container with my application will be available on Docker Hub, so you'll be able to check it out, but right now you can check the current status of my project, where the most important features have been implemented. Some of the screenshots and GIFs may be outdated, but it's mainly CSS.<br> Frontend is only an addition to the backend which is the most important part of the application. 
+</h3>
 <p>
 
 </p>
@@ -32,7 +33,11 @@ you receive a token. However, on the frontend side, I did not implement this.
 <br><br><h2>Posts</h2>
 You can write posts. At this moment there is implemented 'findAll' method on the backend side, and on the home page, all the posts will be displayed.
 I have implemented functions to like and retweet posts, as well as to undo likes and retweets. You can also check how many likes and retweets a post has, and depending on your choice, the button will change.
-![image](https://github.com/user-attachments/assets/180f0e44-ff92-4680-a4f6-9d0d55dbbef6)
+![image](https://github.com/user-attachments/assets/0682b6a6-0ed7-4e9f-8b86-213ea7f1fcc8)
+
+
+
+
 
 
 
@@ -51,7 +56,8 @@ Once you click on a post, Angular will send a request to the backend to fetch co
 
 <br><br> <h2>Friends</h2>
 You can add to friend or remove depending on if user is currenty on your friendList.
-![image](https://github.com/user-attachments/assets/4dd098d2-22bc-4e47-99c6-607d021a1d39)
+![image](https://github.com/user-attachments/assets/e43536f0-f0d2-4dfe-8a9c-51fd2e5a0c1b)
+
 
 
 <br><br> <h2>Prometheus</h2>
@@ -74,6 +80,8 @@ I implemented WebSockets, which are responsible for sending messages in real-tim
 There is also posibility to check whether user is online or offline.
 Very handy here became the 'SessionConnectedEvent,' which I used in event listeners to check whether a user has connected to or disconnected from StompJS.
 ![msedge_491GLTYdwN](https://github.com/user-attachments/assets/704f98c4-51ac-4f0f-83e4-a422708e4ba3)
+
+
 
 
 
