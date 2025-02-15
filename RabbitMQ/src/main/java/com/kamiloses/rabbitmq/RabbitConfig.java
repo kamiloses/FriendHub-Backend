@@ -122,46 +122,46 @@ public class RabbitConfig {
     public static final String IS_POST_LIKED_ROUTING_KEY = "isPostLikedRoutingKey";
 
 
-//
-//    @Bean
-//    public Queue postAddQueue() {
-//        return new Queue(POST_ADD_REQUEST_QUEUE);
-//    }
-//
-//
-//    @Bean
-//    public Queue postRemoveQueue() {
-//        return new Queue(POST_REMOVE_REQUEST_QUEUE);
-//    }
-//
-//
-//    @Bean
-//    public Queue isPostLikedQueue() {
-//        return new Queue(IS_POST_LIKED_QUEUE);
-//    }
-//
-//
-//
-//
-//
-//    @Bean
-//    public DirectExchange exchange_postOperations() {
-//        return new DirectExchange(POST_OPERATIONS_EXCHANGE);
-//    }
-//    @Bean
-//    public Binding postAddBinding() {
-//        return BindingBuilder.bind(postAddQueue()).to(exchange_postOperations()).with(POST_ADD_ROUTING_KEY);
-//    }
-//    @Bean
-//    public Binding postRemoveBinding() {
-//        return BindingBuilder.bind(postRemoveQueue()).to(exchange_postOperations()).with(POST_REMOVE_ROUTING_KEY);
-//    }
-//
-//
-//    @Bean
-//    public Binding isPostLikedBinding() {
-//        return BindingBuilder.bind(isPostLikedQueue()).to(exchange_postOperations()).with(IS_POST_LIKED_ROUTING_KEY);
-//    }
+
+    @Bean
+    public Queue postAddQueue() {
+        return new Queue(POST_ADD_REQUEST_QUEUE);
+    }
+
+
+    @Bean
+    public Queue postRemoveQueue() {
+        return new Queue(POST_REMOVE_REQUEST_QUEUE);
+    }
+
+
+    @Bean
+    public Queue isPostLikedQueue() {
+        return new Queue(IS_POST_LIKED_QUEUE);
+    }
+
+
+
+
+
+    @Bean
+    public DirectExchange exchange_postOperations() {
+        return new DirectExchange(POST_OPERATIONS_EXCHANGE);
+    }
+    @Bean
+    public Binding postAddBinding() {
+        return BindingBuilder.bind(postAddQueue()).to(exchange_postOperations()).with(POST_ADD_ROUTING_KEY);
+    }
+    @Bean
+    public Binding postRemoveBinding() {
+        return BindingBuilder.bind(postRemoveQueue()).to(exchange_postOperations()).with(POST_REMOVE_ROUTING_KEY);
+    }
+
+
+    @Bean
+    public Binding isPostLikedBinding() {
+        return BindingBuilder.bind(isPostLikedQueue()).to(exchange_postOperations()).with(IS_POST_LIKED_ROUTING_KEY);
+    }
 
 
 

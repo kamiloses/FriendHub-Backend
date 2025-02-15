@@ -16,6 +16,7 @@ import java.util.Objects;
 @SpringBootTest
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
+//@Disabled
 class RetweetServiceTest {
 
 

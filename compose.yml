@@ -12,6 +12,7 @@ services:
     depends_on:
        - mongo
        - rabbitmq
+       - redis
     networks:
      - friendHub_network
 
@@ -26,6 +27,7 @@ services:
     depends_on:
       - mongo
       - rabbitmq
+      - redis
     networks:
       - friendHub_network
 
@@ -40,6 +42,7 @@ services:
     depends_on:
       - mongo
       - rabbitmq
+      - redis
     networks:
       - friendHub_network
 
@@ -55,22 +58,10 @@ services:
     depends_on:
       - mongo
       - rabbitmq
+      - redis
     networks:
       - friendHub_network
 
-  hashtagService:
-    build: ./HashtagService
-    image: x-backend-hashtagservice:latest
-    environment:
-      SPRING_RABBITMQ_HOST: "rabbitmq"
-      SPRING_DATA_MONGODB_URI: "mongodb://mongo:27017/hashtag-service"
-    ports:
-      - "8090:8090"
-    depends_on:
-      - mongo
-      - rabbitmq
-    networks:
-      - friendHub_network
 
 
   friendService:
@@ -84,6 +75,7 @@ services:
     depends_on:
       - mongo
       - rabbitmq
+      - redis
     networks:
       - friendHub_network
 
@@ -111,6 +103,7 @@ services:
     depends_on:
       - mongo
       - rabbitmq
+      - redis
     networks:
       - friendHub_network
 
@@ -127,11 +120,19 @@ services:
     depends_on:
       - mongo
       - rabbitmq
+      - redis
     networks:
       - friendHub_network
 
 
 
+  redis:
+    image: redis:latest
+    container_name: redis
+    ports:
+      - "6379:6379"
+    networks:
+      - friendHub_network
 
 
   mongo:
@@ -180,3 +181,5 @@ services:
 networks:
   friendHub_network:
     driver: bridge
+
+

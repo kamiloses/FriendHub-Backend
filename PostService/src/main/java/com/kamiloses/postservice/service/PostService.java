@@ -7,6 +7,7 @@ import com.kamiloses.postservice.entity.PostEntity;
 import com.kamiloses.postservice.exception.PostDatabaseFetchException;
 import com.kamiloses.postservice.rabbit.RabbitPostProducer;
 import com.kamiloses.postservice.repository.PostRepository;
+import com.kamiloses.rabbitmq.RabbitConfig;
 import com.kamiloses.rabbitmq.exception.RabbitExceptionHandler;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Import;
@@ -18,7 +19,7 @@ import java.util.Date;
 
 @Slf4j
 @Service
-@Import({RabbitPostProducer.class, RabbitExceptionHandler.class})
+@Import({RabbitConfig.class, RabbitExceptionHandler.class})
 public class PostService {
     private final PostRepository postRepository;
     private final RabbitPostProducer rabbitPostProducer;
