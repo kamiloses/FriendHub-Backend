@@ -80,7 +80,7 @@ class RegistrationTest {
         registrationDto.setPassword("1");
             webTestClient.post().uri("/api/user/signup").bodyValue(registrationDto).exchange().expectStatus().
                     isBadRequest().expectBody(List.class).isEqualTo(List.of("Password cannot be blank and must be at least 6 characters long.","First Name cannot be blank and must only contain letters."));
-
+//sometimes it returns in different order
 
             Assertions.assertEquals(1, userRepository.findAll().count().block());
 
