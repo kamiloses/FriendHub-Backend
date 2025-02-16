@@ -2,8 +2,7 @@ services:
 
 
   userService:
-    build: ./UserService
-    image: x-backend-userservice:latest
+    image: kamiloses/friendhub-backend-userservice:latest
     environment:
       SPRING_RABBITMQ_HOST: "rabbitmq"
       SPRING_DATA_MONGODB_URI: "mongodb://mongo:27017/user-service"
@@ -17,8 +16,7 @@ services:
      - friendHub_network
 
   postService:
-    build: ./PostService
-    image: x-backend-postservice:latest
+    image: kamiloses/friendhub-backend-postservice:latest
     environment:
       SPRING_RABBITMQ_HOST: "rabbitmq"
       SPRING_DATA_MONGODB_URI: "mongodb://mongo:27017/post-service"
@@ -32,8 +30,7 @@ services:
       - friendHub_network
 
   messageService:
-    build: ./MessageService
-    image: x-backend-messageservice:latest
+    image: kamiloses/friendhub-backend-messageservice:latest
     environment:
       SPRING_RABBITMQ_HOST: "rabbitmq"
       SPRING_DATA_MONGODB_URI: "mongodb://mongo:27017/message-service"
@@ -48,8 +45,7 @@ services:
 
 
   likeService:
-    build: ./LikeService
-    image: x-backend-likeservice:latest
+    image: kamiloses/friendhub-backend-likeservice:latest
     environment:
       SPRING_RABBITMQ_HOST: "rabbitmq"
       SPRING_DATA_MONGODB_URI: "mongodb://mongo:27017/like-service"
@@ -65,8 +61,7 @@ services:
 
 
   friendService:
-    build: ./FriendService
-    image: x-backend-friendservice:latest
+    image: kamiloses/friendhub-backend-friendservice:latest
     environment:
       SPRING_RABBITMQ_HOST: "rabbitmq"
       SPRING_DATA_MONGODB_URI: "mongodb://mongo:27017/friend-service"
@@ -83,8 +78,7 @@ services:
 
 
   eurekaServer:
-    build: ./EurekaServer
-    image: x-backend-eurekaserver:latest
+    image: kamiloses/friendhub-backend-eurekaserver:latest
     ports:
       - "8761:8761"
     networks:
@@ -93,8 +87,7 @@ services:
 
 
   commentService:
-    build: ./CommentService
-    image: x-backend-commentservice:latest
+    image: kamiloses/friendhub-backend-commentservice:latest
     environment:
       SPRING_RABBITMQ_HOST: "rabbitmq"
       SPRING_DATA_MONGODB_URI: "mongodb://mongo:27017/comment-service"
@@ -111,7 +104,7 @@ services:
 
   authService:
     build: ./AuthService
-    image: x-backend-authservice:latest
+    image: kamiloses/friendhub-backend-authservice:latest
     environment:
       SPRING_RABBITMQ_HOST: "rabbitmq"
       SPRING_DATA_MONGODB_URI: "mongodb://mongo:27017/auth-service"
