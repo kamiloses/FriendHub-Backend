@@ -8,7 +8,12 @@ A full-stack application developed in a reactive style with a microservices arch
 
 
 <br><br>
-<h3>In a few days, a Docker container with my application will be available on Docker Hub, so you'll be able to check it out, but right now you can check the current status of my project, where the most important features have been implemented. Some of the screenshots and GIFs may be outdated, but it's mainly CSS.<br> Frontend is only an addition to the backend which is the most important part of the application. 
+<h3>
+ It's my main project, where I used most of the backend libraries I know. Instructions on how to run the application can be found at the very bottom.  
+  Remember – I was mainly focused on the backend. The frontend is only an addition, so there are still many things that need to be changed.  
+  
+  Rembemer - I was mainly focused on the backend. frontend is only an addition so the frontend still has so many thins to change.
+  Some of the screenshots and GIFs may be outdated, but it's mainly CSS.<br> 
 </h3>
 <p>
 
@@ -136,3 +141,22 @@ https://github.com/kamiloses/FriendHub-Frontend
 - JUnit 5
 - Mockito & WireMock
 - Angular
+
+
+
+
+                                               Running the application
+
+  Open the link and copy the repo.
+ https://github.com/kamiloses/friendhub-compose/blob/master/compose.yml
+
+  docker compose up --build
+
+application works on localhost:4200
+
+REmeber frontend was not that important for me as backend so there is still a lot of thins to change but i abandoned this project
+bcs of  started  getting boring.
+
+  
+
+  
