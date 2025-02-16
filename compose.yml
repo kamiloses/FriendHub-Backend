@@ -103,7 +103,6 @@ services:
 
 
   authService:
-    build: ./AuthService
     image: kamiloses/friendhub-backend-authservice:latest
     environment:
       SPRING_RABBITMQ_HOST: "rabbitmq"
