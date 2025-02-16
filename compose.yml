@@ -126,7 +126,6 @@ services:
     networks:
       - friendHub_network
 
-
   mongo:
     container_name: mongo
     image: mongo:latest
@@ -167,6 +166,14 @@ services:
       - "3000:3000"
     depends_on:
       - prometheus
+    networks:
+      - friendHub_network
+
+
+  frontend:
+    image: kamiloses/friendhub-frontend
+    ports:
+      - "4200:4200"
     networks:
       - friendHub_network
 
