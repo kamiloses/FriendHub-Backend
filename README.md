@@ -1,23 +1,20 @@
 Readme 13.02.2025
 
-<h1>FriendHub</h1>
-<h3>
-A full-stack application developed in a reactive style with a microservices architecture.
-</h3>
+# FriendHub  
 
+### A full-stack application developed in a reactive style with a microservices architecture.  
 
+---
 
-<br><br>
-<h3>
- It's my main project, where I used most of the backend libraries I know. Instructions on how to run the application can be found at the very bottom.  
-  Remember – I was mainly focused on the backend. The frontend is only an addition, so there are still many things that need to be changed.  
-  
-  Rembemer - I was mainly focused on the backend. frontend is only an addition so the frontend still has so many thins to change.
-  Some of the screenshots and GIFs may be outdated, but it's mainly CSS.<br> 
-</h3>
-<p>
+## About the Project  
 
-</p>
+It's my main project, where I used most of the backend libraries I know.  
+Instructions on how to run the application can be found at the very bottom.  
+
+**Remember** – I was mainly focused on the backend. The frontend is only an addition, so there are still many things that need to be changed.  
+
+⚠️ Some of the screenshots and GIFs may be outdated, but it's mainly CSS.  
+
 
 
 <br><br><h2>Registration-Process</h2>
@@ -145,18 +142,21 @@ https://github.com/kamiloses/FriendHub-Frontend
 
 
 
-                                               Running the application
 
-  Open the link and copy the repo.
- https://github.com/kamiloses/friendhub-compose/blob/master/compose.yml
 
-  docker compose up --build
 
-application works on localhost:4200
+## Run the Application  
 
-REmeber frontend was not that important for me as backend so there is still a lot of thins to change but i abandoned this project
-bcs of  started  getting boring.
+1. Open the link and clone the repository:  
+   🔗 [FriendHub-compose](https://github.com/kamiloses/FriendHub-compose)  
 
-  
+2. Run the following command:  
 
-  
+   ```sh
+   docker compose up --build
+
+3. The application runs on localhost:4200.
+
+
+
+
