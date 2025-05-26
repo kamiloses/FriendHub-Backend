@@ -13,7 +13,8 @@ Instructions on how to run the application can be found at the very bottom.
 
 **Remember** – I was mainly focused on the backend. The frontend is only an addition, so there are still many things that need to be changed.  
 
-⚠️ Some of the screenshots and GIFs may be outdated, but it's mainly CSS.  
+<strong>26.05.2025</strong>
+⚠️ Some of the screenshots and GIFs are outdated, but it's mainly CSS. I am currently learning Angular once again to fully change the frontend code.   
 
 
 
