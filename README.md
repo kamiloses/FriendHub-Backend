@@ -15,7 +15,19 @@ Instructions on how to run the application can be found at the very bottom.
 
 <strong>26.05.2025</strong>
 ⚠️ Some of the screenshots and GIFs are outdated, but it's mainly CSS. I am currently learning Angular once again to fully change the frontend code.   
+![image](https://github.com/user-attachments/assets/f1a1cc4e-1b4f-48e4-a8dc-51e256eabd03)
 
+![image](https://github.com/user-attachments/assets/dde983f2-9374-45a2-a64f-6a4b26a221d5)
+
+![image](https://github.com/user-attachments/assets/91c46ecf-777c-4400-9bc1-ce09c4a428e9)
+
+![image](https://github.com/user-attachments/assets/e9a4927f-1ac8-4038-a850-ba395677014a)
+
+![image](https://github.com/user-attachments/assets/43f0917c-b124-429d-83af-faa4a6586be6)
+
+![image](https://github.com/user-attachments/assets/e3590e8d-d64d-48a2-a404-7e394fb499a3)
+
+![image](https://github.com/user-attachments/assets/5de16a20-9d1f-4f49-a1ce-399570d7125c)
 
 
 <br><br><h2>Registration-Process</h2>
