@@ -1,30 +1,40 @@
-Readme 13.02.2025
-
-# FriendHub  
-
-### A full-stack application developed in a reactive style with a microservices architecture.  
 
 
-<br><br><h1>Frontend</h1>
 
-Below is a link to frontend repository<br>
-https://github.com/kamiloses/FriendHub-Frontend
+ #  <h1 align="center">💬 FriendHub 💬</h1>
+
+
+
+
+<br><br><br><br><h1>Frontend</h1>
+
+<h3>Below is a link to the frontend repository where I explain how the application works.</h3><br>
+<h3> https://github.com/kamiloses/FriendHub-Frontend</h3>
 
 
 
 ---
-
-## About the Project  
-
-It's my main project, where I used most of the backend libraries I know.  
-Instructions on how to run the application can be found at the very bottom.  
-
-**Remember** – I was mainly focused on the backend. The frontend is only an addition, so there are still many things that need to be changed.  
-
-<strong>26.05.2025</strong>
-⚠️ Some of the screenshots and GIFs are outdated, but it's mainly CSS. I am currently learning Angular once again to fully change the frontend code.   
+<br><br>
+## 🚀About the Project
+<h3>Main project that allows users to communicate with each other by writing posts and comments, giving likes and retweets, and sending real-time private messages.
+The application is similar to Facebook or Twitter. It is written reactively using WebFlux and RabbitMQ (sync).<h3>
+ 
 
 
+
+
+
+
+
+<br><br><br><br>
+<h2>🗂️ Model of Database Connections</h2>
+<p>Here is a model showing the connections between the databases:</p>
+
+![image](https://github.com/user-attachments/assets/52327a6e-4808-4de9-b5fb-c8774e0986ab)
+
+
+<br><br><br><br><br>
+<h1>📚 API Documentation – Swagger Endpoints</h1>
 
 
 
@@ -58,8 +68,8 @@ Instructions on how to run the application can be found at the very bottom.
 
 
 
-
-<h2>In this section, I will briefly discuss few tools/modules in my code.</h2>
+<br><br><br><br>
+<h1>🔍In this section, I will briefly discuss few tools/modules in my code.</h1>
 
 
 
@@ -78,7 +88,7 @@ needs data about the user. Rabbit is blocking but i wrapped it in reactive code,
 
 
 <br><br><br>
-<h3>libraries/frameworks currently used :</h3>
+<h2>📚libraries/frameworks used :</h2>
 
 - Java 17
 - Spring boot 3
@@ -99,15 +109,9 @@ needs data about the user. Rabbit is blocking but i wrapped it in reactive code,
 - Lombok
 - JUnit 5
 - Mockito & WireMock
-- Angular
 
-
-
-
-
-
-
-## Run the Application  
+<br><br>
+<h1> ## 🛠️ Run the Application  </h1>
 
 1. Open the link and clone the repository:  
    🔗 [FriendHub-compose](https://github.com/kamiloses/FriendHub-compose)  
@@ -117,8 +121,8 @@ needs data about the user. Rabbit is blocking but i wrapped it in reactive code,
    ```sh
    docker compose up --build
 
-3. The application runs on localhost:4200.
-
+3. - The application runs on localhost:4200.  
+   - The Compose file contains the backend along with the frontend.
 
 
 
