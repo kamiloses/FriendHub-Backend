@@ -87,6 +87,12 @@ needs data about the user. Rabbit is blocking but i wrapped it in reactive code,
 <h3>Spring Batch</h3> I used the tool in HashtagService, and it is responsible for removing outdated hashtags. Schedulers invoke the Spring Batch job every 5 minutes. Spring Batch iterates through all hashtags in the Redis, checks which scores are older than 24 hours, and deletes the specific values.
 
 
+<br><br> <h3>Prometheus</h3>
+Implemented gauge metrics to monitor the number of users currently using FriendHub. It is visualised in grafana.
+![image](https://github.com/user-attachments/assets/7dfe7447-51c7-41d2-ae25-59260253e2a6)
+
+
+
 <br><br><br>
 <h2>📚libraries/frameworks used :</h2>
 
