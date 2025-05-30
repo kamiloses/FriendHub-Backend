@@ -16,7 +16,7 @@
 ---
 <br><br>
 ## 🚀About the Project
-<h3>Main project that allows users to communicate with each other by writing posts and comments, giving likes and retweets, and sending real-time private messages.
+<h3>It's my main project which allows users to communicate with each other by writing posts and comments, giving likes and retweets, and sending real-time private messages.
 The application is similar to Facebook or Twitter. It is written reactively using WebFlux and RabbitMQ (sync).<h3>
  
 
