@@ -13,7 +13,7 @@ import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-import java.util.Date;
+import java.util.*;
 
 @Service
 @Import(RabbitExceptionHandler.class)
@@ -30,22 +30,29 @@ public class CommentService {
 
 
     public Flux<CommentDto> findCommentsRelatedWithPost(String postId) {
-        return commentRepository.findCommentEntitiesByPostId(postId).onErrorResume(error -> {
-                    log.error("There was some problem with fetching comments related with post");
+        return commentRepository.findCommentEntitiesByPostId(postId)
+                .onErrorResume(error -> {
+                    log.error("There was some problem with fetching comments related with post", error);
                     return Mono.error(CommentDatabaseFetchException::new);
                 })
-                .flatMap(commentEntity -> rabbitCommentProducer.askForUserDetails(commentEntity.getUserId())
-                        .map(userDetailsDto ->
-                                CommentDto.builder()
+                .flatMap(commentEntity ->
+                        rabbitCommentProducer.askForUserDetails(commentEntity.getUserId())
+                                .map(userDetailsDto -> CommentDto.builder()
                                         .id(commentEntity.getId())
                                         .content(commentEntity.getContent())
                                         .createdAt(commentEntity.getCreatedAt())
                                         .userDetails(userDetailsDto)
                                         .postId(commentEntity.getPostId())
                                         .parentCommentId(commentEntity.getParentCommentId())
-                                        .build()));
+                                        .replies(new ArrayList<>())
+                                        .build())
+                )
+                .collectList()
+                .flatMapMany(flatList -> {
+                    List<CommentDto> tree = buildCommentTree(flatList);
+                    return Flux.fromIterable(tree);
+                });
     }
-
 
     public Mono<Void> publishComment(PublishCommentDto publishCommentDto, String username) {
 
@@ -72,5 +79,29 @@ public class CommentService {
 
     }
 
+
+
+
+    private List<CommentDto> buildCommentTree(List<CommentDto> flatList) {
+        Map<String, CommentDto> map = new HashMap<>();
+        List<CommentDto> roots = new ArrayList<>();
+
+        for (CommentDto comment : flatList) {
+            map.put(comment.getId(), comment);
+        }
+
+        for (CommentDto comment : flatList) {
+            if (comment.getParentCommentId() == null) {
+                roots.add(comment);
+            } else {
+                CommentDto parent = map.get(comment.getParentCommentId());
+                if (parent != null) {
+                    parent.getReplies().add(comment);
+                }
+            }
+        }
+
+        return roots;
+    }
 
 }
