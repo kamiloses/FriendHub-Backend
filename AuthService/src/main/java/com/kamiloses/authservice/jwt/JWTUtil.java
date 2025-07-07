@@ -1,5 +1,8 @@
 package com.kamiloses.authservice.jwt;
 
+import com.kamiloses.authservice.dto.UserDetailsDto;
+import com.kamiloses.authservice.rabbit.RabbitAuthListener;
+import com.kamiloses.authservice.rabbit.RabbitAuthProducer;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -17,6 +20,12 @@ import java.util.function.Function;
 public class JWTUtil {
 
     private Key key;
+    private final RabbitAuthProducer rabbitAuthProducer;
+
+    public JWTUtil(RabbitAuthProducer rabbitAuthProducer) {
+        this.rabbitAuthProducer = rabbitAuthProducer;
+    }
+
 
     @PostConstruct
     public void init() {
@@ -47,6 +56,8 @@ public class JWTUtil {
 
     public String generateToken(String username) {
         Map<String, Object> claims = new HashMap<>();
+        UserDetailsDto userDetails = rabbitAuthProducer.askForUserDetails(username);
+        claims.put("id",userDetails.getId());
         return createToken(claims, username);
     }
 
