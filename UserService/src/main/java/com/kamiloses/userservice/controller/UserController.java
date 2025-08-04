@@ -2,6 +2,7 @@ package com.kamiloses.userservice.controller;
 
 import com.kamiloses.userservice.dto.LoginDetails;
 import com.kamiloses.userservice.dto.RegistrationDto;
+import com.kamiloses.userservice.dto.RegistrationResponse;
 import com.kamiloses.userservice.service.UserService;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
@@ -24,12 +25,11 @@ public class UserController {
 
 
     @PostMapping("/signup")
-    public Mono<ResponseEntity<Map<String, String>>> signup(@RequestBody @Valid RegistrationDto user) {
-        Map<String, String> response = new HashMap<>();
-        response.put("message", "User signed up successfully");
+    public Mono<ResponseEntity<RegistrationResponse>> signup(@RequestBody @Valid RegistrationDto user) {
         return userService.save(user)
-                .map(savedUser -> ResponseEntity.ok(response));
+                .map(savedUser -> ResponseEntity.ok(new RegistrationResponse("User signed up successfully")));
     }
+
 
 
 

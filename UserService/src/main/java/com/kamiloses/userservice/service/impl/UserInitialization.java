@@ -1,4 +1,4 @@
-package com.kamiloses.userservice.service;
+package com.kamiloses.userservice.service.impl;
 
 import com.kamiloses.userservice.entity.UserEntity;
 import com.kamiloses.userservice.repository.UserRepository;
