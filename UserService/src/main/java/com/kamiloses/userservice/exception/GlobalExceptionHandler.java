@@ -37,11 +37,17 @@ public class GlobalExceptionHandler {
 
 
     @ExceptionHandler(UsernameAlreadyExistsException.class)
-    public ResponseEntity<List<String>> handleUsernameAlreadyExistsException() {
+    public ResponseEntity<ErrorResponse> handleUsernameAlreadyExistsException() {
+        ErrorResponse errorResponse = new ErrorResponse(
+                "This username already exists",
+                java.time.LocalDateTime.now().toString(),
+                "USER_ALREADY_EXISTS"
+        );
 
-        return ResponseEntity.badRequest().body(List.of("this Username already exists"));
+        return ResponseEntity
+                .badRequest()
+                .body(errorResponse);
     }
-
 
 
 

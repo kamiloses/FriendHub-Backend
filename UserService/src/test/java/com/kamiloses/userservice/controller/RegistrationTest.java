@@ -13,7 +13,6 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.reactive.server.WebTestClient;
 
 import java.time.Duration;
-import java.util.List;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -66,10 +65,14 @@ class RegistrationTest {
     @Test
     @Order(2)
     void should_return_UsernameDoesExist() {
-        webTestClient.post().uri("/api/user/signup").bodyValue(registrationDto).exchange().expectStatus().
-                isBadRequest().expectBody(List.class).isEqualTo(List.of("this Username already exists"));
 
-
+        webTestClient.post()
+                .uri("/api/user/signup")
+                .bodyValue(registrationDto)
+                .exchange()
+                .expectStatus().isBadRequest()
+                .expectBody()
+                .jsonPath("$.message").isEqualTo("This username already exists");
 
         Assertions.assertEquals(1, userRepository.findAll().count().block());
     }
