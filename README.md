@@ -9,8 +9,7 @@
 <br><br><br><br><h1>Frontend</h1>
 
 <h3>Below is a link to the frontend repository, where I explain how the application works (⚠️ not finished yet – expected completion by the end of 2025).</h3>
-<h3> https://github.com/kamiloses/FriendHub-Frontend</h3>
-
+<h3> https://github.com/kamiloses/FriendHub-Depr</h3>
 
 
 ---
