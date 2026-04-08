@@ -6,10 +6,6 @@
 
 
 
-<br><br><br><br><h1>Frontend</h1>
-
-<h3>Below is a link to the frontend repository, where I explain how the application works (⚠️ not finished yet – expected completion by the end of 2025).</h3>
-<h3> https://github.com/kamiloses/FriendHub-Depr</h3>
 
 
 ---
@@ -128,6 +124,17 @@ Implemented gauge metrics to monitor the number of users currently using FriendH
 
 3. - The application runs on localhost:4200.  
    - The Compose file contains the backend along with the frontend.
+
+
+
+
+
+
+
+<br><br><br><br><h1>Frontend</h1>
+
+<h3>Below is a link to the frontend repository, where I explain how the application works (⚠️ not finished yet – expected completion by the end of 2025).</h3>
+<h3> https://github.com/kamiloses/FriendHub-Depr</h3>
 
 
 
